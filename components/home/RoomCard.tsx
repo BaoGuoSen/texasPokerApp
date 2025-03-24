@@ -20,20 +20,20 @@ export function RoomCard({
   const { user } = useMyUser();
 
   const handlePress = async () => {
-    await joinRoom({ id: room.id, userId: 5 })
+    await joinRoom({ id: room.id, userId: 2 })
 
     router.push({ pathname: '/game', params: { roomId: room.id } })
   };
 
   const handleDelete = async () => {
-    await deleteRoom({ id: room.id, userId: 2 })
+    await deleteRoom({ id: room.id })
 
     refresh();
   };
 
   return (
     <TouchableHighlight onPress={handlePress} underlayColor="#999" style={styles.container}>
-      <ImageBackground style={styles.content} source={room.owner.avatar}>
+      <ImageBackground style={styles.content}>
         <Text style={styles.buttonText}>房号：{room?.id.slice(0, 4)} </Text>
         <Text style={styles.buttonText}>房主：{room.owner.name}</Text>
         <Text style={styles.buttonText}> 人数：{room.onSeatCount}/{room.maximumCountOfPlayers}</Text>
@@ -58,10 +58,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'purple',
+    // backgroundColor: 'purple',
     padding: 4,
-    borderRadius: 4
-    // marginVertical: 2,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: '#1677ff',
+    marginVertical: 4,
   },
 
   content: {

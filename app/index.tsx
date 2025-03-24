@@ -2,9 +2,9 @@ import type { Room, CreateParams } from "@/types";
 
 import { StyleSheet, View, Text, FlatList, TouchableHighlight } from 'react-native';
 import { useEffect, useState } from 'react';
-import { Image, ImageBackground } from 'expo-image';
-import { Link } from 'expo-router';
+import { ImageBackground } from 'expo-image';
 import LottieView from 'lottie-react-native';
+import { useIsFocused } from '@react-navigation/native';
 
 import { createGame, getAllRooms } from '@/service';
 import { RoomCard } from "@/components/home/RoomCard";
@@ -14,6 +14,8 @@ import { useMyUser } from "@/hooks/useMyUser";
 import { ThemeConfig } from "@/constants/ThemeConfig";
 
 export default function HomeScreen() {
+  // 检查页面是否处于焦点状态，页面返回刷新列表数据
+  const isFocused = useIsFocused();
   const [rooms, setRooms] = useState<Room[]>();
   const { user } = useMyUser();
 
@@ -34,8 +36,10 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isFocused) {
+      fetchData();
+    }
+  }, [isFocused]);
 
   return (
     <ImageBackground

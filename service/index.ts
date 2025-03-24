@@ -41,12 +41,17 @@ const joinRoom = async (params: Pick<Room, 'id'> & { userId: number; }) => {
   return data;
 }
 
-const deleteRoom = async (params: Pick<Room, 'id'> & { userId: number; }) => {
+const deleteRoom = async (params: Pick<Room, 'id'>) => {
   const { data } = await http(
-    `room/delete/${params.id}`,
-    {
-      userId: params.userId
-    }
+    `room/delete/${params.id}`
+  )
+
+  return data;
+}
+
+const quitRoom = async (params: Pick<Room, 'id'>) => {
+  const { data } = await http(
+    `room/quit/${params.id}`
   )
 
   return data;
@@ -69,4 +74,13 @@ const getUser = async () => {
   return data
 }
 
-export { createGame, getAllRooms, login, getRoomInfo, joinRoom, deleteRoom, getUser };
+export {
+  createGame,
+  getAllRooms,
+  login,
+  getRoomInfo,
+  joinRoom,
+  deleteRoom,
+  getUser,
+  quitRoom
+};

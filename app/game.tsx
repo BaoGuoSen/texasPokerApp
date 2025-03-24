@@ -1,9 +1,10 @@
 import type { Poke } from 'texas-poker-core/types/Deck/constant';
 
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Image, ImageBackground } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { useGlobalSearchParams } from 'expo-router';
+import { useGlobalSearchParams, useNavigation } from 'expo-router';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import { PlayerCard } from '@/components/game/PlayerCard';
 import { PokerCard } from '@/components/game/PokerCard';
@@ -13,8 +14,10 @@ import { Player } from '@/types';
 import { useMyUser } from '@/hooks/useMyUser';
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
+import { quitRoom } from '@/service';
 
 export default function Game() {
+  const navigation = useNavigation();
   const { roomId = '' } = useGlobalSearchParams() as { roomId: string; };
 
   const { user } = useMyUser();
@@ -22,21 +25,42 @@ export default function Game() {
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);
 
-    useEffect(() => {
-      const fetchData = async () => {
-          // const data = await createGame({
-          //   lowestBetAmount: 100,
-          //   maximumCountOfPlayers: 3,
-          //   allowPlayersToWatch: true,
-          //   userId: 1
-          // })
+  const closePress = async () => {
+    Alert.alert(
+      "燕子、燕子、我不能没有你啊",
+      "",
+      [
+        {
+          text: "取消",
+          style: "cancel"
+        },
+        { 
+          text: "狠心离开", 
+          onPress: async () => {
+            await quitRoom({ id: roomId });
 
-          // const data = await getAllRooms();
+            navigation.goBack();
+          }
+        }
+      ]
+    );
+  }
 
-          // console.log(data, 'room')
-      };
+  useEffect(() => {
+    const fetchData = async () => {
+      // const data = await createGame({
+      //   lowestBetAmount: 100,
+      //   maximumCountOfPlayers: 3,
+      //   allowPlayersToWatch: true,
+      //   userId: 1
+      // })
 
-      fetchData();
+      // const data = await getAllRooms();
+
+      // console.log(data, 'room')
+    };
+
+    fetchData();
   }, [roomId]);
 
   const { players } = usePlayers({ roomId });
@@ -47,13 +71,16 @@ export default function Game() {
       setLeftPlayers(leftPlayers);
       setRightPlayers(rightPlayers);
     }
-    
+
   }, [players])
 
   const publicCards: (Poke | string)[] = ['c2', 'ct', 'h8', 's4', 'da'];
 
   return (
     <ImageBackground contentFit='cover' source={ThemeConfig.gameBackImg} style={styles.container}>
+      <TouchableOpacity onPress={closePress} style={styles.closeBtn}>
+        <Icon name="close" size={24} color="#333" />
+      </TouchableOpacity>
       <View style={styles.left}>
         {
           leftPlayers.map((player) => {
@@ -84,7 +111,7 @@ export default function Game() {
           } */}
           <TouchableOpacity style={styles.begin}>
             <ImageBackground style={styles.imageBack} source={ThemeConfig.gameBackImg}>
-            <Text style={styles.startBtn}>发牌</Text>
+              <Text style={styles.startBtn}>发牌</Text>
             </ImageBackground>
           </TouchableOpacity>
         </ImageBackground>
@@ -140,12 +167,26 @@ export default function Game() {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'row',
     width: 'auto',
     height: '100%',
     padding: 12,
     backgroundColor: ThemeConfig.gameBackColor
+  },
+
+  closeBtn: {
+    position: 'absolute',
+    top: 6,
+    right: 12,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    backgroundColor: '#fff',
+    width: 30,
+    height: 30,
   },
 
   left: {
