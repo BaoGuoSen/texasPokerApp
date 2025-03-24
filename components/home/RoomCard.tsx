@@ -5,6 +5,7 @@ import { Image, ImageBackground } from 'expo-image';
 import { useNavigation, useRouter } from 'expo-router';
 
 import { joinRoom, deleteRoom } from '@/service';
+import { useMyUser } from "@/hooks/useMyUser";
 
 export type IProps = {
   room: Room;
@@ -16,8 +17,10 @@ export function RoomCard({
   refresh
 }: IProps) {
   const router = useRouter();
+  const { user } = useMyUser();
+
   const handlePress = async () => {
-    await joinRoom({ id: room.id, userId: 7 })
+    await joinRoom({ id: room.id, userId: 5 })
 
     router.push({ pathname: '/game', params: { roomId: room.id } })
   };
@@ -35,7 +38,13 @@ export function RoomCard({
         <Text style={styles.buttonText}>房主：{room.owner.name}</Text>
         <Text style={styles.buttonText}> 人数：{room.onSeatCount}/{room.maximumCountOfPlayers}</Text>
 
-        <Button title="删除" onPress={handleDelete} />
+        {
+          user?.id === room.owner.id && (
+            <TouchableHighlight underlayColor="#999" style={styles.delete} onPress={handleDelete}>
+              <Text style={styles.deleBtn}>删除</Text>
+              </TouchableHighlight>
+          )
+        }
       </ImageBackground>
     </TouchableHighlight>
   );
@@ -66,5 +75,21 @@ const styles = StyleSheet.create({
 
   buttonText: {
     color: '#fff'
+  },
+
+  delete: {
+    width: 100,
+    height: '50%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 12,
+    backgroundColor: '#fff',
+    borderRadius: 16
+  },
+
+  deleBtn: {
+    color: 'red'
   }
 });

@@ -21,8 +21,6 @@ export default function RootLayout() {
 
   const initApp = async () => {
     await login({ name: 'theSen' });
-
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT);
   }
   
   useEffect(() => {
@@ -32,6 +30,7 @@ export default function RootLayout() {
   }, [loaded]);
 
   useEffect(() => {
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT);
     initApp();
   }, []);
 

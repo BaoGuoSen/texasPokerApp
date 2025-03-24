@@ -1,6 +1,6 @@
 import type { Poke } from 'texas-poker-core/types/Deck/constant';
 
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Image, ImageBackground } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { useGlobalSearchParams } from 'expo-router';
@@ -10,9 +10,14 @@ import { PokerCard } from '@/components/game/PokerCard';
 import { usePlayers } from '@/hooks/usePlayers';
 import { splitArray } from '@/utils';
 import { Player } from '@/types';
+import { useMyUser } from '@/hooks/useMyUser';
+
+const background = require('@/assets/images/Cosmic-eidex-eidex_black.svg');
 
 export default function Game() {
   const { roomId = '' } = useGlobalSearchParams() as { roomId: string; };
+
+  const { user } = useMyUser();
 
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);
@@ -48,7 +53,7 @@ export default function Game() {
   const publicCards: (Poke | string)[] = ['c2', 'ct', 'h8', 's4', 'da'];
 
   return (
-    <View style={styles.container}>
+    <ImageBackground contentFit='cover' source={background} style={styles.container}>
       <View style={styles.left}>
         {
           leftPlayers.map((player) => {
@@ -72,10 +77,18 @@ export default function Game() {
 
         <ImageBackground
           style={styles.priceContainer}
-        // source={require('@/assets/images/coins.png')}
+          // source={background}
         >
+          {/* {
+            user?.id === 
+          } */}
+          <TouchableOpacity style={styles.begin}>
+            <ImageBackground style={styles.imageBack} source={background}>
+            <Text style={styles.startBtn}>发牌</Text>
+            </ImageBackground>
+          </TouchableOpacity>
           {/* <Image style={styles.coin} source={require('@/assets/images/coin.png')} /> */}
-          <Text style={styles.price}>$ 1000</Text>
+          {/* <Text style={styles.price}>$ 1000</Text> */}
         </ImageBackground>
 
         <View style={styles.actions}>
@@ -87,7 +100,7 @@ export default function Game() {
               <Text style={[styles.btnText]}>/ 2</Text>
             </View>
             <View style={[styles.betPrice]}>
-              <Text style={[styles.betText]}>$ 333</Text>
+              {/* <Text style={[styles.betText]}>$ 333</Text> */}
             </View>
             <View style={[styles.quickBtn]}>
               <Text style={[styles.btnText]}>x2</Text>
@@ -122,7 +135,7 @@ export default function Game() {
           })
         }
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -133,7 +146,6 @@ const styles = StyleSheet.create({
     width: 'auto',
     height: '100%',
     padding: 12,
-    // TODO 整体游戏背景图，
     backgroundColor: '#222'
   },
 
@@ -177,6 +189,27 @@ const styles = StyleSheet.create({
     // borderRadius: ,
     width: '100%',
     height: '40%',
+  },
+
+  begin: {
+    width: '50%',
+    height: '50%',
+    borderRadius: 16,
+    backgroundColor: '#007BFF'
+  },
+
+  imageBack: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  startBtn: {
+    color: '#fff',
+    fontWeight: 800,
+    fontSize: 36
   },
 
   coin: {

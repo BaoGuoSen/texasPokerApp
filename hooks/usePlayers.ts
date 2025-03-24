@@ -76,7 +76,7 @@ export function usePlayers(props: IProps) {
       // @ts-ignore
       setPlayersOnSeat(playersOnSeat);
     }
-    
+
     fetchData();
   }, [roomId])
 

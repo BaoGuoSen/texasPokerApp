@@ -1,4 +1,5 @@
 import type { Room, CreateParams } from "@/types";
+import type { User } from "texas-poker-core/types/Player";
 
 import http from "@/utils/http";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -60,4 +61,12 @@ const login = async (params: { name: string; }) => {
   await AsyncStorage.setItem('userToken', data.token);
 }
 
-export { createGame, getAllRooms, login, getRoomInfo, joinRoom, deleteRoom };
+const getUser = async () => {
+  const { data } = await http<User>(
+    `user/info`
+  )
+
+  return data
+}
+
+export { createGame, getAllRooms, login, getRoomInfo, joinRoom, deleteRoom, getUser };
