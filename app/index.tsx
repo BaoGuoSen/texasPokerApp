@@ -11,7 +11,7 @@ import { RoomCard } from "@/components/home/RoomCard";
 import { UserCard } from "@/components/home/UserCard";
 import { useMyUser } from "@/hooks/useMyUser";
 
-const background = require('@/assets/images/Cosmic-eidex-eidex_black.svg');
+import { ThemeConfig } from "@/constants/ThemeConfig";
 
 export default function HomeScreen() {
   const [rooms, setRooms] = useState<Room[]>();
@@ -38,14 +38,11 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <ImageBackground contentFit="cover" source={background} style={styles.container}>
-      {/* <LottieView
-        source={require('@/assets/images/home_back_lottie.json')}
-        autoPlay
-        loop
-        style={styles.backgroundAnimation}
-      /> */}
-
+    <ImageBackground
+      contentFit="cover"
+      source={ThemeConfig.gameBackImg}
+      style={styles.container}
+    >
       <View style={styles.infos}>
         <UserCard user={user} />
 
@@ -58,7 +55,7 @@ export default function HomeScreen() {
         rooms?.length === 0 ? (
           <View style={styles.rooms}>
             <LottieView
-              source={require('@/assets/images/home_back_lottie.json')}
+              source={ThemeConfig.roomEmptyLottie}
               autoPlay
               loop
               style={styles.emptyList}
@@ -82,7 +79,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: '#222',
+    backgroundColor: ThemeConfig.homeBackColor,
     width: '100%',
     height: '100%'
   },
@@ -100,13 +97,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     padding: 12
-    // backgroundColor: '#1677ff'
   },
 
   rooms: {
     width: '60%',
     height: '100%',
-    // backgroundColor: 'black'
   },
 
   emptyList: {

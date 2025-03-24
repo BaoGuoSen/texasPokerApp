@@ -14,16 +14,14 @@ import Svg, { Circle } from 'react-native-svg';
 import { HandPokerCard } from './HandPokerCard';
 import { useMyUser } from '@/hooks/useMyUser';
 import { useEffect } from 'react';
-
-const PlaceholderAvator = require('@/assets/images/avator_1.png');
-const PlaceholderBack = require('@/assets/images/background_3.png');
+import { ThemeConfig } from '@/constants/ThemeConfig';
 
 export function PlayerCard({
   id,
   balance = 0,
   name = '人机',
-  avatar = PlaceholderAvator,
-  backgroudUrl = PlaceholderBack,
+  avatar = ThemeConfig.defaultAvatar,
+  backgroudUrl = ThemeConfig.playerBackImg,
   handCards = ['', ''],
   isActive = true,
 }: Player & { isActive: boolean; }) {

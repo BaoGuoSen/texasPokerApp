@@ -1,9 +1,9 @@
-import type { Room, CreateParams } from "@/types";
-
-import { View, StyleSheet, TouchableHighlight, Text, Button } from 'react-native';
-import { Image, ImageBackground } from 'expo-image';
-
 import type { User } from "texas-poker-core/types/Player";
+
+import { View, StyleSheet, Text } from 'react-native';
+import { Image } from 'expo-image';
+
+import { ThemeConfig } from "@/constants/ThemeConfig";
 
 export type IProps = {
   user?: User;
@@ -14,7 +14,7 @@ export function UserCard({
 }: IProps) {
   return (
     <View style={styles.container}>
-      <Image style={styles.avatar} source={user?.avatar} />
+      <Image style={styles.avatar} source={user?.avatar || ThemeConfig.defaultAvatar} />
       <Text style={styles.name}>{user?.name}</Text>
     </View>
   );
@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: 'purple',
     padding: 4,
   },
 

@@ -4,7 +4,7 @@ import type { Poke } from 'texas-poker-core/types/Deck/constant';
 interface Player extends User {
   // avatar: string;
   // name: string;
-  backgroudUrl: string;
+  backgroudUrl?: string;
   handCards: (Poke | string)[]
 }
 

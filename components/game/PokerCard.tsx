@@ -5,6 +5,8 @@ import { Image, ImageBackground } from 'expo-image';
 
 import Svg, { Text, G } from 'react-native-svg';
 
+import { ThemeConfig } from "@/constants/ThemeConfig";
+
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -27,8 +29,6 @@ const suitColors = {
   d: 'red',
   c: 'black',
 };
-
-const background = require('@/assets/images/Cosmic-eidex-eidex_black.svg');
 
 export function PokerCard({
   value,
@@ -101,7 +101,7 @@ export function PokerCard({
       {/* 背面 */}
       <Animated.View style={[styles.card, styles.backCard, backAnimatedStyle]}>
         <ImageBackground
-          source={background}
+          source={ThemeConfig.pokerBackImg}
           style={styles.card}
           contentFit='contain'
         />
@@ -126,8 +126,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backfaceVisibility: 'hidden', // 隐藏背面
     borderRadius: 6,
-    // borderWidth: 1,
-    // borderColor: '',
     position: 'absolute', // 使正反面重叠
   },
 
@@ -137,7 +135,7 @@ const styles = StyleSheet.create({
   },
 
   backCard: {
-    backgroundColor: '#fff',
+    backgroundColor: ThemeConfig.pokerBackColor,
   },
 
   topValue: {
@@ -145,7 +143,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    // flex: 1
     height: '25%'
   }
 });

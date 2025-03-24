@@ -5,6 +5,8 @@ import { ImageBackground } from 'expo-image';
 
 import Svg, { Text, G } from 'react-native-svg';
 
+import { ThemeConfig } from "@/constants/ThemeConfig";
+
 import HandPokerSuits from './HandPokerSuits';
 
 export type PokerCardProps = {
@@ -20,8 +22,6 @@ const suitColors = {
   c: 'black',
 };
 
-const background = require('@/assets/images/Cosmic-eidex-eidex_black.svg');
-
 export function HandPokerCard({
   value,
   hidden = false
@@ -30,7 +30,7 @@ export function HandPokerCard({
 
   return (
     <ImageBackground
-      source={!value ? background : ''}
+      source={!value ? ThemeConfig.pokerBackImg : ''}
       style={styles.container}
       contentFit='cover'
     >
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingTop: 2,
     paddingBottom: 2,
-    borderColor: '#000',
+    borderColor: ThemeConfig.pokerBackColor,
     borderWidth: 1
   },
 

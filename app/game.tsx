@@ -12,7 +12,7 @@ import { splitArray } from '@/utils';
 import { Player } from '@/types';
 import { useMyUser } from '@/hooks/useMyUser';
 
-const background = require('@/assets/images/Cosmic-eidex-eidex_black.svg');
+import { ThemeConfig } from "@/constants/ThemeConfig";
 
 export default function Game() {
   const { roomId = '' } = useGlobalSearchParams() as { roomId: string; };
@@ -53,11 +53,12 @@ export default function Game() {
   const publicCards: (Poke | string)[] = ['c2', 'ct', 'h8', 's4', 'da'];
 
   return (
-    <ImageBackground contentFit='cover' source={background} style={styles.container}>
+    <ImageBackground contentFit='cover' source={ThemeConfig.gameBackImg} style={styles.container}>
       <View style={styles.left}>
         {
           leftPlayers.map((player) => {
             return <PlayerCard
+              isActive={false}
               key={player.id}
               {...player}
               id={player.id}
@@ -77,18 +78,15 @@ export default function Game() {
 
         <ImageBackground
           style={styles.priceContainer}
-          // source={background}
         >
           {/* {
             user?.id === 
           } */}
           <TouchableOpacity style={styles.begin}>
-            <ImageBackground style={styles.imageBack} source={background}>
+            <ImageBackground style={styles.imageBack} source={ThemeConfig.gameBackImg}>
             <Text style={styles.startBtn}>发牌</Text>
             </ImageBackground>
           </TouchableOpacity>
-          {/* <Image style={styles.coin} source={require('@/assets/images/coin.png')} /> */}
-          {/* <Text style={styles.price}>$ 1000</Text> */}
         </ImageBackground>
 
         <View style={styles.actions}>
@@ -128,6 +126,7 @@ export default function Game() {
         {
           rightPlayers.map((player) => {
             return <PlayerCard
+              isActive={true}
               key={player.id}
               {...player}
               id={player.id}
@@ -146,7 +145,7 @@ const styles = StyleSheet.create({
     width: 'auto',
     height: '100%',
     padding: 12,
-    backgroundColor: '#222'
+    backgroundColor: ThemeConfig.gameBackColor
   },
 
   left: {
@@ -155,7 +154,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '25%',
     height: '100%',
-    // backgroundColor: '#1677ff'
   },
 
   middle: {
@@ -164,7 +162,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '50%',
     height: '100%',
-    // backgroundColor: 'green'
   },
 
   publicCards: {
@@ -174,9 +171,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: '100%',
     height: '30%',
-    paddingTop: 24,
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingTop: 6,
   },
 
   priceContainer: {
@@ -184,9 +179,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
-    // backgroundColor: 'red',
     borderRadius: '50%',
-    // borderRadius: ,
     width: '100%',
     height: '40%',
   },
@@ -315,6 +308,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '25%',
     height: '100%',
-    // backgroundColor: '#1677ff'
   },
 });
