@@ -22,7 +22,7 @@ export default function RootLayout() {
   const initApp = async () => {
     await login({ name: 'theSen' });
   }
-  
+
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -40,9 +40,14 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+      <Stack
+        screenOptions={{
+          // 禁用所有屏幕的返回手势
+          gestureEnabled: false,
+        }}
+      >
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="game" options={{ headerShown: false, headerBackButtonDisplayMode: 'minimal', headerBackVisible: true, headerBackTitle: '',  }} />
+        <Stack.Screen name="game" options={{ headerShown: false, headerBackButtonDisplayMode: 'minimal', headerBackVisible: true, headerBackTitle: '', }} />
       </Stack>
     </ThemeProvider>
   );
