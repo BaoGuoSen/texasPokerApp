@@ -1,5 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { Alert } from 'react-native';
 
 interface ResBasic<T> {
@@ -20,7 +21,6 @@ axios.interceptors.request.use(async (config) => {
 
   return config;
 });
-
 
 async function betterRequest<R>(
   url: string,

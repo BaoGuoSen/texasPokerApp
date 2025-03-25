@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { User } from 'texas-poker-core/types/Player';
-import { getUser, login } from '@/service';
+import { getUser } from '@/service';
 
 // 定义 Context 类型
 type UserContextType = {
-  user: User | null;
+  user: User | undefined;
 	// logout: () => Promise<void>;
   loading: boolean;
 };
@@ -25,7 +24,7 @@ export const useUser = () => {
 };
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | undefined>();
   const [loading, setLoading] = useState(true);
 
   // 初始化时加载用户数据
@@ -44,17 +43,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     loadUser();
   }, []);
-
-  // 注销方法
-//   const logout = async () => {
-//     try {
-//       await AsyncStorage.removeItem('user');
-//       setUser(null);
-//     } catch (error) {
-//       console.error('注销失败:', error);
-//       throw error;
-//     }
-//   };
 
   return (
     <UserContext.Provider value={{ user, loading }}>

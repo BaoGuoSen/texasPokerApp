@@ -10,6 +10,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { login } from '@/service';
 
 import { UserProvider } from '@/contexts/UserContext';
+import { ErrorProvider } from '@/contexts/ErrorContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -42,15 +43,17 @@ export default function RootLayout() {
 
   return (
     <UserProvider>
-      <Stack
-        screenOptions={{
-          // 禁用所有屏幕的返回手势
-          gestureEnabled: false,
-        }}
-      >
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="game" options={{ headerShown: false, headerBackButtonDisplayMode: 'minimal', headerBackVisible: true, headerBackTitle: '', }} />
-      </Stack>
+      <ErrorProvider>
+        <Stack
+          screenOptions={{
+            // 禁用所有屏幕的返回手势
+            gestureEnabled: false,
+          }}
+        >
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="game" options={{ headerShown: false, headerBackButtonDisplayMode: 'minimal', headerBackVisible: true, headerBackTitle: '', }} />
+        </Stack>
+      </ErrorProvider>
     </UserProvider>
   );
 }
