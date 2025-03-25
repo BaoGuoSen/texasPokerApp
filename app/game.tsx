@@ -1,17 +1,19 @@
 import type { Poke } from 'texas-poker-core/types/Deck/constant';
+import type { Player } from '@/types';
 
 import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Image, ImageBackground } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { useGlobalSearchParams, useNavigation } from 'expo-router';
+// @ts-ignore
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { PlayerCard } from '@/components/game/PlayerCard';
 import { PokerCard } from '@/components/game/PokerCard';
 import { usePlayers } from '@/hooks/usePlayers';
 import { splitArray } from '@/utils';
-import { Player } from '@/types';
-import { useMyUser } from '@/hooks/useMyUser';
+import { useUser } from '@/contexts/UserContext';
+
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
 import { quitRoom } from '@/service';
@@ -20,7 +22,7 @@ export default function Game() {
   const navigation = useNavigation();
   const { roomId = '' } = useGlobalSearchParams() as { roomId: string; };
 
-  const { user } = useMyUser();
+  const { user } = useUser();
 
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);

@@ -5,7 +5,7 @@ import { Image, ImageBackground } from 'expo-image';
 import { useNavigation, useRouter } from 'expo-router';
 
 import { joinRoom, deleteRoom } from '@/service';
-import { useMyUser } from "@/hooks/useMyUser";
+import { useUser } from '@/contexts/UserContext';
 
 export type IProps = {
   room: Room;
@@ -17,7 +17,7 @@ export function RoomCard({
   refresh
 }: IProps) {
   const router = useRouter();
-  const { user } = useMyUser();
+  const { user } = useUser();
 
   const handlePress = async () => {
     await joinRoom({ id: room.id, userId: 2 })

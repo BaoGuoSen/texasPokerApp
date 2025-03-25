@@ -12,7 +12,7 @@ import Animated, {
 import Svg, { Circle } from 'react-native-svg';
 
 import { HandPokerCard } from './HandPokerCard';
-import { useMyUser } from '@/hooks/useMyUser';
+import { useUser } from '@/contexts/UserContext';
 import { useEffect } from 'react';
 import { ThemeConfig } from '@/constants/ThemeConfig';
 
@@ -25,7 +25,7 @@ export function PlayerCard({
   handCards = ['', ''],
   isActive = true,
 }: Player & { isActive: boolean; }) {
-  const { user } = useMyUser();
+  const { user } = useUser();
 
   const progress = useSharedValue(0); // 控制动画进度
 

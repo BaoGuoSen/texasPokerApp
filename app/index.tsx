@@ -9,7 +9,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { createGame, getAllRooms } from '@/service';
 import { RoomCard } from "@/components/home/RoomCard";
 import { UserCard } from "@/components/home/UserCard";
-import { useMyUser } from "@/hooks/useMyUser";
+import { useUser } from '@/contexts/UserContext';
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
 
@@ -17,7 +17,7 @@ export default function HomeScreen() {
   // 检查页面是否处于焦点状态，页面返回刷新列表数据
   const isFocused = useIsFocused();
   const [rooms, setRooms] = useState<Room[]>();
-  const { user } = useMyUser();
+  const { user } = useUser();
 
   const createRoom = async () => {
     await createGame({
