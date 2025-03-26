@@ -12,6 +12,7 @@ import HandPokerSuits from './HandPokerSuits';
 export type PokerCardProps = {
   value: Poke | string;
   hidden?: boolean;
+  me: boolean;
 };
 
 // 定义花色颜色
@@ -24,38 +25,49 @@ const suitColors = {
 
 export function HandPokerCard({
   value,
-  hidden = false
+  me = false
 }: PokerCardProps) {
   const [type, val] = value.split('') as [Suit, Rank]
 
   return (
     <ImageBackground
-      source={!value ? ThemeConfig.pokerBackImg : ''}
+      source={!me ? ThemeConfig.pokerBackImg : ''}
       style={styles.container}
       contentFit='cover'
     >
-      <View style={styles.topSuit}>
-        <HandPokerSuits type={type} />      
-      </View>
+      {
+        me && val &&  (
+          <ImageBackground>
+            <View style={styles.topSuit}>
+              <HandPokerSuits type={type} />
+            </View>
 
-      <Svg style={styles.value}>
-        <G>
-          {/* 显示数字 */}
-          <Text
-            x={'25%'}
-            y={'90%'}
-            fontSize={25}
-            fill={suitColors[type]}
-            fontWeight="bold"
-          >
-            {val?.toUpperCase() === 'T' ? '10' : val?.toUpperCase()}
-          </Text>
-        </G>
-      </Svg>
+            <Svg style={styles.value}>
+              <G>
+                {/* 显示数字 */}
+                <Text
+                  x={'20%'}
+                  y={'90%'}
+                  fontSize={20}
+                  fill={suitColors[type]}
+                  fontWeight="bold"
+                >
+                  {val?.toUpperCase() === 'T' ? '10' : val?.toUpperCase()}
+                </Text>
+              </G>
+            </Svg>
 
-      <View style={styles.bottomSuit}>
-        <HandPokerSuits type={type} />      
-      </View>
+            <View style={styles.bottomSuit}>
+              <HandPokerSuits type={type} />
+            </View>
+          </ImageBackground>
+        )
+      }
+      {
+        me && !val && (
+          <ImageBackground style={styles.meEmpty} source={ThemeConfig.pokerBackImg} />
+        )
+      }
     </ImageBackground>
   );
 }
@@ -66,6 +78,17 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignSelf: 'flex-start',
     width: '25%',
+    backgroundColor: '#fff',
+    height: '100%',
+    borderRadius: 6,
+    paddingTop: 2,
+    paddingBottom: 2,
+    borderColor: ThemeConfig.pokerBackColor,
+    borderWidth: 1
+  },
+
+  meEmpty: {
+    width: '100%',
     backgroundColor: '#fff',
     height: '100%',
     borderRadius: 6,

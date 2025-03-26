@@ -1,11 +1,14 @@
-import type { User } from 'texas-poker-core/types/Player';
+import type { Role, User } from 'texas-poker-core/types/Player';
 import type { Poke } from 'texas-poker-core/types/Deck/constant';
+import type { Stage } from 'texas-poker-core/types/Controller';
 
 interface Player extends User {
   // avatar: string;
   // name: string;
   backgroudUrl?: string;
-  handCards: (Poke | string)[]
+  pokes?: (Poke | string)[];
+  role: Role;
+  me?: boolean;
 }
 
 interface Room {
@@ -49,4 +52,17 @@ export interface CreateParams {
   // userId: number;
 }
 
-export type { Player, Room };
+export interface Position {
+  userId: number;
+  pokes: (Poke | string)[];
+  role: Role;
+}
+
+export interface GameRes {
+  positions: Position[];
+  commonPokes: Poke[];
+  totalPool: number;
+  stage: Stage;
+}
+
+export type { Player, Room, };

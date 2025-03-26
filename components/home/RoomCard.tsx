@@ -20,9 +20,9 @@ export function RoomCard({
   const { user } = useUser();
 
   const handlePress = async () => {
-    await joinRoom({ id: room.id, userId: 2 })
+    await joinRoom({ id: room.id, userId: 6 })
 
-    router.push({ pathname: '/game', params: { roomId: room.id } })
+    router.push({ pathname: '/game', params: { roomId: room.id, ownerId: room.owner.id } })
   };
 
   const handleDelete = async () => {

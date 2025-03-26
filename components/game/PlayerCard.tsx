@@ -12,21 +12,18 @@ import Animated, {
 import Svg, { Circle } from 'react-native-svg';
 
 import { HandPokerCard } from './HandPokerCard';
-import { useUser } from '@/contexts/UserContext';
 import { useEffect } from 'react';
 import { ThemeConfig } from '@/constants/ThemeConfig';
 
 export function PlayerCard({
-  id,
   balance = 0,
   name = '人机',
   avatar = ThemeConfig.defaultAvatar,
   backgroudUrl = ThemeConfig.playerBackImg,
-  handCards = ['', ''],
+  pokes = ['', ''],
   isActive = true,
+  me = false
 }: Player & { isActive: boolean; }) {
-  const { user } = useUser();
-
   const progress = useSharedValue(0); // 控制动画进度
 
   // 定义动画样式
@@ -76,12 +73,11 @@ export function PlayerCard({
         </Animated.View>
       </View>
 
-
       <View style={styles.content}>
         <View style={styles.handPokerContainer}>
           {
-            handCards.map((item, index) => {
-              return <HandPokerCard key={index} value={item} />
+            pokes.map((item, index) => {
+              return <HandPokerCard key={index} value={item} me={me} />
             })
           }
         </View>

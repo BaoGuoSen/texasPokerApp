@@ -16,16 +16,23 @@ import { useUser } from '@/contexts/UserContext';
 
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
-import { quitRoom } from '@/service';
+import { quitRoom, startGame, endGame } from '@/service';
 
 export default function Game() {
   const navigation = useNavigation();
-  const { roomId = '' } = useGlobalSearchParams() as { roomId: string; };
-
+  const {
+    roomId = '',
+    ownerId
+  } = useGlobalSearchParams() as { roomId: string; ownerId: string; };
+  const { players } = usePlayers({ roomId });
   const { user } = useUser();
 
+  const [playersWithPokes, setPlayersWithPokes] = useState<Player[]>([]);
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);
+  const [publicCards, setPublicCards] = useState<(Poke | string)[]>(['', '', '', '', '']);
+  const [status, setStatus] = useState<'waiting' | 'begining' | 'end'>('waiting');
+  const [totalPool, setTotalPool] = useState<number>(0);
 
   const closePress = async () => {
     Alert.alert(
@@ -36,8 +43,8 @@ export default function Game() {
           text: "取消",
           style: "cancel"
         },
-        { 
-          text: "狠心离开", 
+        {
+          text: "狠心离开",
           onPress: async () => {
             await quitRoom({ id: roomId });
 
@@ -48,41 +55,56 @@ export default function Game() {
     );
   }
 
+  const end = async () => {
+    await endGame({ id: roomId })
+
+    Alert.alert('当前游戏结束。')
+  }
+
+  const handleStart = async () => {
+    const {
+      commonPokes,
+      totalPool = 0,
+      stage,
+      positions
+    } = await startGame({ id: roomId })
+
+    const playersWithPokes = players?.map((player) => {
+      const position = positions.find(item => item.userId === player.id);
+
+      return { ...player, pokes: position?.pokes };
+    })
+
+    setStatus('begining');
+    setPlayersWithPokes(playersWithPokes);
+    setTotalPool(totalPool);
+    setPublicCards(commonPokes);
+  }
+
   useEffect(() => {
-    const fetchData = async () => {
-      // const data = await createGame({
-      //   lowestBetAmount: 100,
-      //   maximumCountOfPlayers: 3,
-      //   allowPlayersToWatch: true,
-      //   userId: 1
-      // })
+    if (playersWithPokes?.length !== 0) {
+      const [leftPlayers, rightPlayers] = splitArray(playersWithPokes);
 
-      // const data = await getAllRooms();
-
-      // console.log(data, 'room')
-    };
-
-    fetchData();
-  }, [roomId]);
-
-  const { players } = usePlayers({ roomId });
-
-  useEffect(() => {
-    if (players?.length !== 0) {
+      setLeftPlayers(leftPlayers);
+      setRightPlayers(rightPlayers);
+    } else if (players.length !== 0) {
       const [leftPlayers, rightPlayers] = splitArray(players);
+
       setLeftPlayers(leftPlayers);
       setRightPlayers(rightPlayers);
     }
-
-  }, [players])
-
-  const publicCards: (Poke | string)[] = ['c2', 'ct', 'h8', 's4', 'da'];
+  }, [players, playersWithPokes])
 
   return (
     <ImageBackground contentFit='cover' source={ThemeConfig.gameBackImg} style={styles.container}>
       <TouchableOpacity onPress={closePress} style={styles.closeBtn}>
         <Icon name="close" size={24} color="#333" />
       </TouchableOpacity>
+
+      <TouchableOpacity onPress={end} style={styles.endGame}>
+        <Icon name="lock-closed" size={24} color="#333" />
+      </TouchableOpacity>
+
       <View style={styles.left}>
         {
           leftPlayers.map((player) => {
@@ -105,18 +127,27 @@ export default function Game() {
           }
         </View>
 
-        <ImageBackground
-          style={styles.priceContainer}
-        >
-          {/* {
-            user?.id === 
-          } */}
-          <TouchableOpacity style={styles.begin}>
-            <ImageBackground style={styles.imageBack} source={ThemeConfig.gameBackImg}>
-              <Text style={styles.startBtn}>发牌</Text>
+        {
+          user?.id === Number(ownerId) && status === 'waiting' && (
+            <ImageBackground
+              style={styles.priceContainer}
+            >
+              <TouchableOpacity onPress={handleStart} style={styles.begin}>
+                <ImageBackground style={styles.imageBack} source={ThemeConfig.gameBackImg}>
+                  <Text style={styles.startBtn}>发牌</Text>
+                </ImageBackground>
+              </TouchableOpacity>
             </ImageBackground>
-          </TouchableOpacity>
-        </ImageBackground>
+          )
+        }
+
+        {
+          status === 'begining' && (
+            <View style={styles.priceContainer}>
+              <Text style={styles.price}>${totalPool}</Text>
+            </View>
+          )
+        }
 
         <View style={styles.actions}>
           <View style={styles.quickActions}>
@@ -187,6 +218,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: '50%',
     backgroundColor: '#fff',
+    width: 30,
+    height: 30,
+  },
+
+  endGame: {
+    position: 'absolute',
+    top: 6,
+    right: 42,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    backgroundColor: 'red',
     width: 30,
     height: 30,
   },

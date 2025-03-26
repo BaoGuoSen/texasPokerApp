@@ -1,4 +1,4 @@
-import type { Room, CreateParams } from "@/types";
+import type { Room, CreateParams, GameRes } from "@/types";
 import type { User } from "texas-poker-core/types/Player";
 
 import http from "@/utils/http";
@@ -49,6 +49,22 @@ const deleteRoom = async (params: Pick<Room, 'id'>) => {
   return data;
 }
 
+const startGame = async (params: Pick<Room, 'id'>) => {
+  const { data } = await http<GameRes>(
+    `game/start/${params.id}`
+  )
+
+  return data;
+}
+
+const endGame = async (params: Pick<Room, 'id'>) => {
+  const { data } = await http<GameRes>(
+    `game/end/${params.id}`
+  )
+
+  return data;
+}
+
 const quitRoom = async (params: Pick<Room, 'id'>) => {
   const { data } = await http(
     `room/quit/${params.id}`
@@ -82,5 +98,7 @@ export {
   joinRoom,
   deleteRoom,
   getUser,
-  quitRoom
+  quitRoom,
+  startGame,
+  endGame
 };
