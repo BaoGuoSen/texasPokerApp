@@ -7,7 +7,7 @@ interface Player extends User {
   // name: string;
   backgroudUrl?: string;
   pokes?: (Poke | string)[];
-  role: Role;
+  role?: Role;
   me?: boolean;
 }
 

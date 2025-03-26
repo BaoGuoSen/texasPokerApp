@@ -1,5 +1,7 @@
 import type { Player } from '@/types'
 
+import { roleMap } from 'texas-poker-core';
+
 import { View, StyleSheet, Text, ViewStyle } from 'react-native';
 import { Image, ImageBackground } from 'expo-image';
 import Animated, {
@@ -18,6 +20,7 @@ import { ThemeConfig } from '@/constants/ThemeConfig';
 export function PlayerCard({
   balance = 0,
   name = '人机',
+  role,
   avatar = ThemeConfig.defaultAvatar,
   backgroudUrl = ThemeConfig.playerBackImg,
   pokes = ['', ''],
@@ -84,6 +87,7 @@ export function PlayerCard({
 
         <View style={styles.info}>
           <Text style={styles.price}>$ {balance}</Text>
+          <Text style={styles.name}>{roleMap.get(role) || role}</Text>
           <Text style={styles.name}>{name}</Text>
         </View>
       </View>

@@ -1,50 +1,97 @@
-# Welcome texasPokerApp 👋
+# Texas Poker App 🎮
 
-prod by thesen & xuan
+一个使用React Native和Expo开发的德州扑克游戏应用。
 
-## Get started
+## 功能特性
 
-1. Install dependencies
+- 🎲 完整的德州扑克游戏体验
+- 📱 响应式设计，支持iOS和Android
+- 🎨 现代化的UI界面
+- 🔄 实时游戏状态更新
+- 🎯 流畅的动画效果
+- 🌐 支持在线对战
 
+## 技术栈
+
+- React Native
+- Expo
+- TypeScript
+- React Navigation
+- Expo Router
+- Texas Poker Core
+- 其他主要依赖:
+  - Lottie React Native (动画)
+  - React Native Reanimated (手势动画)
+  - React Native Linear Gradient (渐变效果)
+  - Axios (网络请求)
+
+## 项目结构
+
+```
+├── app/                # 主要应用代码
+│   ├── (tabs)/        # 标签页导航
+│   ├── game.tsx       # 游戏主界面
+│   └── _layout.tsx    # 应用布局
+├── components/        # 可复用组件
+├── contexts/         # React Context
+├── constants/        # 常量定义
+├── hooks/           # 自定义Hooks
+├── service/         # API服务
+├── types/           # TypeScript类型定义
+├── utils/           # 工具函数
+└── assets/          # 静态资源
+```
+
+## 开始使用
+
+### 环境要求
+
+- Node.js (推荐 v16 或更高版本)
+- npm 或 yarn
+- Expo CLI
+- iOS Simulator (Mac) 或 Android Studio (Android开发)
+
+### 安装步骤
+
+1. 克隆项目
+   ```bash
+   git clone [项目地址]
+   cd texas-poker-app
+   ```
+
+2. 安装依赖
    ```bash
    npm install
    ```
 
-2. Start the app
-
+3. 启动应用
    ```bash
-    npx expo start
+   npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+4. 运行平台
+   - iOS: 按 `i` 在iOS模拟器中运行
+   - Android: 按 `a` 在Android模拟器中运行
+   - 扫描二维码在Expo Go中运行
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 开发命令
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- `npm start` - 启动Expo开发服务器
+- `npm run ios` - 在iOS模拟器中运行
+- `npm run android` - 在Android模拟器中运行
+- `npm run web` - 在Web浏览器中运行
+- `npm test` - 运行测试
+- `npm run lint` - 运行代码检查
 
-## Get a fresh project
+## 贡献指南
 
-When you're ready, run:
+欢迎提交Issue和Pull Request来帮助改进项目。
 
-```bash
-npm run reset-project
-```
+## 许可证
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+[MIT License](LICENSE)
 
-## Learn more
+## 作者
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- thesen
+- xuan

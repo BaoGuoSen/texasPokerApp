@@ -2,7 +2,7 @@ import type { Poke } from 'texas-poker-core/types/Deck/constant';
 import type { Player } from '@/types';
 
 import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
-import { Image, ImageBackground } from 'expo-image';
+import { ImageBackground } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { useGlobalSearchParams, useNavigation } from 'expo-router';
 // @ts-ignore
@@ -55,13 +55,27 @@ export default function Game() {
     );
   }
 
-  const end = async () => {
-    await endGame({ id: roomId })
-
-    Alert.alert('当前游戏结束。')
+  const resetGame = () => {
+    setStatus('waiting')
+    setPlayersWithPokes([])
+    setPublicCards(['', '', '', '', ''])
   }
 
-  const handleStart = async () => {
+  const end = async () => {
+    setStatus('waiting')
+    resetGame();
+    await endGame({ id: roomId })
+
+    setStatus('waiting')
+    Alert.alert('当前游戏结束')
+  }
+
+  const handleStart = () => {
+
+  };
+
+  // 发牌, 仅限庄家的角色
+  const handleDeal = async () => {
     const {
       commonPokes,
       totalPool = 0,
@@ -72,7 +86,7 @@ export default function Game() {
     const playersWithPokes = players?.map((player) => {
       const position = positions.find(item => item.userId === player.id);
 
-      return { ...player, pokes: position?.pokes };
+      return { ...player, pokes: position?.pokes, role: position?.role };
     })
 
     setStatus('begining');
@@ -132,9 +146,9 @@ export default function Game() {
             <ImageBackground
               style={styles.priceContainer}
             >
-              <TouchableOpacity onPress={handleStart} style={styles.begin}>
+              <TouchableOpacity onPress={handleDeal} style={styles.begin}>
                 <ImageBackground style={styles.imageBack} source={ThemeConfig.gameBackImg}>
-                  <Text style={styles.startBtn}>发牌</Text>
+                  <Text style={styles.startBtn}>开始游戏</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </ImageBackground>
