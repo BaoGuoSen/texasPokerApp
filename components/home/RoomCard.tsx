@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: 'purple',
     padding: 4,
     borderRadius: 4,
     borderWidth: 2,

@@ -49,12 +49,22 @@ const deleteRoom = async (params: Pick<Room, 'id'>) => {
   return data;
 }
 
+/**
+ * 准备游戏，仅限房主调用
+ */
+const readyGame = async (params: Pick<Room, 'id'>) => {
+  await http(
+    `game/ready/${params.id}`
+  )
+}
+
+/**
+ * 开始发牌，每一轮开始 角色为 button 玩家调用
+ */
 const startGame = async (params: Pick<Room, 'id'>) => {
-  const { data } = await http<GameRes>(
+  await http<GameRes>(
     `game/start/${params.id}`
   )
-
-  return data;
 }
 
 const endGame = async (params: Pick<Room, 'id'>) => {
@@ -100,5 +110,6 @@ export {
   getUser,
   quitRoom,
   startGame,
+  readyGame,
   endGame
 };

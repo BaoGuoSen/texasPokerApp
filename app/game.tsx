@@ -16,7 +16,7 @@ import { useUser } from '@/contexts/UserContext';
 
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
-import { quitRoom, startGame, endGame } from '@/service';
+import { quitRoom, startGame, endGame, readyGame } from '@/service';
 
 export default function Game() {
   const navigation = useNavigation();
@@ -70,29 +70,30 @@ export default function Game() {
     Alert.alert('当前游戏结束')
   }
 
-  const handleStart = () => {
-
+  const handleStart = async () => {
+    await readyGame({ id: roomId })
   };
 
   // 发牌, 仅限庄家的角色
   const handleDeal = async () => {
-    const {
-      commonPokes,
-      totalPool = 0,
-      stage,
-      positions
-    } = await startGame({ id: roomId })
+    await startGame({ id: roomId })
+    // const {
+    //   commonPokes,
+    //   totalPool = 0,
+    //   stage,
+    //   positions
+    // } = await startGame({ id: roomId })
 
-    const playersWithPokes = players?.map((player) => {
-      const position = positions.find(item => item.userId === player.id);
+    // const playersWithPokes = players?.map((player) => {
+    //   const position = positions.find(item => item.userId === player.id);
 
-      return { ...player, pokes: position?.pokes, role: position?.role };
-    })
+    //   return { ...player, pokes: position?.pokes, role: position?.role };
+    // })
 
     setStatus('begining');
     setPlayersWithPokes(playersWithPokes);
     setTotalPool(totalPool);
-    setPublicCards(commonPokes);
+    // setPublicCards(commonPokes);
   }
 
   useEffect(() => {

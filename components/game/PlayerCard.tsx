@@ -1,7 +1,6 @@
 import type { Player } from '@/types'
 
-import { roleMap } from 'texas-poker-core';
-
+import { useEffect } from 'react';
 import { View, StyleSheet, Text, ViewStyle } from 'react-native';
 import { Image, ImageBackground } from 'expo-image';
 import Animated, {
@@ -12,10 +11,11 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
+// @ts-ignore strange code error
+import  {roleMap } from 'texas-poker-core/dist/Player/constant';
 
-import { HandPokerCard } from './HandPokerCard';
-import { useEffect } from 'react';
 import { ThemeConfig } from '@/constants/ThemeConfig';
+import { HandPokerCard } from './HandPokerCard';
 
 export function PlayerCard({
   balance = 0,
@@ -87,7 +87,7 @@ export function PlayerCard({
 
         <View style={styles.info}>
           <Text style={styles.price}>$ {balance}</Text>
-          <Text style={styles.name}>{roleMap.get(role) || role}</Text>
+          <Text style={styles.name}>{role ? roleMap.get('button') : '无角色'}</Text>
           <Text style={styles.name}>{name}</Text>
         </View>
       </View>
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    color: 'yellow',
+    color: ThemeConfig.playerNameColor,
     fontWeight: 700,
   },
 
