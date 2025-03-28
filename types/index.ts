@@ -65,4 +65,6 @@ export interface GameRes {
   stage: Stage;
 }
 
+export type GameStatus = 'waiting' | 'ready' | 'begining' | 'end';
+
 export type { Player, Room, };

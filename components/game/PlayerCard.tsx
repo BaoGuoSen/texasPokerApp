@@ -87,7 +87,7 @@ export function PlayerCard({
 
         <View style={styles.info}>
           <Text style={styles.price}>$ {balance}</Text>
-          <Text style={styles.name}>{role ? roleMap.get('button') : '无角色'}</Text>
+          <Text style={styles.name}>{role ? roleMap.get('button') : ''}</Text>
           <Text style={styles.name}>{name}</Text>
         </View>
       </View>
