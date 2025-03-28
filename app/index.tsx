@@ -1,4 +1,4 @@
-import type { Room, CreateParams } from "@/types";
+import type { Room } from "@/types";
 
 import { StyleSheet, View, Text, FlatList, TouchableHighlight } from 'react-native';
 import { useEffect, useState } from 'react';
@@ -9,6 +9,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { createGame, getAllRooms } from '@/service';
 import { RoomCard } from "@/components/home/RoomCard";
 import { UserCard } from "@/components/home/UserCard";
+import { Login } from "@/components/home/Login";
 import { useUser } from '@/contexts/UserContext';
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
@@ -36,10 +37,10 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    if (isFocused) {
+    if (user && isFocused) {
       fetchData();
     }
-  }, [isFocused]);
+  }, [isFocused, user]);
 
   return (
     <ImageBackground
@@ -48,11 +49,19 @@ export default function HomeScreen() {
       style={styles.container}
     >
       <View style={styles.infos}>
-        <UserCard user={user} />
+        {
+          user ? (
+            <>
+              <UserCard />
 
-        <TouchableHighlight underlayColor="#999" onPress={createRoom} style={styles.cycle}>
-          <Text style={styles.startBtn}>创建房间</Text>
-        </TouchableHighlight>
+              <TouchableHighlight underlayColor="#999" onPress={createRoom} style={styles.cycle}>
+                <Text style={styles.startBtn}>创建房间</Text>
+              </TouchableHighlight>
+            </>
+          ) : (
+            <Login />
+          )
+        }
       </View>
 
       {
@@ -97,6 +106,7 @@ const styles = StyleSheet.create({
 
   infos: {
     width: '40%',
+    height: '100%',
     alignItems: 'flex-start',
     justifyContent: 'center',
     flexDirection: 'row',
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 100,
-    height: 60,
+    height: 40,
     borderRadius: 16,
     backgroundColor: '#1677ff'
   },

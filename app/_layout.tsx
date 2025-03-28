@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { login } from '@/service';
 
 import { UserProvider } from '@/contexts/UserContext';
 import { ErrorProvider } from '@/contexts/ErrorContext';
@@ -21,10 +20,6 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  const initApp = async () => {
-    await login({ name: 'theSen' });
-  }
-
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -33,8 +28,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT);
-
-    initApp();
   }, []);
 
   if (!loaded) {

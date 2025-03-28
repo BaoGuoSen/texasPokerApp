@@ -1,21 +1,22 @@
 import type { User } from "texas-poker-core/types/Player";
 
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
+import { useUser } from "@/contexts/UserContext";
 
-export type IProps = {
-  user?: User;
-};
+export function UserCard() {
+  const { user, logout } = useUser();
 
-export function UserCard({
-  user
-}: IProps) {
   return (
     <View style={styles.container}>
       <Image style={styles.avatar} source={user?.avatar || ThemeConfig.defaultAvatar} />
       <Text style={styles.name}>{user?.name}</Text>
+
+      <TouchableOpacity style={styles.logout} onPress={logout}>
+        <Text>退出</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -23,7 +24,7 @@ export function UserCard({
 const styles = StyleSheet.create({
   container: {
     width: '50%',
-    height: '30%',
+    height: '80%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -43,5 +44,16 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 600,
     color: '#fff'
+  },
+
+  logout: {
+    width: '100%',
+    height: '12%',
+    backgroundColor: '#999',
+    borderRadius: 16,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8
   }
 });

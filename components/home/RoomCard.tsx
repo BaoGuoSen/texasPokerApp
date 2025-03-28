@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
   },
 
   delete: {
-    width: 100,
-    height: '50%',
+    width: 80,
+    height: '40%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
