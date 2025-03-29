@@ -1,39 +1,119 @@
-import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import type { ActionType } from 'texas-poker-core/types/Player';
 
-const Actions = () => {
+import React, { useCallback, useMemo, useState } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import Slider from '@react-native-community/slider';
+import { throttle } from 'lodash';
+
+interface ActionsProps {
+  actions?: ActionType[];
+  minBet?: number;
+  maxBet?: number;
+  isAction?: boolean;
+}
+
+const Actions = (props: ActionsProps) => {
+  const {
+    actions = ['call'],
+    minBet = 0,
+    maxBet = 10000,
+    isAction = false
+  } = props;
+
+  const [value, setValue] = useState(50);
+  const [playerAction, setPlayerAction] = useState<ActionType>();
+
+  const mainBtnLabel = useMemo(() => {
+    if (actions.includes('bet')) {
+      setPlayerAction('bet');
+
+      return `下注 ${value}`;
+    }
+
+    if (value === minBet) {
+      setPlayerAction('call');
+
+      return `跟注 ${minBet}`;
+    }
+
+    if (value === maxBet) {
+      setPlayerAction('allIn');
+
+      return 'ALL IN';
+    }
+
+    if (value > minBet) {
+      setPlayerAction('raise');
+
+      return `加注 ${value - minBet}`;
+    }
+  }, [value]);
+
+  const throttledUpdate = useCallback(
+    throttle((newValue: number) => {
+      setValue(newValue);
+    }, 50),
+    []
+  );
+
+  const onMainBtn = useCallback(() => {
+
+  }, []);
+
+  const onFold = useCallback(() => {
+    setPlayerAction('fold');
+  }, []);
+
+  const onCheck = useCallback(() => {
+    setPlayerAction('check');
+  }, []);
+
   return (
-    <View style={styles.actions}>
-      <View style={styles.quickActions}>
-        <View style={[styles.quickBtn]}>
-          <Text style={[styles.btnText]}>/ 3</Text>
-        </View>
-        <View style={[styles.quickBtn]}>
-          <Text style={[styles.btnText]}>/ 2</Text>
-        </View>
-        <View style={[styles.betPrice]}>
-          {/* <Text style={[styles.betText]}>$ 333</Text> */}
-        </View>
-        <View style={[styles.quickBtn]}>
-          <Text style={[styles.btnText]}>x2</Text>
-        </View>
-        <View style={[styles.quickBtn]}>
-          <Text style={[styles.btnText]}>x3</Text>
-        </View>
-      </View>
+    <>
+      {
+        isAction ? (
+          <View style={styles.actions}>
+            <View style={styles.quickActions}>
+              <Text style={styles.minMaxText}>{minBet}</Text>
+              <View style={styles.sliderContainer}>
+                <Slider
+                  style={styles.slider}
+                  minimumValue={minBet}
+                  maximumValue={maxBet}
+                  minimumTrackTintColor="#3498db"
+                  maximumTrackTintColor="#d3d3d3"
+                  thumbTintColor="#2980b9"
+                  step={1}
+                  value={value}
+                  onValueChange={throttledUpdate}
+                />
+              </View>
+              <Text style={styles.minMaxText}>{maxBet}</Text>
+            </View>
 
-      <View style={styles.mainBtns}>
-        <View style={[styles.btn, styles.fold]}>
-          <Text style={[styles.btnText]}>弃牌</Text>
-        </View>
-        <View style={[styles.btn, styles.bet]}>
-          <Text style={[styles.btnText]}>下注</Text>
-        </View>
-        <View style={[styles.btn, styles.check]}>
-          <Text style={[styles.btnText]}>过牌</Text>
-        </View>
-      </View>
-    </View>
+            <View style={styles.mainBtns}>
+              <TouchableOpacity activeOpacity={0.7} onPress={onFold} style={[styles.btn, styles.fold]}>
+                <Text style={[styles.btnText]}>弃牌</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity activeOpacity={0.7} onPress={onMainBtn} style={[styles.btn, styles.bet]}>
+                <Text style={[styles.btnText]}>{mainBtnLabel}</Text>
+              </TouchableOpacity>
+
+              {
+                actions.includes('check') && (
+                  <TouchableOpacity activeOpacity={0.7} onPress={onCheck} style={[styles.btn, styles.check]}>
+                    <Text style={[styles.btnText]}>过牌</Text>
+                  </TouchableOpacity>
+                )
+              }
+            </View>
+          </View>
+        ) : (
+          null
+        )
+      }
+    </>
   );
 };
 
@@ -52,33 +132,29 @@ const styles = StyleSheet.create({
   },
 
   quickActions: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
     flex: 1,
   },
 
-  quickBtn: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '10%',
-    backgroundColor: '#444',
-    borderRadius: 8
+  sliderContainer: {
+    width: '100%',
+    flex: 1,
+    height: 40,
+    position: 'relative',
   },
 
-  betPrice: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    width: '40%',
-    borderRadius: 8
+  slider: {
+    width: '100%',
+    height: 40,
   },
 
-  betText: {
-    color: '#000',
+  minMaxText: {
+    color: '#fff',
     fontWeight: 500,
     fontSize: 16
   },
@@ -86,10 +162,11 @@ const styles = StyleSheet.create({
   mainBtns: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     width: '100%',
     height: '50%',
-    marginTop: 4
+    marginTop: 4,
+    gap: 4
   },
 
   btn: {
@@ -106,19 +183,19 @@ const styles = StyleSheet.create({
   },
 
   fold: {
-    width: '25%',
+    flex: 1,
     height: '100%',
     backgroundColor: 'red'
   },
 
   bet: {
-    width: '40%',
+    flex: 3,
     height: '100%',
     backgroundColor: 'green'
   },
 
   check: {
-    width: '25%',
+    flex: 1,
     height: '100%',
     backgroundColor: '#999'
   },

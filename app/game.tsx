@@ -9,6 +9,7 @@ import { useGlobalSearchParams, useNavigation } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { usePlayers } from '@/hooks/usePlayers';
+import useWebSocketReceiver from '@/hooks/useWebSocketReceiver';
 
 import { splitArray } from '@/utils';
 import { quitGame } from '@/utils/gameControl';
@@ -19,9 +20,11 @@ import RightSidePlayers from '@/components/game/RightSidePlayers';
 import MiddleCommon from '@/components/game/MiddleCommon';
 
 import { startGame, endGame, readyGame } from '@/service';
+import { useUser } from '@/contexts/UserContext';
 
 export default function Game() {
   const navigation = useNavigation();
+  const { user } = useUser();
   const {
     roomId = '',
     ownerId
@@ -34,6 +37,23 @@ export default function Game() {
   const [publicCards, setPublicCards] = useState<(Poke | string)[]>(['', '', '', '', '']);
   const [status, setStatus] = useState<GameStatus>('waiting');
   const [totalPool, setTotalPool] = useState<number>(0);
+
+  const {
+    status: wsStatus,
+    lastMessage,
+    error,
+    reconnect
+  } = useWebSocketReceiver({
+    url: `wss://texas.wishufree.com/ws?userId=${user?.id}&roomId=${roomId}`,
+    retries: 5,
+    retryInterval: 3000,
+    validate: (data) => {
+      return !!data?.players && Array.isArray(data.players);
+    },
+    onMessage: (data) => {
+      console.log('收到游戏数据:', data);
+    }
+  });
 
   const resetGame = () => {
     setStatus('waiting')
@@ -52,6 +72,7 @@ export default function Game() {
 
   const handleReady = async () => {
     await readyGame({ id: roomId })
+    setStatus('ready')
   };
 
   // 发牌, 仅限庄家的角色

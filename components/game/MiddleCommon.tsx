@@ -57,6 +57,20 @@ const MiddleCommon = (props: IProps) => {
       }
 
       {
+        status === 'ready' && (
+          <ImageBackground
+            style={styles.priceContainer}
+          >
+            <TouchableOpacity onPress={handleDeal} style={styles.begin}>
+              <ImageBackground style={styles.imageBack} source={ThemeConfig.gameBackImg}>
+                <Text style={styles.startBtn}>庄家发牌</Text>
+              </ImageBackground>
+            </TouchableOpacity>
+          </ImageBackground>
+        )
+      }
+
+      {
         status === 'begining' && (
           <View style={styles.priceContainer}>
             <Text style={styles.price}>${totalPool}</Text>
