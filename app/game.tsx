@@ -15,7 +15,7 @@ import { splitArray } from '@/utils';
 import { quitGame } from '@/utils/gameControl';
 import { ThemeConfig } from "@/constants/ThemeConfig";
 
-import LeftSidePlayers from '@/components/game/LeftSidePlayers';
+import LeftSide from '@/components/game/LeftSide';
 import RightSidePlayers from '@/components/game/RightSidePlayers';
 import MiddleCommon from '@/components/game/MiddleCommon';
 
@@ -23,13 +23,15 @@ import { startGame, endGame, readyGame } from '@/service';
 import { useUser } from '@/contexts/UserContext';
 
 export default function Game() {
-  const navigation = useNavigation();
-  const { user } = useUser();
   const {
     roomId = '',
     ownerId
   } = useGlobalSearchParams() as { roomId: string; ownerId: string; };
-  const { players } = usePlayers({ roomId });
+
+  const navigation = useNavigation();
+  const { user } = useUser();
+  const { players, playersHang } = usePlayers({ roomId });
+  
 
   const [playersWithPokes, setPlayersWithPokes] = useState<Player[]>([]);
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
@@ -125,7 +127,7 @@ export default function Game() {
         <Icon name="lock-closed" size={24} color="#333" />
       </TouchableOpacity>
 
-      <LeftSidePlayers players={leftPlayers} />
+      <LeftSide players={leftPlayers} playersHang={playersHang} />
 
       <MiddleCommon
         publicCards={publicCards}

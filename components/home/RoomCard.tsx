@@ -35,8 +35,10 @@ export function RoomCard({
     <TouchableHighlight onPress={handlePress} underlayColor="#999" style={styles.container}>
       <ImageBackground style={styles.content}>
         <Text style={styles.buttonText}>房号：{room?.id.slice(0, 4)} </Text>
-        <Text style={styles.buttonText}>房主：{room.owner.name}</Text>
-        <Text style={styles.buttonText}> 人数：{room.onSeatCount}/{room.maximumCountOfPlayers}</Text>
+        <Text style={styles.buttonText}>房主：{room.owner.name} </Text>
+        <Text style={styles.buttonText}>玩家人数：{room.onSeatCount} </Text>
+        <Text style={styles.buttonText}>观战人数：{room.hangCount} </Text>
+        <Text style={styles.buttonText}>总人数：{room.totalCount}/{room.maximumCountOfPlayers}</Text>
 
         {
           user?.id === room.owner.id && (

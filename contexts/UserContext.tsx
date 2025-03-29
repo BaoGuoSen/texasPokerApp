@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import type { User } from 'texas-poker-core/types/Player';
-import { getUser, login as loginService } from '@/service';
+
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { getUser, login as loginService } from '@/service';
 
 // 定义 Context 类型
 type UserContextType = {
@@ -10,6 +12,14 @@ type UserContextType = {
   login: (name: string) => void;
 	logout: () => Promise<void>;
   loading: boolean;
+  
+  // 游戏进程相关
+  game?: {
+    /** 在当前游戏中的视角 */
+    viewType: 'watcher' | 'player';
+    /** 是否是我的操作回合 */
+    isAction: boolean;
+  }
 };
 
 // 创建 Context
