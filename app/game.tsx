@@ -1,5 +1,6 @@
 import type { Poke } from 'texas-poker-core/types/Deck/constant';
-import type { GameStatus, Player } from '@/types';
+import type { Player } from '@/types';
+import type { GameStatus } from '@/types/game';
 
 import { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, Alert } from 'react-native';
@@ -42,16 +43,9 @@ export default function Game() {
 
   const {
     status: wsStatus,
-    lastMessage,
     error,
-    reconnect
   } = useWebSocketReceiver({
     url: `wss://texas.wishufree.com/ws?userId=${user?.id}&roomId=${roomId}`,
-    retries: 5,
-    retryInterval: 3000,
-    validate: (data) => {
-      return !!data?.players && Array.isArray(data.players);
-    },
     onMessage: (data) => {
       console.log('收到游戏数据:', data);
     }
@@ -74,7 +68,7 @@ export default function Game() {
 
   const handleReady = async () => {
     await readyGame({ id: roomId })
-    setStatus('ready')
+    setStatus('waiting')
   };
 
   // 发牌, 仅限庄家的角色
@@ -93,7 +87,7 @@ export default function Game() {
     //   return { ...player, pokes: position?.pokes, role: position?.role };
     // })
 
-    setStatus('begining');
+    setStatus('running');
     setPlayersWithPokes(playersWithPokes);
     setTotalPool(totalPool);
     // setPublicCards(commonPokes);

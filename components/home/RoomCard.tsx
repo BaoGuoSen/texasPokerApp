@@ -6,7 +6,7 @@ import { useNavigation, useRouter } from 'expo-router';
 
 import { joinRoom, deleteRoom } from '@/service';
 import { useUser } from '@/contexts/UserContext';
-
+import { ThemeConfig } from '@/constants/ThemeConfig';
 export type IProps = {
   room: Room;
   refresh: () => void;
@@ -33,7 +33,7 @@ export function RoomCard({
 
   return (
     <TouchableHighlight onPress={handlePress} underlayColor="#999" style={styles.container}>
-      <ImageBackground style={styles.content}>
+      <ImageBackground contentFit='cover' style={styles.content}>
         <Text style={styles.buttonText}>房号：{room?.id.slice(0, 4)} </Text>
         <Text style={styles.buttonText}>房主：{room.owner.name} </Text>
         <Text style={styles.buttonText}>玩家人数：{room.onSeatCount} </Text>
