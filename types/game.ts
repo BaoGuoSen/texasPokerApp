@@ -14,7 +14,6 @@ export type GameStatus = 'unReady' | 'waiting' | 'running' | 'pause' | 'end';
 
 /**
  * ws 消息类型
- * - initial connect 初始连接
  * - set-role 设置玩家角色
  * - game-start 游戏开始 开始发牌
  * - pre-action 处于行动阶段的玩家
@@ -28,7 +27,6 @@ export type GameStatus = 'unReady' | 'waiting' | 'running' | 'pause' | 'end';
  * - player-on-watch 玩家观战
  */
 export type WsType =
-	'initial connect' |
 	'set-role' |
 	'game-start' |
 	'pre-action' |
@@ -60,8 +58,8 @@ export interface GameStartRes {
 
 /**
  * 处于行动阶段的玩家
- */
-export interface PreActionRes {
+	*/
+export interface PlayerActionRes {
 	allowedActions: ActionType[];
 	userId: number;
 	restrict?: {
@@ -170,7 +168,6 @@ export interface PlayerOnWatchRes extends Player {
 export interface WsData {
 	/**
 	 * ws 消息类型
-	 * - initial connect 初始连接
 	 * - set-role 设置玩家角色
 	 * - game-start 游戏开始 开始发牌
 	 * - pre-action 处于行动阶段的玩家

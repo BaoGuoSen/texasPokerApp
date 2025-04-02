@@ -3,8 +3,9 @@ import type { Player } from '@/types';
 import type {
   SetRoleRes,
   GameStatus,
-  WsData,
-  PlayerOnSeatRes
+  GameStartRes,
+  PlayerOnSeatRes,
+  PlayerActionRes
 } from '@/types/game';
 
 import { useEffect, useState } from 'react';
@@ -15,7 +16,7 @@ import { useGlobalSearchParams, useNavigation } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { usePlayers } from '@/hooks/usePlayers';
-import useWebSocketReceiver from '@/hooks/useWebSocketReceiver';
+import useWebSocketReceiver, { GameWSEvents, WSEvents } from '@/hooks/useWebSocketReceiver';
 
 import { splitArray } from '@/utils';
 import { quitGame } from '@/utils/gameControl';
@@ -25,9 +26,8 @@ import LeftSide from '@/components/game/LeftSide';
 import RightSidePlayers from '@/components/game/RightSidePlayers';
 import MiddleCommon from '@/components/game/MiddleCommon';
 
-import { startGame, endGame, readyGame, joinRoom } from '@/service';
+import { endGame, joinRoom } from '@/service';
 import { useUser } from '@/contexts/UserContext';
-import { GameStartRes } from '/types/game';
 
 export default function Game() {
   const {
@@ -37,13 +37,13 @@ export default function Game() {
 
   const navigation = useNavigation();
   const { user } = useUser();
-  const { 
+  const {
     playersOnSeat,
     playersOnWatch,
     setPlayersOnSeat,
     setPlayersHang,
     fetchAllUsers
-   } = usePlayers({ roomId });
+  } = usePlayers({ roomId });
 
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);
@@ -51,32 +51,23 @@ export default function Game() {
   const [status, setStatus] = useState<GameStatus>('unReady');
   const [totalPool, setTotalPool] = useState<number>(0);
 
-  const {
-    status: wsStatus
-  } = useWebSocketReceiver({
+  useWebSocketReceiver({
     url: `wss://texas.wishufree.com/ws?userId=${user?.id}&roomId=${roomId}`,
-    onMessage: async (data) => {
-      const wsData = data as WsData;
-
-      console.log('收到游戏数据:', wsData.type, wsData.data);
-
-      if (wsData.type === 'initial connect') {
+    handlers: {
+      [WSEvents.Connect]: async () => {
         // 如果当前用户不是房主，则加入房间
         if (user?.id !== Number(ownerId)) {
           await joinRoom({ id: roomId, userId: Number(user?.id) });
         }
 
         fetchAllUsers();
-        return;
-      }
+      },
 
-      // 设置角色
-      if (wsData.type === 'set-role') {
-        const setRoleRes = wsData.data as SetRoleRes[];
+      [GameWSEvents.SetRole]: (setRoleRes: SetRoleRes[]) => {
+        console.log('设置角色:', setRoleRes);
 
         if (status === 'unReady') {
-          // 游戏第一次发牌
-          // 给在座的每个 player 添加 role
+          // 第一次由房主确认游戏玩家后，给在座的每个 player 添加 role
           const playersWithRole = playersOnSeat.map((player) => {
             const role = setRoleRes.find((item) => item.userId === player.id)?.role;
 
@@ -89,23 +80,28 @@ export default function Game() {
           setStatus('waiting');
           setPlayersOnSeat(playersWithRole);
         } else {
-          // 游戏结束
+          // TODO 游戏结束后，等游戏动画结束后在进行变更
         }
+      },
 
-        return;
-      }
+      [GameWSEvents.GameStart]: (gameStartRes: GameStartRes) => {
+        // TODO 默认下注 UI
+        const { handPokes, pool, defaultBets } = gameStartRes;
 
-      // 发手牌阶段
-      if (wsData.type === 'game-start') {
-        // const { handPokes } = wsData.data as GameStartRes;
+        const playerWithPokes = playersOnSeat.map((player) => {
+          if (player.me) {
+            return { ...player, pokes: handPokes };
+          }
 
-        // setPublicCards(handPokes);
-      }
+          return player;
+        })
 
-      if (wsData.type === 'player-join') {
-        const playerOnSeatRes = wsData.data as PlayerOnSeatRes;
+        setPlayersOnSeat(playerWithPokes);
+        setTotalPool(pool);
+      },
 
-        setPlayersOnSeat([...playersOnSeat, playerOnSeatRes]);
+      [GameWSEvents.PlayerAction]: (playerActionRes: PlayerActionRes) => {
+        console.log('玩家行动:', playerActionRes);
       }
     }
   });
@@ -122,27 +118,6 @@ export default function Game() {
     Alert.alert('当前游戏结束')
   }
 
-  // 发牌, 仅限庄家的角色
-  const handleDeal = async () => {
-    await startGame({ id: roomId })
-    // const {
-    //   commonPokes,
-    //   totalPool = 0,
-    //   stage,
-    //   positions
-    // } = await startGame({ id: roomId })
-
-    // const playersWithPokes = players?.map((player) => {
-    //   const position = positions.find(item => item.userId === player.id);
-
-    //   return { ...player, pokes: position?.pokes, role: position?.role };
-    // })
-
-    setStatus('running');
-    setTotalPool(totalPool);
-    // setPublicCards(commonPokes);
-  }
-
   useEffect(() => {
     if (playersOnSeat.length !== 0) {
       const [leftPlayers, rightPlayers] = splitArray(playersOnSeat);
@@ -150,7 +125,7 @@ export default function Game() {
       setLeftPlayers(leftPlayers);
       setRightPlayers(rightPlayers);
     }
-  }, [playersOnSeat, playersOnWatch, wsStatus])
+  }, [playersOnSeat, playersOnWatch])
 
   return (
     <ImageBackground
