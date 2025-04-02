@@ -1,5 +1,7 @@
-import { eventManager } from '@/utils/EventManager';
+import { io, Socket } from 'socket.io-client';
 import { useState, useEffect, useCallback, useRef } from 'react';
+
+import { eventManager } from '@/utils/EventManager';
 
 // 基础 WS 事件
 export enum WSEvents {
@@ -24,7 +26,7 @@ export enum WSEvents {
  * - player-on-seat 玩家上座
  * - player-on-watch 玩家观战
  */
-export enum GameWSEvents  {
+export enum GameWSEvents {
   /** 设置玩家角色（房主开房 and 游戏结束） */
   SetRole = 'set-role',
   /** 游戏开始 开始发手牌 */
@@ -39,6 +41,10 @@ export enum GameWSEvents  {
   StageChange = 'stage-change',
   /** 游戏结束 */
   GameEnd = 'game-end',
+  /** 玩家上座 */
+  PlayerOnSeat = 'player-on-seat',
+  /** 玩家观战 */
+  PlayerOnWatch = 'player-on-watch',
 }
 
 type EventHandlerMap = {
@@ -47,7 +53,7 @@ type EventHandlerMap = {
 
 
 type Config = {
-  url: string;
+  url?: string;
   handlers: EventHandlerMap,
 };
 
@@ -60,16 +66,16 @@ export default function useWebSocketReceiver(config: Config) {
   const [state, setState] = useState<WsState>({
     status: 'connecting',
   });
-  
-  const wsRef = useRef<WebSocket | null>(null);
+
+  const wsRef = useRef<Socket | null>(null);
   const isMounted = useRef(true);
 
   // 消息处理器
   const handleMessage = useCallback((event: MessageEvent) => {
     try {
-      const { type, data } = JSON.parse(event.data);
+      const { type, data } = event
 
-      console.log('收到消息:', type, data);
+      console.log('收到消息: type:', type, 'data:', data);
 
       eventManager.publish(type, data);
     } catch (error) {
@@ -81,45 +87,45 @@ export default function useWebSocketReceiver(config: Config) {
   const connect = useCallback(() => {
     if (wsRef.current) return;
 
-    const ws = new WebSocket(config.url);
+    const ws = io(config.url);
     wsRef.current = ws;
 
-    ws.onopen = () => {
+    ws.on('connect', () => {
       if (!isMounted.current) return;
 
       eventManager.publish(WSEvents.Connect, {
         status: 'connected',
       });
-    };
+    });
 
-    ws.onmessage = handleMessage;
+    ws.on('message', handleMessage);
 
-    ws.onerror = (error) => {
+    ws.on('error', (error) => {
       console.log('onerror', error);
 
       if (!isMounted.current) return;
 
       eventManager.publish(WSEvents.Error, {
         status: 'disconnected',
-        error: new Error('连接发生错误') 
+        error: new Error('连接发生错误')
       });
-    };
+    });
 
-    ws.onclose = (event) => {
+    ws.on('disconnect', (event) => {
       console.log('onclose', event);
 
       eventManager.publish(WSEvents.Close, {
         status: 'disconnected',
-        error: new Error('连接发生错误') 
+        error: new Error('连接发生错误')
       });
-    };
+    });
   }, [config.url]);
 
   // 初始化连接
   useEffect(() => {
     isMounted.current = true;
     connect();
-    
+
     return () => {
       isMounted.current = false;
       wsRef.current?.close();

@@ -1,5 +1,5 @@
 import type { Room, CreateParams, GameRes } from "@/types";
-import type { User } from "texas-poker-core/types/Player";
+import type { ActionType, User } from "texas-poker-core/types/Player";
 
 import http from "@/utils/http";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -62,8 +62,23 @@ const readyGame = async (params: Pick<Room, 'id'>) => {
  * 开始发牌，每一轮开始 角色为 button 玩家调用
  */
 const startGame = async (params: Pick<Room, 'id'>) => {
-  await http<GameRes>(
+  await http(
     `game/start/${params.id}`
+  )
+}
+
+/**
+ * 执行动作
+ */
+const doAction = async (params: {
+  amount: number;
+  matchId: number;
+  roomId: string;
+  actionType: ActionType;
+}) => {
+  await http(
+    `action/take`,
+    params
   )
 }
 
@@ -111,5 +126,6 @@ export {
   quitRoom,
   startGame,
   readyGame,
-  endGame
+  endGame,
+  doAction
 };

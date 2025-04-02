@@ -25,7 +25,6 @@ const LeftSide = ({ players, playersHang = [] }: { players: Player[]; playersHan
         {
           players.map((player) => {
             return <PlayerCard
-              isActive={false}
               key={player.id}
               {...player}
               id={player.id}

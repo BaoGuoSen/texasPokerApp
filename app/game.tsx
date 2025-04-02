@@ -5,6 +5,7 @@ import type {
   GameStatus,
   GameStartRes,
   PlayerOnSeatRes,
+  PlayerOnWatchRes,
   PlayerActionRes
 } from '@/types/game';
 
@@ -28,6 +29,7 @@ import MiddleCommon from '@/components/game/MiddleCommon';
 
 import { endGame, joinRoom } from '@/service';
 import { useUser } from '@/contexts/UserContext';
+import { RoomProvider } from '@/contexts/RoomContext';
 
 export default function Game() {
   const {
@@ -50,9 +52,11 @@ export default function Game() {
   const [publicCards, setPublicCards] = useState<(Poke | string)[]>(['', '', '', '', '']);
   const [status, setStatus] = useState<GameStatus>('unReady');
   const [totalPool, setTotalPool] = useState<number>(0);
+  const [matchId, setMatchId] = useState<number | undefined>();
+  const [curButtonUserId, setCurButtonUserId] = useState<number | undefined>();
 
   useWebSocketReceiver({
-    url: `wss://texas.wishufree.com/ws?userId=${user?.id}&roomId=${roomId}`,
+    url: `wss://texas.wishufree.com?userId=${user?.id}&roomId=${roomId}`,
     handlers: {
       [WSEvents.Connect]: async () => {
         // 如果当前用户不是房主，则加入房间
@@ -64,8 +68,6 @@ export default function Game() {
       },
 
       [GameWSEvents.SetRole]: (setRoleRes: SetRoleRes[]) => {
-        console.log('设置角色:', setRoleRes);
-
         if (status === 'unReady') {
           // 第一次由房主确认游戏玩家后，给在座的每个 player 添加 role
           const playersWithRole = playersOnSeat.map((player) => {
@@ -77,8 +79,11 @@ export default function Game() {
             }
           })
 
+          const curButtonUserId = playersWithRole.find((player) => player.role === 'button')?.id;
+
           setStatus('waiting');
           setPlayersOnSeat(playersWithRole);
+          setCurButtonUserId(curButtonUserId);
         } else {
           // TODO 游戏结束后，等游戏动画结束后在进行变更
         }
@@ -86,7 +91,7 @@ export default function Game() {
 
       [GameWSEvents.GameStart]: (gameStartRes: GameStartRes) => {
         // TODO 默认下注 UI
-        const { handPokes, pool, defaultBets } = gameStartRes;
+        const { handPokes, pool, defaultBets, matchId } = gameStartRes;
 
         const playerWithPokes = playersOnSeat.map((player) => {
           if (player.me) {
@@ -96,12 +101,23 @@ export default function Game() {
           return player;
         })
 
+        setStatus('running');
         setPlayersOnSeat(playerWithPokes);
         setTotalPool(pool);
+        setMatchId(matchId);
       },
 
       [GameWSEvents.PlayerAction]: (playerActionRes: PlayerActionRes) => {
+        const { userId, allowedActions, restrict } = playerActionRes;
         console.log('玩家行动:', playerActionRes);
+      },
+
+      [GameWSEvents.PlayerOnSeat]: (playerOnSeatRes: PlayerOnSeatRes) => {
+        setPlayersOnSeat([...playersOnSeat, playerOnSeatRes]);
+      },
+
+      [GameWSEvents.PlayerOnWatch]: (playerOnWatchRes: PlayerOnWatchRes) => {
+        // TODO 暂时没有观战入口
       }
     }
   });
@@ -128,10 +144,17 @@ export default function Game() {
   }, [playersOnSeat, playersOnWatch])
 
   return (
-    <ImageBackground
-      contentFit='cover'
-      source={ThemeConfig.gameBackImg}
-      style={styles.container}
+    <RoomProvider
+      roomId={roomId} 
+      matchId={matchId} 
+      ownerId={Number(ownerId)} 
+      curButtonUserId={curButtonUserId}
+      gameStatus={status}
+    >
+      <ImageBackground
+        contentFit='cover'
+        source={ThemeConfig.gameBackImg}
+        style={styles.container}
     >
       <TouchableOpacity onPress={() => quitGame(navigation, roomId)} style={styles.closeBtn}>
         <Icon name="close" size={24} color="#333" />
@@ -146,13 +169,11 @@ export default function Game() {
       <MiddleCommon
         publicCards={publicCards}
         totalPool={totalPool}
-        status={status}
-        ownerId={ownerId}
-        roomId={roomId}
       />
 
-      <RightSidePlayers players={rightPlayers} />
-    </ImageBackground>
+        <RightSidePlayers players={rightPlayers} />
+      </ImageBackground>
+    </RoomProvider>
   );
 }
 

@@ -11,8 +11,7 @@ const RightSidePlayers = ({ players }: { players: Player[] }) => {
         {
           players.map((player) => {
             return <PlayerCard
-              isActive={false}
-              key={player.id}
+              key={player.id || player.userId}
               {...player}
               id={player.id}
             />

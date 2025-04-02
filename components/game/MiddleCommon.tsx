@@ -8,6 +8,8 @@ import { Poke } from 'texas-poker-core/types/Deck/constant';
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
 import { useUser } from '@/contexts/UserContext';
+import { useRoomInfo } from '@/contexts/RoomContext';
+
 import { PokerCard } from './PokerCard';
 import Actions from './Actions';
 import { readyGame, startGame } from '@/service';
@@ -15,21 +17,16 @@ import { readyGame, startGame } from '@/service';
 interface IProps {
   publicCards: (Poke | string)[];
   totalPool: number;
-  status: GameStatus;
-  ownerId: string;
-  roomId: string;
 }
 
 const MiddleCommon = (props: IProps) => {
   const {
     publicCards,
-    totalPool,
-    status,
-    ownerId,
-    roomId
+    totalPool
   } = props;
 
   const { user } = useUser();
+  const { gameStatus, curButtonUserId, ownerId, roomId } = useRoomInfo();
 
   const handleReady = async () => {
     await readyGame({ id: roomId })
@@ -50,7 +47,7 @@ const MiddleCommon = (props: IProps) => {
       </View>
 
       {
-        user?.id === Number(ownerId) && status === 'unReady' && (
+        user?.id === Number(ownerId) && gameStatus === 'unReady' && (
           <ImageBackground
             style={styles.priceContainer}
           >
@@ -64,7 +61,7 @@ const MiddleCommon = (props: IProps) => {
       }
 
       {
-        status === 'waiting' && (
+        gameStatus === 'waiting' && curButtonUserId === user?.id && (
           <ImageBackground
             style={styles.priceContainer}
           >
@@ -78,7 +75,7 @@ const MiddleCommon = (props: IProps) => {
       }
 
       {
-        status === 'running' && (
+        gameStatus === 'running' && (
           <View style={styles.priceContainer}>
             <Text style={styles.price}>${totalPool}</Text>
           </View>

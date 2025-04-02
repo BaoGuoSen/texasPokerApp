@@ -1,49 +1,96 @@
+import type { PlayerActionRes } from '@/types/game';
 import type { ActionType } from 'texas-poker-core/types/Player';
 
 import React, { useCallback, useMemo, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { throttle } from 'lodash';
 
-interface ActionsProps {
+import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
+import { useUser } from '@/contexts/UserContext';
+import { useRoomInfo } from '@/contexts/RoomContext';
+
+import { doAction } from '@/service';
+interface ActionsState {
   actions?: ActionType[];
   minBet?: number;
   maxBet?: number;
   isAction?: boolean;
+  playerAction?: ActionType;
 }
 
-const Actions = (props: ActionsProps) => {
-  const {
-    actions = ['call'],
-    minBet = 0,
-    maxBet = 10000,
-    isAction = false
-  } = props;
+const Actions = () => {
+  const { user } = useUser();
+  const { matchId, roomId } = useRoomInfo();
+
+  const [actionState, setActionState] = useState<ActionsState>({
+    actions: ['call'],
+    minBet: 0,
+    maxBet: 0,
+    isAction: false,
+  });
 
   const [value, setValue] = useState(50);
-  const [playerAction, setPlayerAction] = useState<ActionType>();
+
+  useWebSocketReceiver({
+    handlers: {
+      [GameWSEvents.PlayerAction]: (playerActionRes: PlayerActionRes) => {
+        const { allowedActions, restrict } = playerActionRes;
+
+        setActionState({
+          actions: allowedActions,
+          minBet: restrict?.min ?? 0,
+          maxBet: restrict?.max ?? 0,
+          isAction: true,
+        });
+      }
+    }
+  });
+
+  const afterAction = useCallback(() => {
+    setActionState({
+      actions: ['call'],
+      minBet: 0,
+      maxBet: 0,
+      isAction: false,
+    });
+  }, []);
 
   const mainBtnLabel = useMemo(() => {
-    if (actions.includes('bet')) {
-      setPlayerAction('bet');
+    const { actions, minBet = 0, maxBet = 0 } = actionState;
+
+    if (actions?.includes('bet')) {
+      setActionState({
+        ...actionState,
+        playerAction: 'bet',
+      });
 
       return `下注 ${value}`;
     }
 
     if (value === minBet) {
-      setPlayerAction('call');
+      setActionState({
+        ...actionState,
+        playerAction: 'call',
+      });
 
       return `跟注 ${minBet}`;
     }
 
     if (value === maxBet) {
-      setPlayerAction('allIn');
+      setActionState({
+        ...actionState,
+        playerAction: 'allIn',
+      });
 
       return 'ALL IN';
     }
 
     if (value > minBet) {
-      setPlayerAction('raise');
+      setActionState({
+        ...actionState,
+        playerAction: 'raise',
+      });
 
       return `加注 ${value - minBet}`;
     }
@@ -57,29 +104,42 @@ const Actions = (props: ActionsProps) => {
   );
 
   const onMainBtn = useCallback(() => {
+    if (!matchId) {
+      Alert.alert('对局Id 错误');
 
+      return;
+    };
+
+    doAction({
+      amount: value,
+      actionType: actionState.playerAction ?? 'call',
+      matchId,
+      roomId
+    })
+
+    afterAction()
   }, []);
 
   const onFold = useCallback(() => {
-    setPlayerAction('fold');
+    afterAction()
   }, []);
 
   const onCheck = useCallback(() => {
-    setPlayerAction('check');
+    afterAction()
   }, []);
 
   return (
     <>
       {
-        isAction ? (
+        actionState.isAction ? (
           <View style={styles.actions}>
             <View style={styles.quickActions}>
-              <Text style={styles.minMaxText}>{minBet}</Text>
+              <Text style={styles.minMaxText}>{actionState.minBet}</Text>
               <View style={styles.sliderContainer}>
                 <Slider
                   style={styles.slider}
-                  minimumValue={minBet}
-                  maximumValue={maxBet}
+                  minimumValue={actionState.minBet}
+                  maximumValue={actionState.maxBet}
                   minimumTrackTintColor="#3498db"
                   maximumTrackTintColor="#d3d3d3"
                   thumbTintColor="#2980b9"
@@ -88,7 +148,7 @@ const Actions = (props: ActionsProps) => {
                   onValueChange={throttledUpdate}
                 />
               </View>
-              <Text style={styles.minMaxText}>{maxBet}</Text>
+              <Text style={styles.minMaxText}>{actionState.maxBet}</Text>
             </View>
 
             <View style={styles.mainBtns}>
@@ -101,7 +161,7 @@ const Actions = (props: ActionsProps) => {
               </TouchableOpacity>
 
               {
-                actions.includes('check') && (
+                actionState.actions?.includes('check') && (
                   <TouchableOpacity activeOpacity={0.7} onPress={onCheck} style={[styles.btn, styles.check]}>
                     <Text style={[styles.btnText]}>过牌</Text>
                   </TouchableOpacity>

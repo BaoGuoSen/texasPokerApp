@@ -12,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
 // @ts-ignore strange code error
-import  { roleMap } from 'texas-poker-core/dist/Player/constant';
+import { roleMap } from 'texas-poker-core/dist/Player/constant';
 
 import { ThemeConfig } from '@/constants/ThemeConfig';
 import { HandPokerCard } from './HandPokerCard';
@@ -24,9 +24,9 @@ export function PlayerCard({
   avatar = ThemeConfig.defaultAvatar,
   backgroudUrl = ThemeConfig.playerBackImg,
   pokes = ['', ''],
-  isActive = true,
+  isActive = false,
   me = false
-}: Player & { isActive: boolean; }) {
+}: Player & { isActive?: boolean; }) {
   const progress = useSharedValue(0); // 控制动画进度
 
   // 定义动画样式
@@ -57,23 +57,33 @@ export function PlayerCard({
   return (
     <ImageBackground style={styles.container} contentFit='cover' source={backgroudUrl}>
       <View style={[styles.avatarContainer]}>
-        <Image source={avatar} style={[styles.avator]} />
-        {/* <Image source={avatar} style={[styles.avator, user?.id === id ? styles.me: '']} /> */}
+        {/* 自己标识 */}
+        {
+          me && (
+            <View style={styles.meTitle} />
+          )
+        }
+
+        <Image source={avatar} style={[styles.avator, me ? styles.me : '']} />
 
         {/* 边框动画 */}
-        <Animated.View style={[styles.borderContainer, animatedStyle]}>
-          <Svg width="60" height="60">
-            <Circle
-              cx="30"
-              cy="30"
-              r="29" // 半径略小于头像
-              stroke="red" // 边框颜色
-              strokeWidth="4" // 边框宽度
-              fill="none"
-              strokeDasharray="10 5" // 虚线样式
-            />
-          </Svg>
-        </Animated.View>
+        {
+          isActive && (
+            <Animated.View style={[styles.borderContainer, animatedStyle]}>
+              <Svg width="60" height="60">
+                <Circle
+                  cx="30"
+                  cy="30"
+                  r="29" // 半径略小于头像
+                  stroke="red" // 边框颜色
+                  strokeWidth="4" // 边框宽度
+                  fill="none"
+                  strokeDasharray="10 5" // 虚线样式
+                />
+              </Svg>
+            </Animated.View>
+          )
+        }
       </View>
 
       <View style={styles.content}>
@@ -87,7 +97,7 @@ export function PlayerCard({
 
         <View style={styles.info}>
           <Text style={styles.price}>$ {balance}</Text>
-          <Text style={styles.name}>{role ? roleMap.get('button') : ''}</Text>
+          <Text style={styles.name}>{role ? roleMap.get(role) : ''}</Text>
           <Text style={styles.name}>{name}</Text>
         </View>
       </View>
@@ -130,8 +140,18 @@ const styles = StyleSheet.create({
   },
 
   me: {
-    borderWidth: 1,
-    borderColor: 'red'
+    borderWidth: 2,
+    borderColor: 'green'
+  },
+
+  meTitle: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    backgroundColor: 'green',
+    borderRadius: '50%',
+    top: 0,
+    right: 0
   },
 
   content: {

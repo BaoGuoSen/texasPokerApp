@@ -12,14 +12,6 @@ type UserContextType = {
   login: (name: string) => void;
 	logout: () => Promise<void>;
   loading: boolean;
-  
-  // 游戏进程相关
-  game?: {
-    /** 在当前游戏中的视角 */
-    viewType: 'watcher' | 'player';
-    /** 是否是我的操作回合 */
-    isAction: boolean;
-  }
 };
 
 // 创建 Context

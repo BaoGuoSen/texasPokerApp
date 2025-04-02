@@ -1,7 +1,7 @@
 
 import type { Player } from '@/types'
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useUser } from '@/contexts/UserContext';
 import { getRoomInfo } from '@/service';
