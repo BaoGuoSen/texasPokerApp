@@ -1,4 +1,4 @@
-import type { GameStatus } from '@/types';
+import type { GameStatus } from '@/types/game';
 
 import React from 'react';
 import { ImageBackground } from 'expo-image';
@@ -10,14 +10,14 @@ import { ThemeConfig } from "@/constants/ThemeConfig";
 import { useUser } from '@/contexts/UserContext';
 import { PokerCard } from './PokerCard';
 import Actions from './Actions';
+import { readyGame, startGame } from '@/service';
 
 interface IProps {
   publicCards: (Poke | string)[];
   totalPool: number;
   status: GameStatus;
   ownerId: string;
-  handleDeal: () => void;
-  handleReady: () => void;
+  roomId: string;
 }
 
 const MiddleCommon = (props: IProps) => {
@@ -26,11 +26,18 @@ const MiddleCommon = (props: IProps) => {
     totalPool,
     status,
     ownerId,
-    handleDeal,
-    handleReady
+    roomId
   } = props;
 
   const { user } = useUser();
+
+  const handleReady = async () => {
+    await readyGame({ id: roomId })
+  }
+
+  const handleDeal = async () => {
+    await startGame({ id: roomId })
+  }
 
   return (
     <View style={styles.middle}>
@@ -43,7 +50,7 @@ const MiddleCommon = (props: IProps) => {
       </View>
 
       {
-        user?.id === Number(ownerId) && status === 'waiting' && (
+        user?.id === Number(ownerId) && status === 'unReady' && (
           <ImageBackground
             style={styles.priceContainer}
           >
@@ -57,7 +64,7 @@ const MiddleCommon = (props: IProps) => {
       }
 
       {
-        status === 'ready' && (
+        status === 'waiting' && (
           <ImageBackground
             style={styles.priceContainer}
           >
@@ -71,7 +78,7 @@ const MiddleCommon = (props: IProps) => {
       }
 
       {
-        status === 'begining' && (
+        status === 'running' && (
           <View style={styles.priceContainer}>
             <Text style={styles.price}>${totalPool}</Text>
           </View>

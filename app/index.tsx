@@ -13,21 +13,24 @@ import { Login } from "@/components/home/Login";
 import { useUser } from '@/contexts/UserContext';
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
+import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
   // 检查页面是否处于焦点状态，页面返回刷新列表数据
   const isFocused = useIsFocused();
   const [rooms, setRooms] = useState<Room[]>();
   const { user } = useUser();
+  const router = useRouter();
 
   const createRoom = async () => {
-    await createGame({
+    const { roomId } = await createGame({
       lowestBetAmount: 100,
       maximumCountOfPlayers: 10,
       allowPlayersToWatch: true
     })
-
-    fetchData();
+    
+    // 创建房间后，跳转到房间页面
+    router.push({ pathname: '/game', params: { roomId, ownerId: user?.id } })
   }
 
   const fetchData = async () => {

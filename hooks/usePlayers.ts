@@ -14,27 +14,30 @@ interface IProps {
 export function usePlayers(props: IProps) {
   const { roomId }  = props;
   const { user } = useUser();
+
   const [playersOnSeat, setPlayersOnSeat] = useState<Player[]>([]);
   const [playersHang, setPlayersHang] = useState<Player[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { playersOnSeat, playersHang } = await getRoomInfo({ id: roomId });
+  const fetchAllUsers= async () => {
+    const { playersOnSeat, playersHang } = await getRoomInfo({ id: roomId });
 
-      const playersOnSeatWithMe = playersOnSeat.map(item => {
-        return { ...item, me: user?.id === item.id}
-      })
+    const playersOnSeatWithMe = playersOnSeat.map(item => {
+      return { ...item, me: user?.id === item.id}
+    })
 
-      const playersHangWithMe = playersHang.map(item => {
-        return { ...item, me: user?.id === item.id}
-      })
+    const playersHangWithMe = playersHang.map(item => {
+      return { ...item, me: user?.id === item.id}
+    })
 
-      setPlayersOnSeat(playersOnSeatWithMe);
-      setPlayersHang(playersHangWithMe);
-    }
+    setPlayersOnSeat(playersOnSeatWithMe);
+    setPlayersHang(playersHangWithMe);
+  }
 
-    fetchData();
-  }, [roomId])
-
-  return { players: playersOnSeat, playersHang };
+  return {
+    fetchAllUsers,
+    setPlayersOnSeat,
+    setPlayersHang,
+    playersOnSeat,
+    playersOnWatch: playersHang
+  };
 }

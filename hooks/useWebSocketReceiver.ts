@@ -1,6 +1,5 @@
 // hooks/useWebSocketReceiver.ts
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
 
 type Config = {
   url: string;
@@ -41,7 +40,6 @@ export default function useWebSocketReceiver(config: Config) {
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log('连接成功')
       if (!isMounted.current) return;
       setState(prev => ({
         ...prev,

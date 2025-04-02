@@ -1,12 +1,11 @@
-import type { Room, CreateParams } from "@/types";
+import type { Room } from "@/types";
 
-import { View, StyleSheet, TouchableHighlight, Text, Button } from 'react-native';
-import { Image, ImageBackground } from 'expo-image';
-import { useNavigation, useRouter } from 'expo-router';
+import { StyleSheet, TouchableHighlight, Text } from 'react-native';
+import { ImageBackground } from 'expo-image';
+import { useRouter } from 'expo-router';
 
-import { joinRoom, deleteRoom } from '@/service';
+import { deleteRoom } from '@/service';
 import { useUser } from '@/contexts/UserContext';
-import { ThemeConfig } from '@/constants/ThemeConfig';
 export type IProps = {
   room: Room;
   refresh: () => void;
@@ -20,8 +19,6 @@ export function RoomCard({
   const { user } = useUser();
 
   const handlePress = async () => {
-    await joinRoom({ id: room.id, userId: 6 })
-
     router.push({ pathname: '/game', params: { roomId: room.id, ownerId: room.owner.id } })
   };
 

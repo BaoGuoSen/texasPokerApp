@@ -12,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
 // @ts-ignore strange code error
-import  {roleMap } from 'texas-poker-core/dist/Player/constant';
+import  { roleMap } from 'texas-poker-core/dist/Player/constant';
 
 import { ThemeConfig } from '@/constants/ThemeConfig';
 import { HandPokerCard } from './HandPokerCard';

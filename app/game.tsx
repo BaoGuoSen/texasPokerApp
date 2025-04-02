@@ -1,6 +1,11 @@
 import type { Poke } from 'texas-poker-core/types/Deck/constant';
 import type { Player } from '@/types';
-import type { GameStatus } from '@/types/game';
+import type {
+  SetRoleRes,
+  GameStatus,
+  WsData,
+  PlayerOnSeatRes
+} from '@/types/game';
 
 import { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, Alert } from 'react-native';
@@ -20,8 +25,9 @@ import LeftSide from '@/components/game/LeftSide';
 import RightSidePlayers from '@/components/game/RightSidePlayers';
 import MiddleCommon from '@/components/game/MiddleCommon';
 
-import { startGame, endGame, readyGame } from '@/service';
+import { startGame, endGame, readyGame, joinRoom } from '@/service';
 import { useUser } from '@/contexts/UserContext';
+import { GameStartRes } from '/types/game';
 
 export default function Game() {
   const {
@@ -31,45 +37,90 @@ export default function Game() {
 
   const navigation = useNavigation();
   const { user } = useUser();
-  const { players, playersHang } = usePlayers({ roomId });
-  
+  const { 
+    playersOnSeat,
+    playersOnWatch,
+    setPlayersOnSeat,
+    setPlayersHang,
+    fetchAllUsers
+   } = usePlayers({ roomId });
 
-  const [playersWithPokes, setPlayersWithPokes] = useState<Player[]>([]);
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);
   const [publicCards, setPublicCards] = useState<(Poke | string)[]>(['', '', '', '', '']);
-  const [status, setStatus] = useState<GameStatus>('waiting');
+  const [status, setStatus] = useState<GameStatus>('unReady');
   const [totalPool, setTotalPool] = useState<number>(0);
 
   const {
-    status: wsStatus,
-    error,
+    status: wsStatus
   } = useWebSocketReceiver({
     url: `wss://texas.wishufree.com/ws?userId=${user?.id}&roomId=${roomId}`,
-    onMessage: (data) => {
-      console.log('收到游戏数据:', data);
+    onMessage: async (data) => {
+      const wsData = data as WsData;
+
+      console.log('收到游戏数据:', wsData.type, wsData.data);
+
+      if (wsData.type === 'initial connect') {
+        // 如果当前用户不是房主，则加入房间
+        if (user?.id !== Number(ownerId)) {
+          await joinRoom({ id: roomId, userId: Number(user?.id) });
+        }
+
+        fetchAllUsers();
+        return;
+      }
+
+      // 设置角色
+      if (wsData.type === 'set-role') {
+        const setRoleRes = wsData.data as SetRoleRes[];
+
+        if (status === 'unReady') {
+          // 游戏第一次发牌
+          // 给在座的每个 player 添加 role
+          const playersWithRole = playersOnSeat.map((player) => {
+            const role = setRoleRes.find((item) => item.userId === player.id)?.role;
+
+            return {
+              ...player,
+              role
+            }
+          })
+
+          setStatus('waiting');
+          setPlayersOnSeat(playersWithRole);
+        } else {
+          // 游戏结束
+        }
+
+        return;
+      }
+
+      // 发手牌阶段
+      if (wsData.type === 'game-start') {
+        // const { handPokes } = wsData.data as GameStartRes;
+
+        // setPublicCards(handPokes);
+      }
+
+      if (wsData.type === 'player-join') {
+        const playerOnSeatRes = wsData.data as PlayerOnSeatRes;
+
+        setPlayersOnSeat([...playersOnSeat, playerOnSeatRes]);
+      }
     }
   });
 
   const resetGame = () => {
     setStatus('waiting')
-    setPlayersWithPokes([])
     setPublicCards(['', '', '', '', ''])
   }
 
   const end = async () => {
-    setStatus('waiting')
     resetGame();
     await endGame({ id: roomId })
 
-    setStatus('waiting')
     Alert.alert('当前游戏结束')
   }
-
-  const handleReady = async () => {
-    await readyGame({ id: roomId })
-    setStatus('waiting')
-  };
 
   // 发牌, 仅限庄家的角色
   const handleDeal = async () => {
@@ -88,24 +139,18 @@ export default function Game() {
     // })
 
     setStatus('running');
-    setPlayersWithPokes(playersWithPokes);
     setTotalPool(totalPool);
     // setPublicCards(commonPokes);
   }
 
   useEffect(() => {
-    if (playersWithPokes?.length !== 0) {
-      const [leftPlayers, rightPlayers] = splitArray(playersWithPokes);
-
-      setLeftPlayers(leftPlayers);
-      setRightPlayers(rightPlayers);
-    } else if (players.length !== 0) {
-      const [leftPlayers, rightPlayers] = splitArray(players);
+    if (playersOnSeat.length !== 0) {
+      const [leftPlayers, rightPlayers] = splitArray(playersOnSeat);
 
       setLeftPlayers(leftPlayers);
       setRightPlayers(rightPlayers);
     }
-  }, [players, playersWithPokes])
+  }, [playersOnSeat, playersOnWatch, wsStatus])
 
   return (
     <ImageBackground
@@ -121,15 +166,14 @@ export default function Game() {
         <Icon name="lock-closed" size={24} color="#333" />
       </TouchableOpacity>
 
-      <LeftSide players={leftPlayers} playersHang={playersHang} />
+      <LeftSide players={leftPlayers} playersHang={playersOnWatch} />
 
       <MiddleCommon
         publicCards={publicCards}
         totalPool={totalPool}
         status={status}
         ownerId={ownerId}
-        handleDeal={handleDeal}
-        handleReady={handleReady}
+        roomId={roomId}
       />
 
       <RightSidePlayers players={rightPlayers} />
