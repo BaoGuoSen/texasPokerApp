@@ -30,7 +30,7 @@ const Actions = () => {
     isAction: false,
   });
 
-  const [value, setValue] = useState(50);
+  const [value, setValue] = useState(0);
 
   useWebSocketReceiver({
     handlers: {
@@ -41,6 +41,7 @@ const Actions = () => {
           return;
         }
 
+        setValue(restrict?.min ?? 0);
         setActionState({
           actions: allowedActions,
           minBet: restrict?.min ?? 0,

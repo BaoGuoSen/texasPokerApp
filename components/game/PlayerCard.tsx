@@ -49,9 +49,7 @@ export function PlayerCard({
       [GameWSEvents.PlayerAction]: (playerActionRes: PlayerActionRes) => {
         const { userId } = playerActionRes;
 
-        if (userId === id) {
-          setIsActive(true);
-        }
+        setIsActive(userId === id);
       },
 
       [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
