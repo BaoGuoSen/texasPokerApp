@@ -8,6 +8,7 @@ import { throttle } from 'lodash';
 
 import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
 import { useRoomInfo } from '@/contexts/RoomContext';
+import { useUser } from '@/contexts/UserContext';
 
 import { doAction } from '@/service';
 interface ActionsState {
@@ -19,6 +20,7 @@ interface ActionsState {
 }
 
 const Actions = () => {
+  const { user } = useUser();
   const { matchId, roomId } = useRoomInfo();
 
   const [actionState, setActionState] = useState<ActionsState>({
@@ -33,7 +35,11 @@ const Actions = () => {
   useWebSocketReceiver({
     handlers: {
       [GameWSEvents.PlayerAction]: (playerActionRes: PlayerActionRes) => {
-        const { allowedActions, restrict } = playerActionRes;
+        const { allowedActions, restrict, userId } = playerActionRes;
+
+        if (userId !== user?.id) {
+          return;
+        }
 
         setActionState({
           actions: allowedActions,
