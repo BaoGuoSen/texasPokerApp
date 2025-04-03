@@ -50,8 +50,8 @@ const HandPokerSuits = ({ type }: { type: Suit }) => {
 
 const styles = StyleSheet.create({
   suitIcon: {
-    width: 16,
-    height: '100%',
+    width: 22,
+    height: '100%'
   }
 });
 

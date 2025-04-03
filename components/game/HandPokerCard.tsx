@@ -38,21 +38,22 @@ export function HandPokerCard({
       {
         me && val &&  (
           <ImageBackground>
-            <View style={styles.topSuit}>
+            {/* <View style={styles.topSuit}>
               <HandPokerSuits type={type} />
-            </View>
+            </View> */}
 
             <Svg style={styles.value}>
               <G>
                 {/* 显示数字 */}
                 <Text
-                  x={'20%'}
-                  y={'90%'}
-                  fontSize={20}
+                  x={val === 't' ? '' : '22%'}
+                  y={'80%'}
+                  fontSize={25}
                   fill={suitColors[type]}
                   fontWeight="bold"
                 >
                   {val?.toUpperCase() === 'T' ? '10' : val?.toUpperCase()}
+                  {/* 10 */}
                 </Text>
               </G>
             </Svg>
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignSelf: 'flex-start',
-    width: '25%',
+    width: '46%',
     backgroundColor: '#fff',
     height: '100%',
     borderRadius: 6,
@@ -98,21 +99,13 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
 
-  topSuit: {
-    display: 'flex',
-    width: '100%',
-    height: '25%',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-
-  bottomSuit: {
-    display: 'flex',
-    width: '100%',
-    height: '25%',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-  },
+  // topSuit: {
+  //   display: 'flex',
+  //   width: '100%',
+  //   height: '25%',
+  //   justifyContent: 'center',
+  //   alignItems: 'flex-start',
+  // },
 
   value: {
     display: 'flex',
@@ -120,6 +113,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    height: '50%'
-  }
+    height: '65%'
+  },
+
+  bottomSuit: {
+    display: 'flex',
+    width: '100%',
+    height: '30%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

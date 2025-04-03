@@ -1,6 +1,7 @@
 import type { Player } from '@/types'
+import type { GameStartRes, PlayerActionRes, PlayerTakeActionRes } from '@/types/game';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, ViewStyle } from 'react-native';
 import { Image, ImageBackground } from 'expo-image';
 import Animated, {
@@ -11,8 +12,11 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
+
 // @ts-ignore strange code error
 import { roleMap } from 'texas-poker-core/dist/Player/constant';
+
+import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
 
 import { ThemeConfig } from '@/constants/ThemeConfig';
 import { HandPokerCard } from './HandPokerCard';
@@ -24,9 +28,42 @@ export function PlayerCard({
   avatar = ThemeConfig.defaultAvatar,
   backgroudUrl = ThemeConfig.playerBackImg,
   pokes = ['', ''],
-  isActive = false,
-  me = false
-}: Player & { isActive?: boolean; }) {
+  me = false,
+  id
+}: Player) {
+  const [isActive, setIsActive] = useState(false);
+  const [myAction, setMyAction] = useState('');
+
+  useWebSocketReceiver({
+    handlers: {
+      [GameWSEvents.GameStart]: (gameStartRes: GameStartRes) => {
+        const { defaultBets } = gameStartRes;
+
+        const defaultBet = defaultBets.find((item) => item.userId === id);
+
+        if (defaultBet) {
+          setMyAction(`bet ${defaultBet.amount}`);
+        }
+      },
+
+      [GameWSEvents.PlayerAction]: (playerActionRes: PlayerActionRes) => {
+        const { userId } = playerActionRes;
+
+        if (userId === id) {
+          setIsActive(true);
+        }
+      },
+
+      [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
+        const { userId, actionType, amount } = playerTakeActionRes;
+
+        if (userId === id) {
+          setMyAction(`${actionType} ${amount}`);
+        }
+      }
+    }
+  });
+
   const progress = useSharedValue(0); // 控制动画进度
 
   // 定义动画样式
@@ -47,7 +84,7 @@ export function PlayerCard({
           easing: Easing.linear,
         }),
         -1, // 无限循环
-        true // 往返动画
+        // true // 往返动画
       );
     } else {
       progress.value = withTiming(0); // 停止动画
@@ -57,14 +94,19 @@ export function PlayerCard({
   return (
     <ImageBackground style={styles.container} contentFit='cover' source={backgroudUrl}>
       <View style={[styles.avatarContainer]}>
-        {/* 自己标识 */}
         {
           me && (
             <View style={styles.meTitle} />
           )
         }
 
-        <Image source={avatar} style={[styles.avator, me ? styles.me : '']} />
+        {
+          role && (
+            <Text style={styles.role}>{roleMap.get(role) || ''}</Text>
+          )
+        }
+
+        <Image source={avatar} contentFit='cover' style={[styles.avator, me ? styles.me : '']} />
 
         {/* 边框动画 */}
         {
@@ -87,19 +129,17 @@ export function PlayerCard({
       </View>
 
       <View style={styles.content}>
-        <View style={styles.handPokerContainer}>
-          {
-            pokes.map((item, index) => {
-              return <HandPokerCard key={index} value={item} me={me} />
-            })
-          }
-        </View>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.myAction}>{myAction}</Text>
+        <Text style={styles.price}>$ {balance}</Text>
+      </View>
 
-        <View style={styles.info}>
-          <Text style={styles.price}>$ {balance}</Text>
-          <Text style={styles.name}>{role ? roleMap.get(role) : ''}</Text>
-          <Text style={styles.name}>{name}</Text>
-        </View>
+      <View style={styles.handPokerContainer}>
+        {
+          pokes.map((item, index) => {
+            return <HandPokerCard key={index} value={item} me={me} />
+          })
+        }
       </View>
     </ImageBackground>
   );
@@ -108,28 +148,31 @@ export function PlayerCard({
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    flexDirection: 'row-reverse',
+    flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    maxHeight: '19%',
-    paddingRight: 6,
-    backgroundColor: '#fff'
+    maxHeight: '18%',
+    paddingLeft: 4,
+    paddingRight: 2,
+    borderWidth: 0.3,
+    borderColor: '#fff',
+    overflow: 'hidden',
+    backgroundColor: 'transparent'
   },
 
   avatarContainer: {
     position: 'relative',
-    width: 60,
-    height: 60,
+    width: '25%',
+    height: '90%',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   avator: {
-    width: 55,
-    height: 55,
+    width: '100%',
+    height: '100%',
     borderWidth: 2,
-    borderColor: '#fff',
     borderRadius: '50%',
   },
 
@@ -151,40 +194,39 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
     borderRadius: '50%',
     top: 0,
-    right: 0
+    left: 0
+  },
+
+  role: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    color: 'red',
+    fontSize: 12,
+    fontWeight: 700,
+    zIndex: 100
   },
 
   content: {
-    marginRight: 12,
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
     height: '100%',
     flex: 1,
-    alignItems: 'center',
-    paddingBottom: 6
-  },
-
-  handPokerContainer: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
-    height: '80%',
-    width: '100%',
-    gap: 6,
-    paddingBottom: 4
-  },
-
-  info: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
-    // alignItems: 'center',
-    justifyContent: 'space-between',
-    flex: 1,
-    width: '100%',
-    paddingLeft: 12
+    paddingTop: 2,
+    paddingLeft: 4,
+    paddingBottom: 2
   },
 
   name: {
     color: ThemeConfig.playerNameColor,
+    fontWeight: 700,
+    fontFamily: 'SpaceMono'
+  },
+
+  myAction: {
+    color: ThemeConfig.playerActionColor,
     fontWeight: 700,
   },
 
@@ -192,5 +234,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 700,
     fontSize: 14
-  }
+  },
+
+  handPokerContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    height: '90%',
+    flex: 1,
+    gap: 4
+  },
 });

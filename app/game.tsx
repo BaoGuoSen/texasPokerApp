@@ -49,9 +49,7 @@ export default function Game() {
 
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);
-  const [publicCards, setPublicCards] = useState<(Poke | string)[]>(['', '', '', '', '']);
   const [status, setStatus] = useState<GameStatus>('unReady');
-  const [totalPool, setTotalPool] = useState<number>(0);
   const [matchId, setMatchId] = useState<number | undefined>();
   const [curButtonUserId, setCurButtonUserId] = useState<number | undefined>();
 
@@ -90,8 +88,7 @@ export default function Game() {
       },
 
       [GameWSEvents.GameStart]: (gameStartRes: GameStartRes) => {
-        // TODO 默认下注 UI
-        const { handPokes, pool, defaultBets, matchId } = gameStartRes;
+        const { handPokes, matchId } = gameStartRes;
 
         const playerWithPokes = playersOnSeat.map((player) => {
           if (player.me) {
@@ -103,13 +100,7 @@ export default function Game() {
 
         setStatus('running');
         setPlayersOnSeat(playerWithPokes);
-        setTotalPool(pool);
         setMatchId(matchId);
-      },
-
-      [GameWSEvents.PlayerAction]: (playerActionRes: PlayerActionRes) => {
-        const { userId, allowedActions, restrict } = playerActionRes;
-        console.log('玩家行动:', playerActionRes);
       },
 
       [GameWSEvents.PlayerOnSeat]: (playerOnSeatRes: PlayerOnSeatRes) => {
@@ -124,7 +115,6 @@ export default function Game() {
 
   const resetGame = () => {
     setStatus('waiting')
-    setPublicCards(['', '', '', '', ''])
   }
 
   const end = async () => {
@@ -166,10 +156,7 @@ export default function Game() {
 
       <LeftSide players={leftPlayers} playersHang={playersOnWatch} />
 
-      <MiddleCommon
-        publicCards={publicCards}
-        totalPool={totalPool}
-      />
+      <MiddleCommon />
 
         <RightSidePlayers players={rightPlayers} />
       </ImageBackground>

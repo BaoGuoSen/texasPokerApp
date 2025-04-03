@@ -52,9 +52,9 @@ export const ThemeConfig: ThemeConfig = {
   roomEmptyLottie: require('@/assets/images/home_back_lottie.json'),
   gameBackImg: require('@/assets/images/Cosmic-eidex-eidex_black.svg'),
   gameBackColor: '#222',
-  playerBackImg: require('@/assets/images/background_3.png'),
+  playerBackImg: require('@/assets/images/Cosmic-eidex-eidex_black.svg'),
   pokerBackImg: require('@/assets/images/Cosmic-eidex-eidex_black.svg'),
   pokerBackColor: '#fff',
-  playerNameColor: 'red',
+  playerNameColor: '#fff',
   playerActionColor: 'red'
 };

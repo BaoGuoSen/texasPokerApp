@@ -100,7 +100,7 @@ export interface StageChangeRes {
 	// 最新游戏进程
 	stage: Stage;
 	// 公共牌
-	commonPokes: [
+	restCommonPokes: [
 		Poke
 	]
 }

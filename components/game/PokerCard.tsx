@@ -15,7 +15,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import PokerSuits from './PokerSuits';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export type PokerCardProps = {
   value: Poke | string;
@@ -58,9 +58,17 @@ export function PokerCard({
     };
   });
 
+  useEffect(() => {
+    if (val) {
+      handleFlip('open');
+    } else {
+      handleFlip('close');
+    }
+  }, [val]);
+
   // 处理点击事件
-  const handleFlip = () => {
-    if (isFlipped.current) {
+  const handleFlip = (type: 'open' | 'close') => {
+    if (type === 'close') {
       rotate.value = withTiming(0, {
         duration: 500,
         easing: Easing.inOut(Easing.linear),
@@ -77,7 +85,7 @@ export function PokerCard({
 
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handleFlip}>
+    <TouchableOpacity style={styles.container}>
       {/* 正面 */}
       <Animated.View style={[styles.card, styles.frontCard, frontAnimatedStyle]}>
         <Svg style={styles.topValue}>

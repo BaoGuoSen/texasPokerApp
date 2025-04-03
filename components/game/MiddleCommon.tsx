@@ -1,6 +1,6 @@
-import type { GameStatus } from '@/types/game';
+import type { GameStartRes, PlayerTakeActionRes, StageChangeRes } from '@/types/game';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ImageBackground } from 'expo-image';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
@@ -9,24 +9,48 @@ import { Poke } from 'texas-poker-core/types/Deck/constant';
 import { ThemeConfig } from "@/constants/ThemeConfig";
 import { useUser } from '@/contexts/UserContext';
 import { useRoomInfo } from '@/contexts/RoomContext';
+import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
 
 import { PokerCard } from './PokerCard';
 import Actions from './Actions';
+
 import { readyGame, startGame } from '@/service';
 
-interface IProps {
-  publicCards: (Poke | string)[];
-  totalPool: number;
-}
+// interface IProps {
+//   publicCards: (Poke | string)[];
+//   totalPool: number;
+// }
 
-const MiddleCommon = (props: IProps) => {
-  const {
-    publicCards,
-    totalPool
-  } = props;
+const MiddleCommon = () => {
+  const [publicCards, setPublicCards] = useState<(Poke | string)[]>(['', '', '', '', '']);
+  const [totalPool, setTotalPool] = useState<number>(0);
 
   const { user } = useUser();
   const { gameStatus, curButtonUserId, ownerId, roomId } = useRoomInfo();
+
+  useWebSocketReceiver({
+    handlers: {
+      [GameWSEvents.GameStart]: ({ pool }: GameStartRes) => {
+        setTotalPool(pool);
+      },
+
+      [GameWSEvents.PlayerTakeAction]: ({ pool }: PlayerTakeActionRes) => {
+        setTotalPool(pool);
+      },
+
+      [GameWSEvents.StageChange]: ({ restCommonPokes }: StageChangeRes) => {
+        const newPublicCards = publicCards.map((value, index) => {
+          if (value) {
+            return value;
+          }
+
+          return restCommonPokes?.[index] || '';
+        });
+
+        setPublicCards(newPublicCards);
+      }
+    }
+  });
 
   const handleReady = async () => {
     await readyGame({ id: roomId })
