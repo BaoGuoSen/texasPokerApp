@@ -1,6 +1,6 @@
 import type { Room } from "@/types";
 
-import { StyleSheet, View, Text, FlatList, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TouchableHighlight, RefreshControl } from 'react-native';
 import { useEffect, useState } from 'react';
 import { ImageBackground } from 'expo-image';
 import LottieView from 'lottie-react-native';
@@ -21,6 +21,8 @@ export default function HomeScreen() {
   const [rooms, setRooms] = useState<Room[]>();
   const { user } = useUser();
   const router = useRouter();
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const createRoom = async () => {
     const { roomId } = await createGame({
@@ -84,6 +86,20 @@ export default function HomeScreen() {
             data={rooms}
             renderItem={({ item, index }) => <RoomCard key={index} refresh={fetchData} room={item} />}
             keyExtractor={item => item?.id}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={async () => {
+                  setRefreshing(true);
+                  await fetchData();
+                  setRefreshing(false);
+                }}
+                colors={['#fff', '#fff', '#fff']} // Android 刷新图标颜色
+                tintColor="#fff" // iOS 刷新指示器颜色
+                // title="下拉刷新..." // iOS 刷新提示文字
+                titleColor="#fff" // iOS 刷新提示文字颜色
+              />
+            }
           />
         )
       }
