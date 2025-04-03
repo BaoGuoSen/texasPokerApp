@@ -71,7 +71,7 @@ const startGame = async (params: Pick<Room, 'id'>) => {
  * 执行动作
  */
 const doAction = async (params: {
-  amount: number;
+  amount?: number;
   matchId: number;
   roomId: string;
   actionType: ActionType;

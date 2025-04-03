@@ -7,7 +7,6 @@ import Slider from '@react-native-community/slider';
 import { throttle } from 'lodash';
 
 import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
-import { useUser } from '@/contexts/UserContext';
 import { useRoomInfo } from '@/contexts/RoomContext';
 
 import { doAction } from '@/service';
@@ -20,7 +19,6 @@ interface ActionsState {
 }
 
 const Actions = () => {
-  const { user } = useUser();
   const { matchId, roomId } = useRoomInfo();
 
   const [actionState, setActionState] = useState<ActionsState>({
@@ -103,7 +101,7 @@ const Actions = () => {
     []
   );
 
-  const onMainBtn = useCallback(() => {
+  const onMainBtn = () => {
     if (!matchId) {
       Alert.alert('对局Id 错误');
 
@@ -118,15 +116,23 @@ const Actions = () => {
     })
 
     afterAction()
-  }, []);
+  };
 
-  const onFold = useCallback(() => {
-    afterAction()
-  }, []);
+  const onSubBtn = (actionType: 'fold' | 'check') => {
+    if (!matchId) {
+      Alert.alert('对局Id 错误');
 
-  const onCheck = useCallback(() => {
+      return;
+    };
+
+    doAction({
+      actionType,
+      matchId,
+      roomId
+    })
+
     afterAction()
-  }, []);
+  }
 
   return (
     <>
@@ -152,7 +158,7 @@ const Actions = () => {
             </View>
 
             <View style={styles.mainBtns}>
-              <TouchableOpacity activeOpacity={0.7} onPress={onFold} style={[styles.btn, styles.fold]}>
+              <TouchableOpacity activeOpacity={0.7} onPress={() => onSubBtn('fold')} style={[styles.btn, styles.fold]}>
                 <Text style={[styles.btnText]}>弃牌</Text>
               </TouchableOpacity>
 
@@ -162,7 +168,7 @@ const Actions = () => {
 
               {
                 actionState.actions?.includes('check') && (
-                  <TouchableOpacity activeOpacity={0.7} onPress={onCheck} style={[styles.btn, styles.check]}>
+                  <TouchableOpacity activeOpacity={0.7} onPress={() => onSubBtn('check')} style={[styles.btn, styles.check]}>
                     <Text style={[styles.btnText]}>过牌</Text>
                   </TouchableOpacity>
                 )
