@@ -6,7 +6,8 @@ import type {
   GameStartRes,
   PlayerOnSeatRes,
   PlayerOnWatchRes,
-  PlayerActionRes
+  PlayerActionRes,
+  PlayerTakeActionRes
 } from '@/types/game';
 
 import { useEffect, useState } from 'react';
@@ -101,6 +102,20 @@ export default function Game() {
         setStatus('running');
         setPlayersOnSeat(playerWithPokes);
         setMatchId(matchId);
+      },
+
+      [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
+        const { userId, balance } = playerTakeActionRes;
+
+        const newPlayersOnSeat = playersOnSeat.map((player) => {
+          if (player.id === userId) {
+            return { ...player, balance };
+          }
+
+          return player;
+        })
+
+        setPlayersOnSeat(newPlayersOnSeat);
       },
 
       [GameWSEvents.PlayerOnSeat]: (playerOnSeatRes: PlayerOnSeatRes) => {
