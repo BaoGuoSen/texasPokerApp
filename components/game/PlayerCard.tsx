@@ -20,6 +20,7 @@ import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver
 
 import { ThemeConfig } from '@/constants/ThemeConfig';
 import { HandPokerCard } from './HandPokerCard';
+import ReanimatedNumber from './ReanimatedNumber';
 
 export function PlayerCard({
   balance = 0,
@@ -129,7 +130,7 @@ export function PlayerCard({
       <View style={styles.content}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.myAction}>{myAction}</Text>
-        <Text style={styles.price}>$ {balance}</Text>
+        <ReanimatedNumber value={balance} textStyle={styles.price} expandScale={1.1} />
       </View>
 
       <View style={styles.handPokerContainer}>

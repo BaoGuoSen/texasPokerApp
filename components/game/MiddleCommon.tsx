@@ -15,11 +15,7 @@ import { PokerCard } from './PokerCard';
 import Actions from './Actions';
 
 import { readyGame, startGame } from '@/service';
-
-// interface IProps {
-//   publicCards: (Poke | string)[];
-//   totalPool: number;
-// }
+import ReanimatedNumber from './ReanimatedNumber';
 
 const MiddleCommon = () => {
   const [publicCards, setPublicCards] = useState<(Poke | string)[]>(['', '', '', '', '']);
@@ -128,7 +124,7 @@ const MiddleCommon = () => {
       {
         gameStatus === 'running' && (
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>${totalPool}</Text>
+            <ReanimatedNumber value={totalPool} textStyle={styles.price} />
           </View>
         )
       }
