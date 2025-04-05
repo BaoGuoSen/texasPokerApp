@@ -7,7 +7,8 @@ import type {
   PlayerOnSeatRes,
   PlayerOnWatchRes,
   PlayerActionRes,
-  PlayerTakeActionRes
+  PlayerTakeActionRes,
+  GameEndRes
 } from '@/types/game';
 
 import { useEffect, useState } from 'react';
@@ -50,7 +51,7 @@ export default function Game() {
 
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);
-  const [status, setStatus] = useState<GameStatus>('unReady');
+  const [status, setStatus] = useState<GameStatus>('running');
   const [matchId, setMatchId] = useState<number | undefined>();
   const [curButtonUserId, setCurButtonUserId] = useState<number | undefined>();
 
@@ -83,8 +84,6 @@ export default function Game() {
           setStatus('waiting');
           setPlayersOnSeat(playersWithRole);
           setCurButtonUserId(curButtonUserId);
-        } else {
-          // TODO 游戏结束后，等游戏动画结束后在进行变更
         }
       },
 
@@ -124,20 +123,33 @@ export default function Game() {
 
       [GameWSEvents.PlayerOnWatch]: (playerOnWatchRes: PlayerOnWatchRes) => {
         // TODO 暂时没有观战入口
+      },
+
+      [GameWSEvents.GameEnd]: (gameEndRes: GameEndRes) => {
+        const { settleList } = gameEndRes;
+
+        const newPlayersOnSeat = playersOnSeat.map((player) => {
+          const settle = settleList.find((item) => item.userId === player.id);
+
+          return { ...player, balance: settle?.balance ?? 0 };
+        })
+
+        setPlayersOnSeat(newPlayersOnSeat);
+        resetGame();
       }
     }
   });
 
   const resetGame = () => {
-    setStatus('waiting')
+    setStatus('waiting');
   }
 
-  const end = async () => {
-    resetGame();
-    await endGame({ id: roomId })
+  // const end = async () => {
+  //   resetGame();
+  //   await endGame({ id: roomId })
 
-    Alert.alert('当前游戏结束')
-  }
+  //   Alert.alert('当前游戏结束')
+  // }
 
   useEffect(() => {
     if (playersOnSeat.length !== 0) {
@@ -165,9 +177,9 @@ export default function Game() {
         <Icon name="close" size={24} color="#333" />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={end} style={styles.endGame}>
+      {/* <TouchableOpacity onPress={end} style={styles.endGame}>
         <Icon name="lock-closed" size={24} color="#333" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <LeftSide players={leftPlayers} playersHang={playersOnWatch} />
 

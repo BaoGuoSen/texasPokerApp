@@ -48,6 +48,15 @@ const Actions = () => {
           maxBet: restrict?.max ?? 0,
           isAction: true,
         });
+      },
+
+      [GameWSEvents.GameEnd]: () => {
+        setActionState({
+          actions: ['call'],
+          minBet: 0,
+          maxBet: 0,
+          isAction: false
+        });
       }
     }
   });

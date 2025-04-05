@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { eventManager } from '@/utils/EventManager';
 
+export const gameEventManager = eventManager;
+
 // 基础 WS 事件
 export enum WSEvents {
   Connect = 'connect',
@@ -45,12 +47,13 @@ export enum GameWSEvents {
   PlayerOnSeat = 'player-on-seat',
   /** 玩家观战 */
   PlayerOnWatch = 'player-on-watch',
+  /** 客户端游戏结束, 用于游戏结束后的重置, 由动画结束后发布该事件 */
+  ClientGameEnd = 'client-game-end'
 }
 
 type EventHandlerMap = {
   [key in WSEvents | GameWSEvents]?: (data: any) => void;
 };
-
 
 type Config = {
   url?: string;

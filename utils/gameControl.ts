@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 
-import { quitRoom, startGame, endGame, readyGame } from '@/service';
+import { quitRoom } from '@/service';
 
 /**
  * 玩家退出房间

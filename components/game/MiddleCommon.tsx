@@ -1,4 +1,4 @@
-import type { GameStartRes, PlayerTakeActionRes, StageChangeRes } from '@/types/game';
+import type { GameEndRes, GameStartRes, PlayerTakeActionRes, StageChangeRes } from '@/types/game';
 
 import React, { useState } from 'react';
 import { ImageBackground } from 'expo-image';
@@ -24,6 +24,7 @@ import { readyGame, startGame } from '@/service';
 const MiddleCommon = () => {
   const [publicCards, setPublicCards] = useState<(Poke | string)[]>(['', '', '', '', '']);
   const [totalPool, setTotalPool] = useState<number>(0);
+  const [intervalTimer, setIntervalTimer] = useState<NodeJS.Timeout | null>(null);
 
   const { user } = useUser();
   const { gameStatus, curButtonUserId, ownerId, roomId } = useRoomInfo();
@@ -32,6 +33,8 @@ const MiddleCommon = () => {
     handlers: {
       [GameWSEvents.GameStart]: ({ pool }: GameStartRes) => {
         setTotalPool(pool);
+
+        intervalTimer && clearInterval(intervalTimer);
       },
 
       [GameWSEvents.PlayerTakeAction]: ({ pool }: PlayerTakeActionRes) => {
@@ -39,15 +42,39 @@ const MiddleCommon = () => {
       },
 
       [GameWSEvents.StageChange]: ({ restCommonPokes }: StageChangeRes) => {
-        const newPublicCards = publicCards.map((value, index) => {
+        let index = -1;
+
+        const newPublicCards = publicCards.map((value) => {
           if (value) {
             return value;
           }
 
+          index++;
           return restCommonPokes?.[index] || '';
         });
 
         setPublicCards(newPublicCards);
+      },
+
+      [GameWSEvents.GameEnd]: (gameEndRes: GameEndRes) => {
+        const { restCommonPokes } = gameEndRes;
+        let index = -1;
+
+        if (restCommonPokes?.length === 0) {
+          return;
+        }
+
+        const intervalTimer = setInterval(() => {
+          index++;
+
+          const firstEmptyIndex = publicCards.findIndex((value) => !value);
+          const newPublicCards = publicCards;
+          newPublicCards[firstEmptyIndex] = restCommonPokes?.[index] || '';
+
+          setPublicCards(newPublicCards);
+        }, 1500);
+
+        setIntervalTimer(intervalTimer);
       }
     }
   });
