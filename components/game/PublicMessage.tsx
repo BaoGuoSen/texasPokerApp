@@ -10,7 +10,7 @@ import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver
  */
 const PublicMessage = () => {
 	const [text, setText] = useState<string>();
-	const translateY = useRef(new Animated.Value(-30)).current; // 透明度动画值
+	const translateY = useRef(new Animated.Value(-30)).current;
 
 	useWebSocketReceiver({
 		handlers: {

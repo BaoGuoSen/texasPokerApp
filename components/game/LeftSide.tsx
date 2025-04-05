@@ -1,12 +1,30 @@
 import type { Player } from '@/types';
 
-import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet, Text, Easing, Animated } from 'react-native';
 import { Image } from 'expo-image';
 
 import { PlayerCard } from './PlayerCard';
 
 const LeftSide = ({ players, playersHang = [] }: { players: Player[]; playersHang: Player[] }) => {
+  const translateX = useRef(new Animated.Value(-300)).current;
+
+  useEffect(() => {
+		if (players) {
+			fadeIn();
+		}
+	}, [players]);
+
+  // 淡入动画
+	const fadeIn = () => {
+		Animated.timing(translateX, {
+			toValue: 0,
+			duration: 700,
+			easing: Easing.linear,
+			useNativeDriver: true,
+		}).start();
+	};
+
   return (
     <View style={styles.left}>
       {
@@ -21,7 +39,7 @@ const LeftSide = ({ players, playersHang = [] }: { players: Player[]; playersHan
           </View>
         )
       }
-      <View style={styles.players}>
+      <Animated.View style={[styles.players, { transform: [{ translateX }] }]}>
         {
           players.map((player) => {
             return <PlayerCard
@@ -31,7 +49,7 @@ const LeftSide = ({ players, playersHang = [] }: { players: Player[]; playersHan
             />
           })
         }
-      </View>
+      </Animated.View>
     </View>
   );
 };

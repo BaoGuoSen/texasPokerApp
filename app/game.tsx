@@ -6,7 +6,6 @@ import type {
   GameStartRes,
   PlayerOnSeatRes,
   PlayerOnWatchRes,
-  PlayerActionRes,
   PlayerTakeActionRes,
   GameEndRes
 } from '@/types/game';
@@ -205,7 +204,7 @@ const styles = StyleSheet.create({
   closeBtn: {
     position: 'absolute',
     top: 6,
-    right: 12,
+    right: 24,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -213,6 +212,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: 30,
     height: 30,
+    zIndex: 100,
   },
 
   endGame: {

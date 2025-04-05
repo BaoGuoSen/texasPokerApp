@@ -34,6 +34,35 @@ export function PlayerCard({
 }: Player) {
   const [isActive, setIsActive] = useState(false);
   const [myAction, setMyAction] = useState('');
+  const [isFold, setIsFold] = useState(false);
+  const translateY = useSharedValue(0);
+
+  // 定义动画样式
+  const fadeOutStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateY: translateY.value }
+      ],
+    };
+  });
+
+  useEffect(() => {
+    if (isFold) {
+      translateY.value = withTiming(
+        -1000,
+        {
+          duration: 800,
+          easing: Easing.out(Easing.ease),
+        }
+      );
+    } else {
+      // 还原
+      translateY.value = withTiming(0, {
+        duration: 600,
+        easing: Easing.ease,
+      });
+    }
+  }, [isFold]);
 
   useWebSocketReceiver({
     handlers: {
@@ -55,6 +84,10 @@ export function PlayerCard({
 
       [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
         const { userId, actionType, amount } = playerTakeActionRes;
+
+        if (actionType === 'fold' && userId === id) {
+          setIsFold(true);
+        }
 
         if (userId === id) {
           setMyAction(`${actionType} ${amount}`);
@@ -91,9 +124,10 @@ export function PlayerCard({
   }, [isActive]);
 
   return (
-    <ImageBackground style={styles.container} contentFit='cover' source={backgroudUrl}>
-      <View style={[styles.avatarContainer]}>
-        {
+    <Animated.View style={[styles.animated, fadeOutStyle]}>
+      <ImageBackground style={styles.container} contentFit='cover' source={backgroudUrl}>
+        <View style={[styles.avatarContainer]}>
+          {
           me && (
             <View style={styles.meTitle} />
           )
@@ -141,17 +175,23 @@ export function PlayerCard({
         }
       </View>
     </ImageBackground>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
+  animated: {
+    width: '100%',
+    height: '100%',
+    maxHeight: '18%',
+  },
+
   container: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    maxHeight: '18%',
     paddingLeft: 4,
     paddingRight: 2,
     borderWidth: 0.3,
