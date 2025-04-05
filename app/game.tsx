@@ -29,7 +29,7 @@ import LeftSide from '@/components/game/LeftSide';
 import RightSidePlayers from '@/components/game/RightSidePlayers';
 import MiddleCommon from '@/components/game/MiddleCommon';
 
-import { endGame, joinRoom } from '@/service';
+import { joinRoom } from '@/service';
 import { useUser } from '@/contexts/UserContext';
 import { RoomProvider } from '@/contexts/RoomContext';
 
@@ -51,7 +51,7 @@ export default function Game() {
 
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);
-  const [status, setStatus] = useState<GameStatus>('running');
+  const [status, setStatus] = useState<GameStatus>('unReady');
   const [matchId, setMatchId] = useState<number | undefined>();
   const [curButtonUserId, setCurButtonUserId] = useState<number | undefined>();
 

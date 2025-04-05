@@ -5,7 +5,6 @@ import type { Stage } from 'texas-poker-core/types/Controller';
 interface Player extends User {
   // avatar: string;
   // name: string;
-  userId: number;
   backgroudUrl?: string;
   pokes?: (Poke | string)[];
   role?: Role;

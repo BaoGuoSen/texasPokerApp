@@ -11,11 +11,12 @@ import { useUser } from '@/contexts/UserContext';
 import { useRoomInfo } from '@/contexts/RoomContext';
 import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
 
-import { PokerCard } from './PokerCard';
 import Actions from './Actions';
+import { PokerCard } from './PokerCard';
+import PublicMessage from './PublicMessage';
+import ReanimatedNumber from './ReanimatedNumber';
 
 import { readyGame, startGame } from '@/service';
-import ReanimatedNumber from './ReanimatedNumber';
 
 const MiddleCommon = () => {
   const [publicCards, setPublicCards] = useState<(Poke | string)[]>(['', '', '', '', '']);
@@ -94,6 +95,12 @@ const MiddleCommon = () => {
       </View>
 
       {
+        gameStatus === 'running' && (
+          <PublicMessage />
+        )
+      }
+
+      {
         user?.id === Number(ownerId) && gameStatus === 'unReady' && (
           <ImageBackground
             style={styles.priceContainer}
@@ -141,6 +148,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '50%',
     height: '100%',
+    overflow: 'hidden',
   },
 
   publicCards: {
