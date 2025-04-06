@@ -51,7 +51,7 @@ export function PlayerCard({
       translateY.value = withTiming(
         -1000,
         {
-          duration: 800,
+          duration: 500,
           easing: Easing.out(Easing.ease),
         }
       );
@@ -59,7 +59,7 @@ export function PlayerCard({
       // 还原
       translateY.value = withTiming(0, {
         duration: 600,
-        easing: Easing.ease,
+        easing: Easing.out(Easing.ease),
       });
     }
   }, [isFold]);

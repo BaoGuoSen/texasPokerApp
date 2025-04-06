@@ -5,11 +5,11 @@ import { StyleSheet, Animated, Easing } from 'react-native';
 
 import { PlayerCard } from './PlayerCard';
 
-const RightSidePlayers = ({ players }: { players: Player[] }) => {
+const RightSidePlayers = ({ players = [] }: { players: Player[] }) => {
   const translateX = useRef(new Animated.Value(300)).current;
 
   useEffect(() => {
-		if (players) {
+		if (players.length > 0) {
 			fadeIn();
 		}
 	}, [players]);

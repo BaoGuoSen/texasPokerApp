@@ -11,7 +11,7 @@ import type {
 } from '@/types/game';
 
 import { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { ImageBackground } from 'expo-image';
 import { useGlobalSearchParams, useNavigation } from 'expo-router';
 // @ts-ignore

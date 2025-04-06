@@ -12,6 +12,7 @@ import { useRoomInfo } from '@/contexts/RoomContext';
 import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
 
 import Actions from './Actions';
+import GameSettle from './GameSettle';
 import { PokerCard } from './PokerCard';
 import PublicMessage from './PublicMessage';
 import ReanimatedNumber from './ReanimatedNumber';
@@ -99,6 +100,8 @@ const MiddleCommon = () => {
           <PublicMessage />
         )
       }
+
+      <GameSettle />
 
       {
         user?.id === Number(ownerId) && gameStatus === 'unReady' && (
