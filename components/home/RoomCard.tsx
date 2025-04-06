@@ -1,7 +1,7 @@
 import type { Room } from "@/types";
 
-import { StyleSheet, TouchableHighlight, Text } from 'react-native';
-import { ImageBackground } from 'expo-image';
+import { StyleSheet, TouchableHighlight, Text, View } from 'react-native';
+import { ImageBackground, Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 
 import { deleteRoom } from '@/service';
@@ -12,7 +12,7 @@ export type IProps = {
 };
 
 export function RoomCard({
-  room, 
+  room,
   refresh
 }: IProps) {
   const router = useRouter();
@@ -31,11 +31,20 @@ export function RoomCard({
   return (
     <TouchableHighlight onPress={handlePress} underlayColor="#999" style={styles.container}>
       <ImageBackground contentFit='cover' style={styles.content}>
-        <Text style={styles.buttonText}>房号：{room?.id.slice(0, 4)} </Text>
-        <Text style={styles.buttonText}>房主：{room.owner.name} </Text>
-        <Text style={styles.buttonText}>玩家人数：{room.onSeatCount} </Text>
-        <Text style={styles.buttonText}>观战人数：{room.hangCount} </Text>
-        <Text style={styles.buttonText}>总人数：{room.totalCount}/{room.maximumCountOfPlayers}</Text>
+        <View style={styles.ownerContainer}>
+          <View style={styles.ownerIcon}>
+            <Text style={styles.ownerIconText}>owner</Text>
+          </View>
+          <Image source={room.owner.avatar} style={styles.ownerAvatar} />
+          <Text style={styles.ownerName}>{room.owner.name} </Text>
+        </View>
+        
+        <View style={styles.roomInfoContainer}>
+          <Text style={styles.roomInfoText}>房号：{room?.id.slice(0, -1)}</Text>
+          <Text style={styles.roomInfoText}>玩家：{room.totalCount}/{room.maximumCountOfPlayers}</Text>
+          <Text style={styles.roomInfoText}>小盲注：{room.lowestBetAmount}</Text>
+          <Text style={styles.roomInfoText}>房间状态：{room.status}</Text>
+        </View>
 
         {
           user?.id === room.owner.id && (
@@ -51,6 +60,7 @@ export function RoomCard({
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
     width: '100%',
     height: 100,
     display: 'flex',
@@ -70,16 +80,66 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: 36,
+  },
+
+  ownerContainer: {
+    position: 'relative',
+    marginLeft: 36,
+    height: '80%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     justifyContent: 'center',
   },
 
-  buttonText: {
-    color: '#fff'
+  ownerAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: '50%',
+  },
+
+  ownerIcon: {
+    position: 'absolute',
+    left: -10,
+    top: 5,
+    zIndex: 1,
+    transform: [{ rotate: '-45deg' }],
+  },
+
+  ownerIconText: {
+    color: 'pink',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+
+  ownerName: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+
+  roomInfoContainer: {
+    height: '80%',
+    display: 'flex',
+    gap: 2,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+
+  roomInfoText: {
+    color: '#ccc',
+    fontSize: 13,
+    fontWeight: 'bold',
   },
 
   delete: {
-    width: 80,
-    height: '40%',
+    position: 'absolute',
+    right: 6,
+    bottom: 6,
+    width: 50,
+    height: '30%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

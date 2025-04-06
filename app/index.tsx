@@ -28,7 +28,7 @@ export default function HomeScreen() {
     const { roomId } = await createGame({
       lowestBetAmount: 100,
       maximumCountOfPlayers: 10,
-      allowPlayersToWatch: true
+      allowPlayersToWatch: false
     })
     
     // 创建房间后，跳转到房间页面

@@ -1,7 +1,7 @@
 import type { Role, User } from 'texas-poker-core/types/Player';
 import type { Poke } from 'texas-poker-core/types/Deck/constant';
 import type { Stage } from 'texas-poker-core/types/Controller';
-
+import type { GameStatus } from './game';
 interface Player extends User {
   // avatar: string;
   // name: string;
@@ -15,8 +15,7 @@ interface Room {
   id: string;
   // 房主信息
   owner:  User;
-  // waiting 未开始; on 进行中
-  status: "waiting" | "on";
+  status: GameStatus;
   // 房间是否公开
   private: boolean;
   // 玩家总人数
