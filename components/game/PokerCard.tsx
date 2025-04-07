@@ -2,7 +2,7 @@ import type { Poke, Suit, Rank } from 'texas-poker-core/types/Deck/constant';
 
 import { View, StyleSheet, ViewStyle, TouchableOpacity } from 'react-native';
 import { Image, ImageBackground } from 'expo-image';
-
+import React from 'react';
 import Svg, { Text, G } from 'react-native-svg';
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
@@ -15,11 +15,15 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import PokerSuits from './PokerSuits';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { GameWSEvents } from '@/hooks/useWebSocketReceiver';
+import useWebSocketReceiver, { gameEventManager } from '@/hooks/useWebSocketReceiver';
+import { StageChangeRes, GameEndRes } from '@/types/game';
 
 export type PokerCardProps = {
   value: Poke | string;
-  hidden: boolean;
+  /** 公共牌顺序，从左到右 1-5 */
+  myIndex?: number;
 };
 
 // 定义花色颜色
@@ -30,13 +34,76 @@ const suitColors = {
   c: 'black',
 };
 
-export function PokerCard({
+export const PokerCard = ({
   value,
-}: PokerCardProps) {
-  const [type, val] = value.split('') as [Suit, Rank]
-
+  myIndex,
+}: PokerCardProps) => {
   const rotate = useSharedValue(0); // 控制旋转角度
-  const isFlipped = useRef(false); // 记录当前是否翻转
+  const isFlippedRef = useRef(false);
+  const timer = useRef<NodeJS.Timeout | null>(null);
+
+  useWebSocketReceiver({
+    handlers: {
+      [GameWSEvents.StageChange]: ({ stage }: StageChangeRes) => {
+        // 翻前三张牌
+        if (stage === 'flop') {
+          if (myIndex === 1 || myIndex === 2 || myIndex === 3) {
+            handleFlip('open');
+          }
+
+          return;
+        }
+
+        // 翻第4张牌
+        if (stage === 'turn') {
+          if (myIndex === 4) {
+            handleFlip('open');
+          }
+        }
+
+        // 翻第5张牌
+        if (stage === 'river') {
+          if (myIndex === 5) {
+            handleFlip('open');
+          }
+        }
+      },
+
+      [GameWSEvents.GameEnd]: (gameEndRes: GameEndRes) => {
+        const { restCommonPokes } = gameEndRes;
+
+        // 依次翻剩余的牌, 一秒翻一张
+        if (restCommonPokes.length > 0) {
+          // 翻牌的起点
+          let startIndex = 5 - restCommonPokes.length + 1;
+
+          for (let i = 0; i < restCommonPokes.length; i++) {
+            timer.current = setTimeout(() => {
+              myIndex === startIndex && handleFlip('open');
+
+              startIndex++;
+            }, 1000 * i);
+          }
+
+          // 翻完牌后，关闭所有牌
+          timer.current = setTimeout(() => {
+            handleFlip('close');
+            gameEventManager.publish(GameWSEvents.GameSettle, gameEndRes);
+          }, 1000 * restCommonPokes.length);
+        } else {
+          // 如果剩余牌为空，则关闭所有牌
+          handleFlip('close');
+
+          gameEventManager.publish(GameWSEvents.GameSettle, gameEndRes);
+        }
+      },
+
+      [GameWSEvents.ClientGameEnd]: () => {
+        // TODO 触发洗牌动画, 清空计时器
+        timer.current && clearTimeout(timer.current);
+      }
+    }
+  });
 
   // 定义动画样式
   const frontAnimatedStyle = useAnimatedStyle(() => {
@@ -53,34 +120,29 @@ export function PokerCard({
       transform: [
         { perspective: 1000 },
         { rotateY: `${rotate.value}deg` }, // Y 轴旋转
-        
       ],
     };
   });
 
-  useEffect(() => {
-    if (val) {
-      handleFlip('open');
-    } else {
-      handleFlip('close');
-    }
-  }, [val]);
+  const [type, val] = useMemo(() => {
+    return value.split('') as [Suit, Rank];
+  }, [value]);
 
   // 处理点击事件
   const handleFlip = (type: 'open' | 'close') => {
     if (type === 'close') {
-      rotate.value = withTiming(0, {
+      isFlippedRef.current = false;
+      rotate.value = withTiming(360, {
         duration: 500,
         easing: Easing.inOut(Easing.linear),
       });
     } else {
+      isFlippedRef.current = true;
       rotate.value = withTiming(180, {
         duration: 500,
         easing: Easing.inOut(Easing.linear),
       });
     }
-
-    isFlipped.current = !isFlipped.current; // 切换状态
   };
 
 
@@ -116,7 +178,7 @@ export function PokerCard({
       </Animated.View>
     </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

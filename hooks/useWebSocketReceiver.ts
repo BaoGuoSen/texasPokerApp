@@ -47,7 +47,9 @@ export enum GameWSEvents {
   PlayerOnSeat = 'player-on-seat',
   /** 玩家观战 */
   PlayerOnWatch = 'player-on-watch',
-  /** 客户端游戏结束, 用于游戏结束后的重置, 由动画结束后发布该事件 */
+  /** 游戏结算, 由公共牌组件翻完之后发布该事件 */
+  GameSettle = 'game-settle',
+  /** 客户端游戏结束, 用于游戏结束后的重置, 由结算组件发布该事件 */
   ClientGameEnd = 'client-game-end'
 }
 

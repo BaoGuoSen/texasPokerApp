@@ -3,7 +3,7 @@ import type { GameEndRes } from '@/types/game';
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Animated, Easing } from 'react-native';
 
-import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
+import useWebSocketReceiver, { gameEventManager, GameWSEvents } from '@/hooks/useWebSocketReceiver';
 import { GameConfig } from '@/constants/gameConfig';
 
 /**
@@ -12,17 +12,25 @@ import { GameConfig } from '@/constants/gameConfig';
 const GameSettle = () => {
 	const [texts, setTexts] = useState<string[]>([]);
 	const translateX = useRef(new Animated.Value(300)).current;
+	const timer = useRef<NodeJS.Timeout | null>(null);
 
 	useWebSocketReceiver({
 		handlers: {
 			[GameWSEvents.GameStart]: () => {
 				setTexts([]);
+
+				timer.current && clearTimeout(timer.current);
 			},
 
-			[GameWSEvents.GameEnd]: (gameEndRes: GameEndRes) => {
+			[GameWSEvents.GameSettle]: (gameEndRes: GameEndRes) => {
 				const { settleList } = gameEndRes;
 
 				setTexts(settleList.map((item) => `${item.userId} ${item.amount}`));
+
+				timer.current = setTimeout(() => {
+					// 结算动画结束后，发布客户端游戏结束事件
+					gameEventManager.publish(GameWSEvents.ClientGameEnd, {});
+				}, GameConfig.settleDuration);
 			}
 		},
 	});

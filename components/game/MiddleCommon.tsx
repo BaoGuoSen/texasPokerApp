@@ -1,10 +1,8 @@
-import type { GameEndRes, GameStartRes, PlayerTakeActionRes, StageChangeRes } from '@/types/game';
+import type { GameStartRes, PlayerTakeActionRes } from '@/types/game';
 
 import React, { useState } from 'react';
 import { ImageBackground } from 'expo-image';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-
-import { Poke } from 'texas-poker-core/types/Deck/constant';
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
 import { useUser } from '@/contexts/UserContext';
@@ -13,14 +11,13 @@ import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver
 
 import Actions from './Actions';
 import GameSettle from './GameSettle';
-import { PokerCard } from './PokerCard';
+import PublicCards from './PublicCards';
 import PublicMessage from './PublicMessage';
 import ReanimatedNumber from './ReanimatedNumber';
 
 import { readyGame, startGame } from '@/service';
 
 const MiddleCommon = () => {
-  const [publicCards, setPublicCards] = useState<(Poke | string)[]>(['', '', '', '', '']);
   const [totalPool, setTotalPool] = useState<number>(0);
   const [intervalTimer, setIntervalTimer] = useState<NodeJS.Timeout | null>(null);
 
@@ -37,42 +34,6 @@ const MiddleCommon = () => {
 
       [GameWSEvents.PlayerTakeAction]: ({ pool }: PlayerTakeActionRes) => {
         setTotalPool(pool);
-      },
-
-      [GameWSEvents.StageChange]: ({ restCommonPokes }: StageChangeRes) => {
-        let index = -1;
-
-        const newPublicCards = publicCards.map((value) => {
-          if (value) {
-            return value;
-          }
-
-          index++;
-          return restCommonPokes?.[index] || '';
-        });
-
-        setPublicCards(newPublicCards);
-      },
-
-      [GameWSEvents.GameEnd]: (gameEndRes: GameEndRes) => {
-        const { restCommonPokes } = gameEndRes;
-        let index = -1;
-
-        if (restCommonPokes?.length === 0) {
-          return;
-        }
-
-        const intervalTimer = setInterval(() => {
-          index++;
-
-          const firstEmptyIndex = publicCards.findIndex((value) => !value);
-          const newPublicCards = publicCards;
-          newPublicCards[firstEmptyIndex] = restCommonPokes?.[index] || '';
-
-          setPublicCards(newPublicCards);
-        }, 1500);
-
-        setIntervalTimer(intervalTimer);
       }
     }
   });
@@ -87,20 +48,13 @@ const MiddleCommon = () => {
 
   return (
     <View style={styles.middle}>
-      <View style={styles.publicCards}>
-        {
-          publicCards.map((value, index) => {
-            return <PokerCard key={index} hidden={!value} value={value} />
-          })
-        }
-      </View>
+      {/* 公共牌 */}
+      <PublicCards />
 
-      {
-        gameStatus === 'running' && (
-          <PublicMessage />
-        )
-      }
+      {/* 公共消息 */}
+      <PublicMessage />
 
+      {/* 结算 */}
       <GameSettle />
 
       {
@@ -152,16 +106,6 @@ const styles = StyleSheet.create({
     width: '50%',
     height: '100%',
     overflow: 'hidden',
-  },
-
-  publicCards: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    flexWrap: 'wrap',
-    width: '100%',
-    height: '30%',
-    paddingTop: 6,
   },
 
   priceContainer: {
