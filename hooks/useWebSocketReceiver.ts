@@ -13,20 +13,8 @@ export enum WSEvents {
   Close = 'close'
 }
 
-// 游戏 WS 事件 根据 wsType 定义key
 /**
- * ws 消息类型
- * - set-role 设置玩家角色
- * - game-start 游戏开始 开始发牌
- * - pre-action 处于行动阶段的玩家
- * - player-active 向其他端推送当前正在行动的玩家id
- * - player-take-action 行动玩家的操作
- * - stage-change 游戏进程改变
- * - game-end 游戏结束
- * - player-leave 玩家离开
- * - player-offline 玩家离线
- * - player-on-seat 玩家上座
- * - player-on-watch 玩家观战
+ * 游戏 WS 事件
  */
 export enum GameWSEvents {
   /** 设置玩家角色（房主开房 and 游戏结束） */
