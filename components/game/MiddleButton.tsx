@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
 	buttons: {
 		display: 'flex',
 		width: '100%',
-		height: '100%',
+		height: '40%',
 		overflow: 'hidden',
 	},
 
@@ -69,8 +69,9 @@ const styles = StyleSheet.create({
 	},
 
 	begin: {
+		marginTop: 30,
 		width: '40%',
-		height: '45%',
+		height: '60%',
 		borderRadius: 16,
 		backgroundColor: '#007BFF',
 	},
