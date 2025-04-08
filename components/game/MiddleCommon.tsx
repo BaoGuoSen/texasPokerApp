@@ -41,7 +41,11 @@ const MiddleCommon = () => {
       {/* 结算 */}
       <GameSettle />
 
-      <MiddleButton />
+      {
+        (gameStatus === 'unReady' || gameStatus === 'waiting') && (
+          <MiddleButton />
+        )
+      }
 
       {
         gameStatus === 'running' && (
