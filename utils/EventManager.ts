@@ -5,6 +5,9 @@ class EventManager {
 
   subscribe<T>(event: string, callback: Callback<T>) {
     const events = this.subscribers.get(event) || [];
+
+    if (events.includes(callback)) return;
+
     events.push(callback);
 
     this.subscribers.set(event, events);
@@ -18,6 +21,10 @@ class EventManager {
 
   publish<T>(event: string, data: T) {
     this.subscribers.get(event)?.forEach(cb => cb(data));
+  }
+
+  getSubscribers(event: string) {
+    return this.subscribers.get(event);
   }
 
   clear() {

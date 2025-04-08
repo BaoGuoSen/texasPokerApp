@@ -1,7 +1,8 @@
 import type { Room } from "@/types";
 
-import { StyleSheet, View, Text, FlatList, TouchableHighlight, RefreshControl } from 'react-native';
 import { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, FlatList, TouchableHighlight, RefreshControl } from 'react-native';
+import { useRouter } from "expo-router";
 import { ImageBackground } from 'expo-image';
 import LottieView from 'lottie-react-native';
 import { useIsFocused } from '@react-navigation/native';
@@ -13,7 +14,7 @@ import { Login } from "@/components/home/Login";
 import { useUser } from '@/contexts/UserContext';
 
 import { ThemeConfig } from "@/constants/ThemeConfig";
-import { useRouter } from "expo-router";
+import { gameEventManager } from "@/hooks/useWebSocketReceiver";
 
 export default function HomeScreen() {
   // 检查页面是否处于焦点状态，页面返回刷新列表数据
@@ -43,6 +44,8 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (user && isFocused) {
+      // 清除游戏事件管理器中的所有订阅者
+      gameEventManager.clear();
       fetchData();
     }
   }, [isFocused, user]);

@@ -38,6 +38,12 @@ const Actions = () => {
         const { allowedActions, restrict, userId } = playerActionRes;
 
         if (userId !== user?.id) {
+          // doAction 接口报错，导致没有取消操作栏，所以需要手动设置 isAction 为 false
+          setActionState({
+            ...actionState,
+            isAction: false,
+          })
+
           return;
         }
 
@@ -117,14 +123,14 @@ const Actions = () => {
     []
   );
 
-  const onMainBtn = () => {
+  const onMainBtn = async () => {
     if (!matchId) {
       Alert.alert('对局Id 错误');
 
       return;
     };
 
-    doAction({
+    await doAction({
       amount: value,
       actionType: actionState.playerAction ?? 'call',
       matchId,
@@ -134,14 +140,14 @@ const Actions = () => {
     afterAction()
   };
 
-  const onSubBtn = (actionType: 'fold' | 'check') => {
+  const onSubBtn = async (actionType: 'fold' | 'check') => {
     if (!matchId) {
       Alert.alert('对局Id 错误');
 
       return;
     };
 
-    doAction({
+    await doAction({
       actionType,
       matchId,
       roomId

@@ -69,7 +69,6 @@ export default function useWebSocketReceiver(config: Config) {
       const { type, data } = event
 
       console.log('收到消息: type:', type, 'data:', data);
-
       eventManager.publish(type, data);
     } catch (error) {
       console.error('消息处理错误:', error);
@@ -131,9 +130,6 @@ export default function useWebSocketReceiver(config: Config) {
       eventManager.subscribe(event, handler);
     });
 
-    return () => {
-      eventManager.clear();
-    };
   }, [config.handlers]);
 
   return {

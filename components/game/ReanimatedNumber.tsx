@@ -17,7 +17,7 @@ const ReanimatedNumber = ({
   textStyle: TextStyle,
   expandScale?: number,
 }) => {
-  const animatedValue = useSharedValue(0);
+  const animatedValue = useSharedValue(value);
   const scale = useSharedValue(1);
 
   useEffect(() => {
