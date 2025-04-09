@@ -15,9 +15,18 @@ const PublicMessage = () => {
 	useWebSocketReceiver({
 		handlers: {
 			[GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
-				const { userId, actionType, amount } = playerTakeActionRes;
+				const {
+					userInfo: { name = '' } = {},
+					actionType,
+					amount
+				} = playerTakeActionRes;
 
-				setText(`${userId} ${actionType} ${amount}`);
+				setText(`${name} ${actionType} ${amount}`);
+			},
+
+			[GameWSEvents.GameEnd]: () => {
+				// 将位置让出来，给游戏结算
+				setText('');
 			}
 		},
 	});

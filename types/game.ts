@@ -79,7 +79,10 @@ export interface PlayerActiveRes {
  * 行动玩家的操作
  */
 export interface PlayerTakeActionRes {
-	userId: number;
+	userInfo: {
+		id: number;
+		name: string;
+	}
 	actionType: ActionType;
 	amount: number;
 	pool: number;
@@ -110,7 +113,7 @@ export interface StageChangeRes {
  */
 export interface GameEndRes {
 	// 奖池的分配明细
-	settleList: { userId: number; balance: number; amount: number }[];
+	settleList: { userId: number; balance: number; amount: number, avatar: string; }[];
 	// 是否展示玩家手牌
 	showHandPokes: boolean;
 	// 剩余需要的翻牌列表

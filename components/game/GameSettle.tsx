@@ -25,11 +25,12 @@ const GameSettle = () => {
 			[GameWSEvents.GameSettle]: (gameEndRes: GameEndRes) => {
 				const { settleList } = gameEndRes;
 
-				setTexts(settleList.map((item) => `${item.userId} ${item.amount}`));
+				setTexts(settleList.map((item) => `Winner: ${item.name} +${item.amount}`));
 
 				timer.current = setTimeout(() => {
 					// 结算动画结束后，发布客户端游戏结束事件
-					gameEventManager.publish(GameWSEvents.ClientGameEnd, {});
+					gameEventManager.publish(GameWSEvents.ClientGameEnd, gameEndRes);
+					setTexts([]);
 				}, GameConfig.settleDuration);
 			}
 		},
@@ -39,8 +40,10 @@ const GameSettle = () => {
 		if (texts.length > 0) {
 			fadeIn();
 
-			const timer = setTimeout(fadeOut, GameConfig.settleDuration);
-			return () => clearTimeout(timer);
+			timer.current = setTimeout(fadeOut, GameConfig.settleDuration);
+			return () => {
+				timer.current && clearTimeout(timer.current);
+			};
 		}
 	}, [texts]);
 

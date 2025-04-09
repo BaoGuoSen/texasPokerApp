@@ -83,7 +83,11 @@ export function PlayerCard({
       },
 
       [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
-        const { userId, actionType, amount } = playerTakeActionRes;
+        const {
+          userInfo: { id: userId } = {},
+          actionType,
+          amount
+        } = playerTakeActionRes;
 
         if (actionType === 'fold' && userId === id) {
           setIsFold(true);
@@ -92,6 +96,14 @@ export function PlayerCard({
         if (userId === id) {
           setMyAction(`${actionType} ${amount}`);
         }
+      },
+
+      [GameWSEvents.GameEnd]: () => {
+        setIsActive(false);
+      },
+
+      [GameWSEvents.ClientGameEnd]: () => {
+        setMyAction('');
       }
     }
   });

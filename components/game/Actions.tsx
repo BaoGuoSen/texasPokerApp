@@ -114,7 +114,7 @@ const Actions = () => {
 
       return `加注 ${value - minBet}`;
     }
-  }, [value]);
+  }, [value, actionState.actions, actionState.minBet, actionState.maxBet]);
 
   const throttledUpdate = useCallback(
     throttle((newValue: number) => {

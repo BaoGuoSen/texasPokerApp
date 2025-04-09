@@ -53,6 +53,7 @@ export default function Game() {
   const [status, setStatus] = useState<GameStatus>('unReady');
   const [matchId, setMatchId] = useState<number | undefined>();
   const [curButtonUserId, setCurButtonUserId] = useState<number | undefined>();
+  const [endRoles, setEndRoles] = useState<SetRoleRes[]>([]);
 
   useWebSocketReceiver({
     url: `wss://texas.wishufree.com?userId=${user?.id}&roomId=${roomId}`,
@@ -67,6 +68,9 @@ export default function Game() {
       },
 
       [GameWSEvents.SetRole]: (setRoleRes: SetRoleRes[]) => {
+        const curButtonUserId = setRoleRes.find((player) => player.role === 'button')?.userId;
+        setCurButtonUserId(curButtonUserId);
+
         if (status === 'unReady') {
           // 第一次由房主确认游戏玩家后，给在座的每个 player 添加 role
           const playersWithRole = playersOnSeat.map((player) => {
@@ -78,11 +82,11 @@ export default function Game() {
             }
           })
 
-          const curButtonUserId = playersWithRole.find((player) => player.role === 'button')?.id;
-
           setStatus('waiting');
           setPlayersOnSeat(playersWithRole);
-          setCurButtonUserId(curButtonUserId);
+        } else {
+          // 游戏结束的设置角色
+          setEndRoles(setRoleRes);
         }
       },
 
@@ -103,7 +107,10 @@ export default function Game() {
       },
 
       [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
-        const { userId, balance } = playerTakeActionRes;
+        const {
+          userInfo: { id: userId } = {},
+          balance
+        } = playerTakeActionRes;
 
         const newPlayersOnSeat = playersOnSeat.map((player) => {
           if (player.id === userId) {
@@ -124,13 +131,15 @@ export default function Game() {
         // TODO 暂时没有观战入口
       },
 
-      [GameWSEvents.GameEnd]: (gameEndRes: GameEndRes) => {
-        const { settleList } = gameEndRes;
+      [GameWSEvents.ClientGameEnd]: (gameEndRes: GameEndRes) => {
+        // 设置新一轮的角色
+        const { settleList = [] } = gameEndRes;
 
         const newPlayersOnSeat = playersOnSeat.map((player) => {
           const settle = settleList.find((item) => item.userId === player.id);
+          const role = endRoles.find((item) => item.userId === player.id)?.role;
 
-          return { ...player, balance: settle?.balance ?? 0 };
+          return { ...player, balance: settle?.balance ?? player.balance, pokes: ['', ''], role };
         })
 
         setPlayersOnSeat(newPlayersOnSeat);
@@ -142,13 +151,6 @@ export default function Game() {
   const resetGame = () => {
     setStatus('waiting');
   }
-
-  // const end = async () => {
-  //   resetGame();
-  //   await endGame({ id: roomId })
-
-  //   Alert.alert('当前游戏结束')
-  // }
 
   useEffect(() => {
     if (playersOnSeat.length !== 0) {

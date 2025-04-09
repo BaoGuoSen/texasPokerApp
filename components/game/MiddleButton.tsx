@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ImageBackground } from 'expo-image';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
@@ -11,6 +11,10 @@ import { readyGame, startGame } from '@/service';
 const MiddleButton = () => {
 	const { user } = useUser();
 	const { gameStatus, curButtonUserId, ownerId, roomId } = useRoomInfo();
+
+	useEffect(() => {
+		console.log('curButtonUserId', curButtonUserId);
+	}, [curButtonUserId]);
 
 	const handleReady = async () => {
 		await readyGame({ id: roomId })

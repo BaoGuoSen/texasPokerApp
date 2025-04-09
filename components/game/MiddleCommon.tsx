@@ -1,6 +1,6 @@
 import type { GameStartRes, PlayerTakeActionRes } from '@/types/game';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import { useRoomInfo } from '@/contexts/RoomContext';
@@ -29,6 +29,10 @@ const MiddleCommon = () => {
       }
     }
   });
+
+  useEffect(() => {
+    console.log('gameStatus', gameStatus);
+  }, [gameStatus]);
 
   return (
     <View style={styles.middle}>

@@ -6,6 +6,6 @@ export interface GameConfig {
   }
   
   export const GameConfig: GameConfig = {
-    settleDuration: 4000
+    settleDuration: 7000
   };
   

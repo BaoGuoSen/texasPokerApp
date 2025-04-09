@@ -87,18 +87,15 @@ export const PokerCard = ({
 
           // 翻完牌后，关闭所有牌
           timer.current = setTimeout(() => {
-            handleFlip('close');
             gameEventManager.publish(GameWSEvents.GameSettle, gameEndRes);
           }, 1000 * restCommonPokes.length);
         } else {
-          // 如果剩余牌为空，则关闭所有牌
-          handleFlip('close');
-
           gameEventManager.publish(GameWSEvents.GameSettle, gameEndRes);
         }
       },
 
       [GameWSEvents.ClientGameEnd]: () => {
+        handleFlip('close');
         // TODO 触发洗牌动画, 清空计时器
         timer.current && clearTimeout(timer.current);
       }
