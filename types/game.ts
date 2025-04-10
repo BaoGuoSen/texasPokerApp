@@ -113,7 +113,7 @@ export interface StageChangeRes {
  */
 export interface GameEndRes {
 	// 奖池的分配明细
-	settleList: { userId: number; balance: number; amount: number, avatar: string; }[];
+	settleList: { userId: number; balance: number; amount: number, avatar: string; name: string }[];
 	// 是否展示玩家手牌
 	showHandPokes: boolean;
 	// 剩余需要的翻牌列表

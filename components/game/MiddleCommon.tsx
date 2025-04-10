@@ -1,8 +1,10 @@
-import type { GameStartRes, PlayerTakeActionRes } from '@/types/game';
+import type { GameStartRes, PlayerActionRes, PlayerTakeActionRes } from '@/types/game';
+import type { ActionsState } from './Actions';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 
+import { useUser } from '@/contexts/UserContext';
 import { useRoomInfo } from '@/contexts/RoomContext';
 import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
 
@@ -15,8 +17,14 @@ import ReanimatedNumber from './ReanimatedNumber';
 
 const MiddleCommon = () => {
   const [totalPool, setTotalPool] = useState<number>(0);
+  const [actionState, setActionState] = useState<ActionsState>({
+    actions: ['call'],
+    minBet: 0,
+    maxBet: 0
+  });
 
   const { gameStatus } = useRoomInfo();
+  const { user } = useUser();
 
   useWebSocketReceiver({
     handlers: {
@@ -26,13 +34,39 @@ const MiddleCommon = () => {
 
       [GameWSEvents.PlayerTakeAction]: ({ pool }: PlayerTakeActionRes) => {
         setTotalPool(pool);
+      },
+
+      [GameWSEvents.PlayerAction]: (playerActionRes: PlayerActionRes) => {
+        const { allowedActions, restrict, userId } = playerActionRes;
+
+        if (userId !== user?.id) {
+          // doAction 接口报错，导致没有取消操作栏，所以需要手动设置 isAction 为 false
+          setActionState({
+            ...actionState,
+            actions: ['call'],
+            isAction: false,
+          })
+
+          return;
+        }
+
+        setActionState({
+          actions: allowedActions,
+          minBet: restrict?.min ?? 0,
+          maxBet: restrict?.max ?? 0,
+          isAction: true,
+        });
+      },
+
+      [GameWSEvents.GameEnd]: () => {
+        setActionState({
+          isAction: false,
+          minBet: 0,
+          maxBet: 0
+        });
       }
     }
   });
-
-  useEffect(() => {
-    console.log('gameStatus', gameStatus);
-  }, [gameStatus]);
 
   return (
     <View style={styles.middle}>
@@ -59,7 +93,7 @@ const MiddleCommon = () => {
         )
       }
 
-      <Actions />
+      <Actions actionState={actionState} />
     </View>
   );
 };

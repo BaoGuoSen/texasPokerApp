@@ -1,5 +1,5 @@
 import type { Player } from '@/types'
-import type { GameStartRes, PlayerActionRes, PlayerTakeActionRes } from '@/types/game';
+import type { GameEndRes, GameStartRes, PlayerActionRes, PlayerTakeActionRes } from '@/types/game';
 
 import { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, ViewStyle } from 'react-native';
@@ -33,6 +33,7 @@ export function PlayerCard({
   id
 }: Player) {
   const [isActive, setIsActive] = useState(false);
+  const [isShowHandsPokes, setIsShowHandsPokes] = useState(false);
   const [myAction, setMyAction] = useState('');
   const [isFold, setIsFold] = useState(false);
   const translateY = useSharedValue(0);
@@ -98,12 +99,15 @@ export function PlayerCard({
         }
       },
 
-      [GameWSEvents.GameEnd]: () => {
+      [GameWSEvents.GameEnd]: (gameEndRes: GameEndRes) => {
+        setIsShowHandsPokes(gameEndRes.showHandPokes);
         setIsActive(false);
       },
 
       [GameWSEvents.ClientGameEnd]: () => {
         setMyAction('');
+        setIsShowHandsPokes(false);
+        setIsFold(false);
       }
     }
   });
@@ -182,7 +186,7 @@ export function PlayerCard({
       <View style={styles.handPokerContainer}>
         {
           pokes.map((item, index) => {
-            return <HandPokerCard key={index} value={item} me={me} />
+            return <HandPokerCard key={index} value={item} me={me} isShowHandsPokes={isShowHandsPokes} />
           })
         }
       </View>

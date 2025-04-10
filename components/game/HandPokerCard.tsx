@@ -13,6 +13,7 @@ export type PokerCardProps = {
   value: Poke | string;
   hidden?: boolean;
   me: boolean;
+  isShowHandsPokes: boolean;
 };
 
 // 定义花色颜色
@@ -25,7 +26,8 @@ const suitColors = {
 
 export function HandPokerCard({
   value,
-  me = false
+  me = false,
+  isShowHandsPokes = false
 }: PokerCardProps) {
   const [type, val] = value.split('') as [Suit, Rank]
 
@@ -36,12 +38,8 @@ export function HandPokerCard({
       contentFit='cover'
     >
       {
-        me && val &&  (
+        ((me && val) || isShowHandsPokes) &&  (
           <ImageBackground>
-            {/* <View style={styles.topSuit}>
-              <HandPokerSuits type={type} />
-            </View> */}
-
             <Svg style={styles.value}>
               <G>
                 {/* 显示数字 */}

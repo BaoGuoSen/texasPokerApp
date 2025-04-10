@@ -49,6 +49,8 @@ export interface CreateParams {
    * 用户
    */
   // userId: number;
+  /** 思考时间 */
+  thinkingTime: number;
 }
 
 export interface Position {

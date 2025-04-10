@@ -17,7 +17,6 @@ const ReanimatedNumber = ({
   textStyle: TextStyle,
   expandScale?: number,
 }) => {
-  const animatedValue = useSharedValue(value);
   const scale = useSharedValue(1);
 
   useEffect(() => {
@@ -26,8 +25,6 @@ const ReanimatedNumber = ({
       withTiming(expandScale, { duration: 200 }),
       withTiming(1, { duration: 300, easing: Easing.out(Easing.elastic(1)) }),
     );
-
-    animatedValue.value = withTiming(value, { duration: 1000 });
   }, [value]);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -36,7 +33,7 @@ const ReanimatedNumber = ({
 
   return (
     <Animated.Text style={[animatedStyle, textStyle]}>
-      ${Math.floor(animatedValue.value).toLocaleString()}
+      ${value.toLocaleString()}
     </Animated.Text>
   );
 };

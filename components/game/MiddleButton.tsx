@@ -12,10 +12,6 @@ const MiddleButton = () => {
 	const { user } = useUser();
 	const { gameStatus, curButtonUserId, ownerId, roomId } = useRoomInfo();
 
-	useEffect(() => {
-		console.log('curButtonUserId', curButtonUserId);
-	}, [curButtonUserId]);
-
 	const handleReady = async () => {
 		await readyGame({ id: roomId })
 	}
