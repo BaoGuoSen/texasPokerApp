@@ -70,7 +70,7 @@ export function PlayerCard({
       [GameWSEvents.GameStart]: (gameStartRes: GameStartRes) => {
         const { defaultBets } = gameStartRes;
 
-        const defaultBet = defaultBets.find((item) => item.userId === id);
+        const defaultBet = defaultBets.find((item) => item.userInfo.id === id);
 
         if (defaultBet) {
           setMyAction(`bet ${defaultBet.amount}`);
@@ -78,23 +78,23 @@ export function PlayerCard({
       },
 
       [GameWSEvents.PlayerAction]: (playerActionRes: PlayerActionRes) => {
-        const { userId } = playerActionRes;
+        const { userInfo } = playerActionRes;
 
-        setIsActive(userId === id);
+        setIsActive(userInfo.id === id);
       },
 
       [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
         const {
-          userInfo: { id: userId } = {},
+          userInfo,
           actionType,
           amount
         } = playerTakeActionRes;
 
-        if (actionType === 'fold' && userId === id) {
+        if (actionType === 'fold' && userInfo.id === id) {
           setIsFold(true);
         }
 
-        if (userId === id) {
+        if (userInfo.id === id) {
           setMyAction(`${actionType} ${amount}`);
         }
       },

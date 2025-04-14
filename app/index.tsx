@@ -30,6 +30,7 @@ export default function HomeScreen() {
       lowestBetAmount: 100,
       maximumCountOfPlayers: 10,
       allowPlayersToWatch: false,
+      // 思考时间 单位秒
       thinkingTime: 90
     })
     

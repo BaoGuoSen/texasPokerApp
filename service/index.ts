@@ -23,7 +23,7 @@ const getAllRooms = async () => {
 }
 
 const getRoomInfo = async (params: Pick<Room, 'id'>) => {
-  const { data } = await http<{ playersOnSeat: Room['owner'][]; playersHang: Room['owner'][]; }>(
+  const { data } = await http<{ playersOnSeat: { userInfo: User; }[]; playersHang: { userInfo: User; }[] }>(
     `room/allPlayers/${params.id}`
   )
 

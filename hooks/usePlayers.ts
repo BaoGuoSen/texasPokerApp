@@ -22,11 +22,11 @@ export function usePlayers(props: IProps) {
     const { playersOnSeat, playersHang } = await getRoomInfo({ id: roomId });
 
     const playersOnSeatWithMe = playersOnSeat.map(item => {
-      return { ...item, me: user?.id === item.id}
+      return { ...item.userInfo, me: user?.id === item.userInfo.id}
     })
 
     const playersHangWithMe = playersHang.map(item => {
-      return { ...item, me: user?.id === item.id}
+      return { ...item.userInfo, me: user?.id === item.userInfo.id}
     })
 
     setPlayersOnSeat(playersOnSeatWithMe);

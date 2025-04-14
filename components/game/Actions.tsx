@@ -22,11 +22,18 @@ const Actions = (props: {
   const { matchId, roomId } = useRoomInfo();
 
   const [value, setValue] = useState<number | undefined>();
+  const [isShowSlider, setIsShowSlider] = useState<boolean>();
   const [actionType, setActionType] = useState<ActionType>('call');
 
   const mainBtnLabel = useMemo(() => {
     const { actions, minBet = 0, maxBet = 0 } = props.actionState;
     const betValue = value ?? minBet;
+
+    if (betValue === maxBet) {
+      setActionType('allIn')
+
+      return 'ALL IN';
+    }
 
     if (actions?.includes('bet')) {
       setActionType('bet')
@@ -34,16 +41,19 @@ const Actions = (props: {
       return `下注 ${betValue}`;
     }
 
+    // 没有 amout 行为，取消滑动条
+    if (!actions?.some(item => ['bet', 'raise', 'call'].includes(item))) {
+      setIsShowSlider(false);
+      setActionType('allIn');
+
+      // 主按钮只能是 ALL IN
+      return 'ALL IN';
+    }
+
     if (betValue === minBet) {
       setActionType('call')
 
       return `跟注 ${minBet}`;
-    }
-
-    if (betValue === maxBet) {
-      setActionType('allIn')
-
-      return 'ALL IN';
     }
 
     if (betValue > minBet) {
@@ -61,8 +71,17 @@ const Actions = (props: {
   );
 
   useEffect(() => {
-    return () => setValue(undefined);
+    return () => {
+      setValue(undefined);
+      setIsShowSlider(true);
+    }
   }, [props.actionState])
+
+  // useEffect(() => {
+  //   return () => {
+  //     setIsShowSlider(true);
+  //   }
+  // }, [props.actionState.actions])
 
   const onMainBtn = async () => {
     if (!matchId) {
@@ -71,8 +90,10 @@ const Actions = (props: {
       return;
     };
 
+    const amount = value ?? props.actionState.minBet;
+
     await doAction({
-      amount: value ?? props.actionState.minBet,
+      amount: actionType === 'allIn' ? undefined : amount,
       actionType,
       matchId,
       roomId
@@ -93,28 +114,38 @@ const Actions = (props: {
     })
   }
 
+  const sliderRender = useMemo(() => {
+    return
+  }, [props.actionState.minBet, props.actionState.maxBet, value])
+
   return (
     <>
       {
         props.actionState.isAction ? (
           <View style={styles.actions}>
-            <View style={styles.quickActions}>
-              <Text style={styles.minMaxText}>{props.actionState.minBet}</Text>
-              <View style={styles.sliderContainer}>
-                <Slider
-                  style={styles.slider}
-                  minimumValue={props.actionState.minBet}
-                  maximumValue={props.actionState.maxBet}
-                  minimumTrackTintColor="#3498db"
-                  maximumTrackTintColor="#d3d3d3"
-                  thumbTintColor="#2980b9"
-                  step={1}
-                  value={value}
-                  onValueChange={throttledUpdate}
-                />
-              </View>
-              <Text style={styles.minMaxText}>{props.actionState.maxBet}</Text>
-            </View>
+            {
+              isShowSlider && (
+                <View style={styles.quickActions}>
+                  <Text style={styles.minMaxText}>{props.actionState.minBet}</Text>
+                  <View style={styles.sliderContainer}>
+                    { props.actionState.minBet && props.actionState.maxBet && (
+                      <Slider
+                        style={styles.slider}
+                        minimumValue={props.actionState.minBet}
+                        maximumValue={props.actionState.maxBet}
+                        minimumTrackTintColor="#3498db"
+                        maximumTrackTintColor="#d3d3d3"
+                        thumbTintColor="#2980b9"
+                        step={1}
+                        value={value}
+                        onValueChange={throttledUpdate}
+                      />
+                    )}
+                  </View>
+                  <Text style={styles.minMaxText}>{props.actionState.maxBet}</Text>
+                </View>
+              )
+            }
 
             <View style={styles.mainBtns}>
               <TouchableOpacity activeOpacity={0.7} onPress={() => onSubBtn('fold')} style={[styles.btn, styles.fold]}>

@@ -41,7 +41,7 @@ export type WsType =
 	'player-join'
 
 export interface SetRoleRes {
-	userId: number;
+	userInfo: Pick<User, 'id'>
 	role: Role
 }
 
@@ -53,36 +53,37 @@ export interface GameStartRes {
 	// 对局Id
 	matchId: number;
 	// 默认下注金额
-	defaultBets: { userId: number; amount: number; balance: number }[];
+	defaultBets: {
+		userInfo: Pick<User, 'id'>
+		amount: number;
+		balance: number
+	}[];
 }
 
 /**
  * 处于行动阶段的玩家
-	*/
+*/
 export interface PlayerActionRes {
 	allowedActions: ActionType[];
-	userId: number;
+	userInfo: Pick<User, 'id'>;
 	restrict?: {
 		min: number;
 		max: number;
-	}
+	};
 }
 
 /**
  * 向其他端推送当前正在行动的玩家id
  */
 export interface PlayerActiveRes {
-	userId: number
+	userInfo: Pick<User, 'id'>
 }
 
 /**
  * 行动玩家的操作
  */
 export interface PlayerTakeActionRes {
-	userInfo: {
-		id: number;
-		name: string;
-	}
+	userInfo: Pick<User, 'id' | 'name'>
 	actionType: ActionType;
 	amount: number;
 	pool: number;
@@ -113,9 +114,18 @@ export interface StageChangeRes {
  */
 export interface GameEndRes {
 	// 奖池的分配明细
-	settleList: { userId: number; balance: number; amount: number, avatar: string; name: string }[];
+	settleList: {
+		userInfo: User;
+		amount: number;
+		balance: number;
+	}[];
 	// 是否展示玩家手牌
 	showHandPokes: boolean;
+	// 其余玩家的手牌
+	handPokes: {
+		userInfo: Pick<User, 'id'>;
+		hand: Poke[];
+	}[];
 	// 剩余需要的翻牌列表
 	restCommonPokes: Poke[];
 	// 最大牌型组合
@@ -134,7 +144,7 @@ export interface PlayerLeaveRes extends Player {
 	 * 玩家离开后，其他玩家的角色变化
 	 */
 	roleChangesList: {
-		userId: number;
+		userInfo: Pick<User, 'id'>
 		role: Role;
 	}[];
 }
@@ -143,14 +153,14 @@ export interface PlayerLeaveRes extends Player {
  * 玩家离线
  */
 export interface PlayerOfflineRes extends Player {
-	userId: number;
+	userInfo: Pick<User, 'id'>
 }
 
 /**
  * 玩家上座
  */
 export interface PlayerOnSeatRes extends User {
-	userId: number;
+	userInfo: User & { me: boolean };
 	role: Role;
 }
 
@@ -158,12 +168,12 @@ export interface PlayerOnSeatRes extends User {
  * 玩家观战
  */
 export interface PlayerOnWatchRes extends Player {
-	userId: number;
+	userInfo: Pick<User, 'id'>
 	/**
 	 * 玩家观战后，其他玩家的角色变化
 	 */
 	roleChangesList: {
-		userId: number;
+		userInfo: Pick<User, 'id'>
 		role: Role;
 	}[];
 }

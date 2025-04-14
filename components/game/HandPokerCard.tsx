@@ -33,12 +33,11 @@ export function HandPokerCard({
 
   return (
     <ImageBackground
-      source={!me ? ThemeConfig.pokerBackImg : ''}
       style={styles.container}
       contentFit='cover'
     >
       {
-        ((me && val) || isShowHandsPokes) &&  (
+        ((me && val)) && (
           <ImageBackground>
             <Svg style={styles.value}>
               <G>
@@ -64,6 +63,35 @@ export function HandPokerCard({
       }
       {
         me && !val && (
+          <ImageBackground style={styles.meEmpty} source={ThemeConfig.pokerBackImg} />
+        )
+      }
+      {
+        !me && isShowHandsPokes && (
+          <ImageBackground>
+            <Svg style={styles.value}>
+              <G>
+                {/* 显示数字 */}
+                <Text
+                  x={val === 't' ? '' : '22%'}
+                  y={'80%'}
+                  fontSize={25}
+                  fill={suitColors[type]}
+                  fontWeight="bold"
+                >
+                  {val?.toUpperCase() === 'T' ? '10' : val?.toUpperCase()}
+                </Text>
+              </G>
+            </Svg>
+
+            <View style={styles.bottomSuit}>
+              <HandPokerSuits type={type} />
+            </View>
+          </ImageBackground>
+        )
+      }
+      {
+        !me && !isShowHandsPokes && (
           <ImageBackground style={styles.meEmpty} source={ThemeConfig.pokerBackImg} />
         )
       }

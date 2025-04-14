@@ -1,4 +1,3 @@
-import type { Poke } from 'texas-poker-core/types/Deck/constant';
 import type { Player } from '@/types';
 import type {
   SetRoleRes,
@@ -44,7 +43,6 @@ export default function Game() {
     playersOnSeat,
     playersOnWatch,
     setPlayersOnSeat,
-    setPlayersHang,
     fetchAllUsers
   } = usePlayers({ roomId });
 
@@ -68,13 +66,13 @@ export default function Game() {
       },
 
       [GameWSEvents.SetRole]: (setRoleRes: SetRoleRes[]) => {
-        const curButtonUserId = setRoleRes.find((player) => player.role === 'button')?.userId;
+        const curButtonUserId = setRoleRes.find((player) => player.role === 'button')?.userInfo.id;
         setCurButtonUserId(curButtonUserId);
 
         if (status === 'unReady') {
           // 第一次由房主确认游戏玩家后，给在座的每个 player 添加 role
           const playersWithRole = playersOnSeat.map((player) => {
-            const role = setRoleRes.find((item) => item.userId === player.id)?.role;
+            const role = setRoleRes.find((item) => item.userInfo.id === player.id)?.role;
 
             return {
               ...player,
@@ -108,12 +106,12 @@ export default function Game() {
 
       [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
         const {
-          userInfo: { id: userId } = {},
+          userInfo: { id } = {},
           balance
         } = playerTakeActionRes;
 
         const newPlayersOnSeat = playersOnSeat.map((player) => {
-          if (player.id === userId) {
+          if (player.id === id) {
             return { ...player, balance };
           }
 
@@ -124,7 +122,7 @@ export default function Game() {
       },
 
       [GameWSEvents.PlayerOnSeat]: (playerOnSeatRes: PlayerOnSeatRes) => {
-        setPlayersOnSeat([...playersOnSeat, playerOnSeatRes]);
+        setPlayersOnSeat([...playersOnSeat, playerOnSeatRes.userInfo]);
       },
 
       [GameWSEvents.PlayerOnWatch]: (playerOnWatchRes: PlayerOnWatchRes) => {
@@ -136,10 +134,10 @@ export default function Game() {
         const { settleList = [] } = gameEndRes;
 
         const newPlayersOnSeat = playersOnSeat.map((player) => {
-          const settle = settleList.find((item) => item.userId === player.id);
-          const role = endRoles.find((item) => item.userId === player.id)?.role;
+          const settle = settleList.find((item) => item.userInfo.id === player.id);
+          const role = endRoles.find((item) => item.userInfo.id === player.id)?.role;
 
-          return { ...player, balance: settle?.balance ?? player.balance, pokes: ['', ''], role };
+          return { ...player, balance: settle?.amount ?? player.balance, pokes: ['', ''], role };
         })
 
         setPlayersOnSeat(newPlayersOnSeat);

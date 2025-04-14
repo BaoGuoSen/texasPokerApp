@@ -25,7 +25,7 @@ const GameSettle = () => {
 			[GameWSEvents.GameSettle]: (gameEndRes: GameEndRes) => {
 				const { settleList } = gameEndRes;
 
-				setTexts(settleList.map((item) => `Winner: ${item.name} +${item.amount}`));
+				setTexts(settleList.map((item) => `Winner: ${item.userInfo.name} +${item.amount}`));
 
 				timer.current = setTimeout(() => {
 					// 结算动画结束后，发布客户端游戏结束事件

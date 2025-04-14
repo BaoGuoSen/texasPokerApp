@@ -37,14 +37,19 @@ const MiddleCommon = () => {
       },
 
       [GameWSEvents.PlayerAction]: (playerActionRes: PlayerActionRes) => {
-        const { allowedActions, restrict, userId } = playerActionRes;
+        const {
+          allowedActions,
+          restrict,
+          userInfo: { id }
+        } = playerActionRes;
 
-        if (userId !== user?.id) {
+        if (id !== user?.id) {
           // doAction 接口报错，导致没有取消操作栏，所以需要手动设置 isAction 为 false
           setActionState({
-            ...actionState,
             actions: ['call'],
             isAction: false,
+            minBet: 0,
+            maxBet: 0
           })
 
           return;
