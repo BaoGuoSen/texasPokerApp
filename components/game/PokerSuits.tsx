@@ -1,4 +1,4 @@
-import type { Suit } from 'texas-poker-core/types/Deck/constant';
+import type { Suit } from 'texas-poker-core';
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';

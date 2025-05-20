@@ -1,4 +1,4 @@
-import type { Poke, Suit, Rank } from 'texas-poker-core/types/Deck/constant';
+import type { Poke, Suit, Rank } from 'texas-poker-core';
 
 import { View, StyleSheet, ViewStyle, TouchableOpacity } from 'react-native';
 import { Image, ImageBackground } from 'expo-image';

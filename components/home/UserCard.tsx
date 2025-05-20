@@ -1,5 +1,3 @@
-import type { User } from "texas-poker-core/types/Player";
-
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 

@@ -1,5 +1,5 @@
 import type { Room, CreateParams, GameRes } from "@/types";
-import type { ActionType, User } from "texas-poker-core/types/Player";
+import type { ActionType, User } from "texas-poker-core";
 
 import http from "@/utils/http";
 import AsyncStorage from '@react-native-async-storage/async-storage';

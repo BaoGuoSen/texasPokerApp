@@ -1,6 +1,4 @@
-import type { Stage } from "texas-poker-core/types/Controller";
-import type { Poke } from "texas-poker-core/types/Deck/constant";
-import type { ActionType, Player, Role, User } from "texas-poker-core/types/Player";
+import type { Stage, Poke, ActionType, Player, Role, User } from "texas-poker-core";
 
 /**
  * 游戏状态

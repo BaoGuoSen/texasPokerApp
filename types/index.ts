@@ -1,6 +1,4 @@
-import type { Role, User } from 'texas-poker-core/types/Player';
-import type { Poke } from 'texas-poker-core/types/Deck/constant';
-import type { Stage } from 'texas-poker-core/types/Controller';
+import type { Role, User, Poke, Stage } from 'texas-poker-core';
 import type { GameStatus } from './game';
 interface Player extends User {
   // avatar: string;

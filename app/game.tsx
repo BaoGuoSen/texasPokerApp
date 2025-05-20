@@ -1,4 +1,3 @@
-import type { Poke } from 'texas-poker-core/types/Deck/constant';
 import type { Player } from '@/types';
 import type {
   SetRoleRes,

@@ -1,4 +1,4 @@
-import type { User } from 'texas-poker-core/types/Player';
+import type { User } from 'texas-poker-core';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';

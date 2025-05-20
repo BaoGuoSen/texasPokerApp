@@ -1,4 +1,4 @@
-import type { User } from "texas-poker-core/types/Player";
+import type { User } from "texas-poker-core";
 
 import { View, StyleSheet, Text, TextInput, TouchableOpacity, Keyboard } from 'react-native';
 

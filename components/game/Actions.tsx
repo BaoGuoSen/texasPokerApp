@@ -1,4 +1,4 @@
-import type { ActionType } from 'texas-poker-core/types/Player';
+import type { ActionType } from 'texas-poker-core';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
