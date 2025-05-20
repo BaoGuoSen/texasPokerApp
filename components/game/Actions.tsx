@@ -1,13 +1,13 @@
-import type { ActionType } from 'texas-poker-core/types/Player';
+import type { ActionType } from 'texas-poker-core';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
-import Slider from '@react-native-community/slider';
 import { throttle } from 'lodash';
-
-import { useRoomInfo } from '@/contexts/RoomContext';
+import Slider from '@react-native-community/slider';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import { View, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { doAction } from '@/service';
+import { useRoomInfo } from '@/contexts/RoomContext';
+
 export interface ActionsState {
   actions?: ActionType[];
   minBet?: number;
@@ -16,9 +16,7 @@ export interface ActionsState {
   playerAction?: ActionType;
 }
 
-const Actions = (props: {
-  actionState: ActionsState;
-}) => {
+const Actions = (props: { actionState: ActionsState }) => {
   const { matchId, roomId } = useRoomInfo();
 
   const [value, setValue] = useState<number | undefined>();
@@ -36,13 +34,13 @@ const Actions = (props: {
     }
 
     if (actions?.includes('bet')) {
-      setActionType('bet')
+      setActionType('bet');
 
       return `下注 ${betValue}`;
     }
 
     // 没有 amout 行为，取消滑动条
-    if (!actions?.some(item => ['bet', 'raise', 'call'].includes(item))) {
+    if (!actions?.some((item) => ['bet', 'raise', 'call'].includes(item))) {
       setIsShowSlider(false);
       setActionType('allIn');
 
@@ -57,7 +55,7 @@ const Actions = (props: {
     }
 
     if (betValue > minBet) {
-      setActionType('raise')
+      setActionType('raise');
 
       return `加注 ${betValue - minBet}`;
     }
@@ -88,7 +86,7 @@ const Actions = (props: {
       Alert.alert('对局Id 错误');
 
       return;
-    };
+    }
 
     const amount = value ?? props.actionState.minBet;
 
@@ -97,7 +95,7 @@ const Actions = (props: {
       actionType,
       matchId,
       roomId
-    })
+    });
   };
 
   const onSubBtn = async (actionType: 'fold' | 'check') => {
@@ -105,18 +103,18 @@ const Actions = (props: {
       Alert.alert('对局Id 错误');
 
       return;
-    };
+    }
 
     await doAction({
       actionType,
       matchId,
       roomId
-    })
-  }
+    });
+  };
 
-  const sliderRender = useMemo(() => {
-    return
-  }, [props.actionState.minBet, props.actionState.maxBet, value])
+  // const sliderRender = useMemo(() => {
+  //   return
+  // }, [props.actionState.minBet, props.actionState.maxBet, value])
 
   return (
     <>
@@ -147,28 +145,35 @@ const Actions = (props: {
               )
             }
 
-            <View style={styles.mainBtns}>
-              <TouchableOpacity activeOpacity={0.7} onPress={() => onSubBtn('fold')} style={[styles.btn, styles.fold]}>
-                <Text style={[styles.btnText]}>弃牌</Text>
-              </TouchableOpacity>
+          <View style={styles.mainBtns}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => onSubBtn('fold')}
+              style={[styles.btn, styles.fold]}
+            >
+              <Text style={[styles.btnText]}>弃牌</Text>
+            </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7} onPress={onMainBtn} style={[styles.btn, styles.bet]}>
-                <Text style={[styles.btnText]}>{mainBtnLabel}</Text>
-              </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={onMainBtn}
+              style={[styles.btn, styles.bet]}
+            >
+              <Text style={[styles.btnText]}>{mainBtnLabel}</Text>
+            </TouchableOpacity>
 
-              {
-                props.actionState.actions?.includes('check') && (
-                  <TouchableOpacity activeOpacity={0.7} onPress={() => onSubBtn('check')} style={[styles.btn, styles.check]}>
-                    <Text style={[styles.btnText]}>过牌</Text>
-                  </TouchableOpacity>
-                )
-              }
-            </View>
+            {props.actionState.actions?.includes('check') && (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => onSubBtn('check')}
+                style={[styles.btn, styles.check]}
+              >
+                <Text style={[styles.btnText]}>过牌</Text>
+              </TouchableOpacity>
+            )}
           </View>
-        ) : (
-          null
-        )
-      }
+        </View>
+      ) : null}
     </>
   );
 };
@@ -194,19 +199,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    flex: 1,
+    flex: 1
   },
 
   sliderContainer: {
     width: '100%',
     flex: 1,
     height: 40,
-    position: 'relative',
+    position: 'relative'
   },
 
   slider: {
     width: '100%',
-    height: 40,
+    height: 40
   },
 
   minMaxText: {
@@ -254,7 +259,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '100%',
     backgroundColor: '#999'
-  },
+  }
 });
 
 export default Actions;

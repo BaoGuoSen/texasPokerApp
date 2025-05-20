@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Callback<T = any> = (data: T) => void;
 
 class EventManager {
@@ -14,13 +15,13 @@ class EventManager {
   }
 
   unsubscribe(event: string, callback: Callback) {
-    const events = this.subscribers.get(event)?.filter(cb => cb !== callback);
+    const events = this.subscribers.get(event)?.filter((cb) => cb !== callback);
 
     if (events) this.subscribers.set(event, events);
   }
 
   publish<T>(event: string, data: T) {
-    this.subscribers.get(event)?.forEach(cb => cb(data));
+    this.subscribers.get(event)?.forEach((cb) => cb(data));
   }
 
   getSubscribers(event: string) {

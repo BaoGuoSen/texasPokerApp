@@ -1,7 +1,13 @@
-import type { User } from 'texas-poker-core/types/Player';
+import type { User } from 'texas-poker-core';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {
+  useState,
+  useEffect,
+  ReactNode,
+  useContext,
+  createContext
+} from 'react';
 
 import { getUser, login as loginService } from '@/service';
 
@@ -10,7 +16,7 @@ type UserContextType = {
   /** 用户信息 同时也用于是否登陆标识 */
   user: User | undefined;
   login: (name: string) => void;
-	logout: () => Promise<void>;
+  logout: () => Promise<void>;
   loading: boolean;
 };
 
@@ -33,16 +39,17 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   const loadUser = async () => {
-      try {
-        const userInfo = await getUser();
+    try {
+      const userInfo = await getUser();
 
-        setUser(userInfo);
-      } catch (error) {
-        setUser(undefined);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setUser(userInfo);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      setUser(undefined);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // 初始化时加载用户数据
   useEffect(() => {
@@ -53,13 +60,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     await loginService({ name });
 
     loadUser();
-  }
+  };
 
   const logout = async () => {
     setUser(undefined);
 
     await AsyncStorage.clear();
-  }
+  };
 
   return (
     <UserContext.Provider value={{ user, loading, login, logout }}>
