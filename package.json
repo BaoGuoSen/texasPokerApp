@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "ncu": "npx ncu -u texas-poker-core"
   },
   "jest": {
     "preset": "jest-expo"
@@ -37,6 +38,7 @@
     "expo-web-browser": "~14.0.2",
     "lodash": "^4.17.21",
     "lottie-react-native": "^7.2.2",
+    "npm-check-updates": "^18.0.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.7",
@@ -50,7 +52,7 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "socket.io-client": "^4.8.1",
-    "texas-poker-core": "^1.1.9"
+    "texas-poker-core": "^1.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
