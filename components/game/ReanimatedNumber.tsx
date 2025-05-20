@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { TextStyle } from 'react-native';
 import Animated, {
-  useSharedValue,
-  withTiming,
   Easing,
+  withTiming,
   withSequence,
+  useSharedValue,
   useAnimatedStyle
 } from 'react-native-reanimated';
 

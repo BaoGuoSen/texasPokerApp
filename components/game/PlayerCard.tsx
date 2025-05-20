@@ -6,27 +6,25 @@ import type {
   PlayerTakeActionRes
 } from '@/types/game';
 
-import { useEffect, useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { roleMap } from 'texas-poker-core';
+import { useState, useEffect } from 'react';
+import Svg, { Circle } from 'react-native-svg';
 import { Image, ImageBackground } from 'expo-image';
+import { View, Text, StyleSheet } from 'react-native';
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
+  Easing,
   withRepeat,
   withTiming,
-  Easing
+  useSharedValue,
+  useAnimatedStyle
 } from 'react-native-reanimated';
-import Svg, { Circle } from 'react-native-svg';
 
-import { roleMap } from 'texas-poker-core';
-
+import { HandPokerCard } from './HandPokerCard';
+import ReanimatedNumber from './ReanimatedNumber';
+import { ThemeConfig } from '@/constants/ThemeConfig';
 import useWebSocketReceiver, {
   GameWSEvents
 } from '@/hooks/useWebSocketReceiver';
-
-import { ThemeConfig } from '@/constants/ThemeConfig';
-import { HandPokerCard } from './HandPokerCard';
-import ReanimatedNumber from './ReanimatedNumber';
 
 export function PlayerCard({
   balance = 0,

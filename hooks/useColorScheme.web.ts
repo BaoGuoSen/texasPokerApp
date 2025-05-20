@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useColorScheme as useRNColorScheme } from 'react-native';
 
 /**

@@ -2,36 +2,33 @@ import type { Player } from '@/types';
 import type {
   SetRoleRes,
   GameStatus,
+  GameEndRes,
   GameStartRes,
   PlayerOnSeatRes,
-  PlayerTakeActionRes,
-  GameEndRes
+  PlayerTakeActionRes
 } from '@/types/game';
 
-import { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
 import { ImageBackground } from 'expo-image';
-import { useGlobalSearchParams, useNavigation } from 'expo-router';
 // @ts-ignore
 import Icon from 'react-native-vector-icons/Ionicons';
-
-import { usePlayers } from '@/hooks/usePlayers';
-import useWebSocketReceiver, {
-  GameWSEvents,
-  WSEvents
-} from '@/hooks/useWebSocketReceiver';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation, useGlobalSearchParams } from 'expo-router';
 
 import { splitArray } from '@/utils';
-import { quitGame } from '@/utils/gameControl';
-import { ThemeConfig } from '@/constants/ThemeConfig';
-
-import LeftSide from '@/components/game/LeftSide';
-import RightSidePlayers from '@/components/game/RightSidePlayers';
-import MiddleCommon from '@/components/game/MiddleCommon';
-
 import { joinRoom } from '@/service';
+import { quitGame } from '@/utils/gameControl';
+import { usePlayers } from '@/hooks/usePlayers';
 import { useUser } from '@/contexts/UserContext';
+import LeftSide from '@/components/game/LeftSide';
+import { ThemeConfig } from '@/constants/ThemeConfig';
 import { RoomProvider } from '@/contexts/RoomContext';
+import MiddleCommon from '@/components/game/MiddleCommon';
+import RightSidePlayers from '@/components/game/RightSidePlayers';
+import useWebSocketReceiver, {
+  WSEvents,
+  GameWSEvents
+} from '@/hooks/useWebSocketReceiver';
 
 export default function Game() {
   const { roomId = '', ownerId } = useGlobalSearchParams() as {

@@ -1,8 +1,8 @@
 import type { Suit } from 'texas-poker-core';
 
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { View, StyleSheet } from 'react-native';
 
 // 渲染黑桃
 const Spade = () => (

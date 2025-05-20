@@ -1,16 +1,16 @@
 import type { User } from 'texas-poker-core';
 
+import { useRef, useState } from 'react';
 import {
   View,
-  StyleSheet,
   Text,
+  Keyboard,
   TextInput,
-  TouchableOpacity,
-  Keyboard
+  StyleSheet,
+  TouchableOpacity
 } from 'react-native';
 
 import { useUser } from '@/contexts/UserContext';
-import { useRef, useState } from 'react';
 
 export type IProps = {
   user?: User;

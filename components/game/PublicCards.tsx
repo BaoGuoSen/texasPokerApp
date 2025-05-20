@@ -1,15 +1,13 @@
 import type { GameEndRes, StageChangeRes } from '@/types/game';
 
 import { useState } from 'react';
+import { Poke } from 'texas-poker-core';
 import { View, StyleSheet } from 'react-native';
 
-import { Poke } from 'texas-poker-core';
-
+import { PokerCard } from './PokerCard';
 import useWebSocketReceiver, {
   GameWSEvents
 } from '@/hooks/useWebSocketReceiver';
-
-import { PokerCard } from './PokerCard';
 
 export default function PublicCards() {
   const [publicCards, setPublicCards] = useState<(Poke | string)[]>([

@@ -1,25 +1,24 @@
 import type { Room } from '@/types';
 
-import { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  FlatList,
-  TouchableHighlight,
-  RefreshControl
-} from 'react-native';
 import { useRouter } from 'expo-router';
+import { useState, useEffect } from 'react';
 import { ImageBackground } from 'expo-image';
 import LottieView from 'lottie-react-native';
 import { useIsFocused } from '@react-navigation/native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  RefreshControl,
+  TouchableHighlight
+} from 'react-native';
 
+import { Login } from '@/components/home/Login';
+import { useUser } from '@/contexts/UserContext';
 import { createGame, getAllRooms } from '@/service';
 import { RoomCard } from '@/components/home/RoomCard';
 import { UserCard } from '@/components/home/UserCard';
-import { Login } from '@/components/home/Login';
-import { useUser } from '@/contexts/UserContext';
-
 import { ThemeConfig } from '@/constants/ThemeConfig';
 import { gameEventManager } from '@/hooks/useWebSocketReceiver';
 

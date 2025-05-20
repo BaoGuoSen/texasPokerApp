@@ -1,7 +1,7 @@
 import type { PlayerTakeActionRes } from '@/types/game';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Animated, Easing } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
+import { Easing, Animated, StyleSheet } from 'react-native';
 
 import useWebSocketReceiver, {
   GameWSEvents

@@ -1,25 +1,24 @@
+import type { ActionsState } from './Actions';
 import type {
   GameStartRes,
   PlayerActionRes,
   PlayerTakeActionRes
 } from '@/types/game';
-import type { ActionsState } from './Actions';
 
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-
-import { useUser } from '@/contexts/UserContext';
-import { useRoomInfo } from '@/contexts/RoomContext';
-import useWebSocketReceiver, {
-  GameWSEvents
-} from '@/hooks/useWebSocketReceiver';
 
 import Actions from './Actions';
 import GameSettle from './GameSettle';
 import PublicCards from './PublicCards';
 import MiddleButton from './MiddleButton';
 import PublicMessage from './PublicMessage';
+import { useUser } from '@/contexts/UserContext';
 import ReanimatedNumber from './ReanimatedNumber';
+import { useRoomInfo } from '@/contexts/RoomContext';
+import useWebSocketReceiver, {
+  GameWSEvents
+} from '@/hooks/useWebSocketReceiver';
 
 const MiddleCommon = () => {
   const [totalPool, setTotalPool] = useState<number>(0);

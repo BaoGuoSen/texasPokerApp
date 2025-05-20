@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 
 type ErrorModalProps = {
   visible: boolean;

@@ -1,8 +1,8 @@
 import type { Player } from '@/types';
 
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, Easing, Animated } from 'react-native';
 import { Image } from 'expo-image';
+import React, { useRef, useEffect } from 'react';
+import { View, Text, Easing, Animated, StyleSheet } from 'react-native';
 
 import { PlayerCard } from './PlayerCard';
 

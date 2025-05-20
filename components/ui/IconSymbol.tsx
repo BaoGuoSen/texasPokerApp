@@ -1,9 +1,8 @@
 // This file is a fallback for using MaterialIcons on Android and web.
-
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight } from 'expo-symbols';
 import React from 'react';
-import { OpaqueColorValue, StyleProp, ViewStyle } from 'react-native';
+import { SymbolWeight } from 'expo-symbols';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { StyleProp, ViewStyle, OpaqueColorValue } from 'react-native';
 
 // Add your SFSymbol to MaterialIcons mappings here.
 const MAPPING = {

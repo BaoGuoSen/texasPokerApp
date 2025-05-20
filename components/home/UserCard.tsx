@@ -1,8 +1,8 @@
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { ThemeConfig } from '@/constants/ThemeConfig';
 import { useUser } from '@/contexts/UserContext';
+import { ThemeConfig } from '@/constants/ThemeConfig';
 
 export function UserCard() {
   const { user, logout } = useUser();

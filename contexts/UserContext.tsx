@@ -1,13 +1,13 @@
 import type { User } from 'texas-poker-core';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
-  createContext,
-  useContext,
   useState,
   useEffect,
-  ReactNode
+  ReactNode,
+  useContext,
+  createContext
 } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getUser, login as loginService } from '@/service';
 
@@ -43,7 +43,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       const userInfo = await getUser();
 
       setUser(userInfo);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setUser(undefined);
     } finally {

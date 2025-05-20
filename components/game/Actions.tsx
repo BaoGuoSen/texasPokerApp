@@ -1,13 +1,13 @@
 import type { ActionType } from 'texas-poker-core';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
-import Slider from '@react-native-community/slider';
 import { throttle } from 'lodash';
-
-import { useRoomInfo } from '@/contexts/RoomContext';
+import Slider from '@react-native-community/slider';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import { View, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { doAction } from '@/service';
+import { useRoomInfo } from '@/contexts/RoomContext';
+
 export interface ActionsState {
   actions?: ActionType[];
   minBet?: number;

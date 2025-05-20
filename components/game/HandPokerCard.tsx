@@ -1,13 +1,11 @@
 import type { Poke, Suit, Rank } from 'texas-poker-core';
 
-import { StyleSheet, View } from 'react-native';
 import { ImageBackground } from 'expo-image';
-
-import Svg, { Text, G } from 'react-native-svg';
-
-import { ThemeConfig } from '@/constants/ThemeConfig';
+import { View, StyleSheet } from 'react-native';
+import Svg, { G, Text } from 'react-native-svg';
 
 import HandPokerSuits from './HandPokerSuits';
+import { ThemeConfig } from '@/constants/ThemeConfig';
 
 export type PokerCardProps = {
   value: Poke | string;

@@ -1,8 +1,8 @@
 import type { Suit } from 'texas-poker-core';
 
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
+import { View, StyleSheet } from 'react-native';
 
 // 渲染黑桃
 const Spade = () => (

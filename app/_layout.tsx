@@ -1,11 +1,11 @@
-import { useFonts } from 'expo-font';
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
+import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { useEffect } from 'react';
 import {
-  configureReanimatedLogger,
-  ReanimatedLogLevel
+  ReanimatedLogLevel,
+  configureReanimatedLogger
 } from 'react-native-reanimated';
 
 import { UserProvider } from '@/contexts/UserContext';
