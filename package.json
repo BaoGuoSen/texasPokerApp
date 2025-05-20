@@ -79,6 +79,6 @@
     "**/*.{js,jsx,ts,tsx,md,json}": [
       "npx prettier"
     ],
-    "**/*.{ts,tsx}": "npm run lint"
+    "**/*.{ts,tsx}": "npx eslint"
   }
 }

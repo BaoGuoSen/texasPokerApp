@@ -1,4 +1,4 @@
-import type { Room } from "@/types";
+import type { Room } from '@/types';
 
 import { StyleSheet, TouchableHighlight, Text, View } from 'react-native';
 import { ImageBackground, Image } from 'expo-image';
@@ -11,26 +11,30 @@ export type IProps = {
   refresh: () => void;
 };
 
-export function RoomCard({
-  room,
-  refresh
-}: IProps) {
+export function RoomCard({ room, refresh }: IProps) {
   const router = useRouter();
   const { user } = useUser();
 
   const handlePress = async () => {
-    router.push({ pathname: '/game', params: { roomId: room.id, ownerId: room.owner.id } })
+    router.push({
+      pathname: '/game',
+      params: { roomId: room.id, ownerId: room.owner.id }
+    });
   };
 
   const handleDelete = async () => {
-    await deleteRoom({ id: room.id })
+    await deleteRoom({ id: room.id });
 
     refresh();
   };
 
   return (
-    <TouchableHighlight onPress={handlePress} underlayColor="#999" style={styles.container}>
-      <ImageBackground contentFit='cover' style={styles.content}>
+    <TouchableHighlight
+      onPress={handlePress}
+      underlayColor="#999"
+      style={styles.container}
+    >
+      <ImageBackground contentFit="cover" style={styles.content}>
         <View style={styles.ownerContainer}>
           <View style={styles.ownerIcon}>
             <Text style={styles.ownerIconText}>owner</Text>
@@ -38,21 +42,27 @@ export function RoomCard({
           <Image source={room.owner.avatar} style={styles.ownerAvatar} />
           <Text style={styles.ownerName}>{room.owner.name} </Text>
         </View>
-        
+
         <View style={styles.roomInfoContainer}>
           <Text style={styles.roomInfoText}>房号：{room?.id.slice(0, -1)}</Text>
-          <Text style={styles.roomInfoText}>玩家：{room.totalCount}/{room.maximumCountOfPlayers}</Text>
-          <Text style={styles.roomInfoText}>小盲注：{room.lowestBetAmount}</Text>
+          <Text style={styles.roomInfoText}>
+            玩家：{room.totalCount}/{room.maximumCountOfPlayers}
+          </Text>
+          <Text style={styles.roomInfoText}>
+            小盲注：{room.lowestBetAmount}
+          </Text>
           <Text style={styles.roomInfoText}>房间状态：{room.status}</Text>
         </View>
 
-        {
-          user?.id === room.owner.id && (
-            <TouchableHighlight underlayColor="#999" style={styles.delete} onPress={handleDelete}>
-              <Text style={styles.deleBtn}>删除</Text>
-              </TouchableHighlight>
-          )
-        }
+        {user?.id === room.owner.id && (
+          <TouchableHighlight
+            underlayColor="#999"
+            style={styles.delete}
+            onPress={handleDelete}
+          >
+            <Text style={styles.deleBtn}>删除</Text>
+          </TouchableHighlight>
+        )}
       </ImageBackground>
     </TouchableHighlight>
   );
@@ -71,7 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 2,
     borderColor: '#1677ff',
-    marginVertical: 4,
+    marginVertical: 4
   },
 
   content: {
@@ -81,7 +91,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    gap: 36,
+    gap: 36
   },
 
   ownerContainer: {
@@ -91,13 +101,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
 
   ownerAvatar: {
     width: 40,
     height: 40,
-    borderRadius: '50%',
+    borderRadius: '50%'
   },
 
   ownerIcon: {
@@ -105,19 +115,19 @@ const styles = StyleSheet.create({
     left: -10,
     top: 5,
     zIndex: 1,
-    transform: [{ rotate: '-45deg' }],
+    transform: [{ rotate: '-45deg' }]
   },
 
   ownerIconText: {
     color: 'pink',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
 
   ownerName: {
     color: '#fff',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
 
   roomInfoContainer: {
@@ -125,13 +135,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     gap: 2,
     flexDirection: 'column',
-    alignItems: 'flex-start',
+    alignItems: 'flex-start'
   },
 
   roomInfoText: {
     color: '#ccc',
     fontSize: 13,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
 
   delete: {

@@ -5,7 +5,7 @@ import { ImageBackground } from 'expo-image';
 
 import Svg, { Text, G } from 'react-native-svg';
 
-import { ThemeConfig } from "@/constants/ThemeConfig";
+import { ThemeConfig } from '@/constants/ThemeConfig';
 
 import HandPokerSuits from './HandPokerSuits';
 
@@ -21,7 +21,7 @@ const suitColors = {
   s: 'black',
   h: 'red',
   d: 'red',
-  c: 'black',
+  c: 'black'
 };
 
 export function HandPokerCard({
@@ -29,44 +29,43 @@ export function HandPokerCard({
   me = false,
   isShowHandsPokes = false
 }: PokerCardProps) {
-  const [type, val] = value.split('') as [Suit, Rank]
+  const [type, val] = value.split('') as [Suit, Rank];
 
   return (
     <ImageBackground
       source={!me ? ThemeConfig.pokerBackImg : ''}
       style={styles.container}
-      contentFit='cover'
+      contentFit="cover"
     >
-      {
-        ((me && val) || isShowHandsPokes) &&  (
-          <ImageBackground>
-            <Svg style={styles.value}>
-              <G>
-                {/* 显示数字 */}
-                <Text
-                  x={val === 't' ? '' : '22%'}
-                  y={'80%'}
-                  fontSize={25}
-                  fill={suitColors[type]}
-                  fontWeight="bold"
-                >
-                  {val?.toUpperCase() === 'T' ? '10' : val?.toUpperCase()}
-                  {/* 10 */}
-                </Text>
-              </G>
-            </Svg>
+      {((me && val) || isShowHandsPokes) && (
+        <ImageBackground>
+          <Svg style={styles.value}>
+            <G>
+              {/* 显示数字 */}
+              <Text
+                x={val === 't' ? '' : '22%'}
+                y={'80%'}
+                fontSize={25}
+                fill={suitColors[type]}
+                fontWeight="bold"
+              >
+                {val?.toUpperCase() === 'T' ? '10' : val?.toUpperCase()}
+                {/* 10 */}
+              </Text>
+            </G>
+          </Svg>
 
-            <View style={styles.bottomSuit}>
-              <HandPokerSuits type={type} />
-            </View>
-          </ImageBackground>
-        )
-      }
-      {
-        me && !val && (
-          <ImageBackground style={styles.meEmpty} source={ThemeConfig.pokerBackImg} />
-        )
-      }
+          <View style={styles.bottomSuit}>
+            <HandPokerSuits type={type} />
+          </View>
+        </ImageBackground>
+      )}
+      {me && !val && (
+        <ImageBackground
+          style={styles.meEmpty}
+          source={ThemeConfig.pokerBackImg}
+        />
+      )}
     </ImageBackground>
   );
 }
@@ -119,6 +118,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '30%',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 });

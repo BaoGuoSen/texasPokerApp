@@ -50,26 +50,10 @@ const Diamond = () => {
 const PokerSuits = ({ type }: { type: Suit }) => {
   return (
     <View style={styles.container}>
-      {
-        type === 's' && (
-          <Spade />
-        )
-      }
-      {
-        type === 'h' && (
-          <Heart />
-        )
-      }
-      {
-        type === 'c' && (
-          <Club />
-        )
-      }
-      {
-        type === 'd' && (
-          <Diamond />
-        )
-      }
+      {type === 's' && <Spade />}
+      {type === 'h' && <Heart />}
+      {type === 'c' && <Club />}
+      {type === 'd' && <Diamond />}
     </View>
   );
 };
@@ -80,13 +64,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '75%',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
 
   svg: {
     width: 72,
-    height: '100%',
+    height: '100%'
   }
 });
 
-export default PokerSuits;    
+export default PokerSuits;

@@ -1,15 +1,18 @@
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 
-import { ThemeConfig } from "@/constants/ThemeConfig";
-import { useUser } from "@/contexts/UserContext";
+import { ThemeConfig } from '@/constants/ThemeConfig';
+import { useUser } from '@/contexts/UserContext';
 
 export function UserCard() {
   const { user, logout } = useUser();
 
   return (
     <View style={styles.container}>
-      <Image style={styles.avatar} source={user?.avatar || ThemeConfig.defaultAvatar} />
+      <Image
+        style={styles.avatar}
+        source={user?.avatar || ThemeConfig.defaultAvatar}
+      />
       <Text style={styles.name}>{user?.name}</Text>
 
       <TouchableOpacity style={styles.logout} onPress={logout}>
@@ -27,7 +30,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 4,
+    padding: 4
   },
 
   avatar: {

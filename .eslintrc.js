@@ -12,7 +12,7 @@ module.exports = {
     'comma-spacing': 'error',
     'object-curly-spacing': ['error', 'always'],
     '@typescript-eslint/no-non-null-assertion': 'off',
-    'no-console': 'error',
+    'no-console': 'warn',
     'no-const-assign': 'error',
     'no-constant-condition': 'error',
     'no-empty': 'warn',

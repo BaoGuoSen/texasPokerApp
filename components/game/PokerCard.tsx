@@ -1,23 +1,25 @@
 import type { Poke, Suit, Rank } from 'texas-poker-core';
 
-import { View, StyleSheet, ViewStyle, TouchableOpacity } from 'react-native';
-import { Image, ImageBackground } from 'expo-image';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { ImageBackground } from 'expo-image';
 import React from 'react';
 import Svg, { Text, G } from 'react-native-svg';
 
-import { ThemeConfig } from "@/constants/ThemeConfig";
+import { ThemeConfig } from '@/constants/ThemeConfig';
 
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  Easing,
+  Easing
 } from 'react-native-reanimated';
 
 import PokerSuits from './PokerSuits';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import { GameWSEvents } from '@/hooks/useWebSocketReceiver';
-import useWebSocketReceiver, { gameEventManager } from '@/hooks/useWebSocketReceiver';
+import useWebSocketReceiver, {
+  gameEventManager
+} from '@/hooks/useWebSocketReceiver';
 import { StageChangeRes, GameEndRes } from '@/types/game';
 
 export type PokerCardProps = {
@@ -31,14 +33,12 @@ const suitColors = {
   s: 'black',
   h: 'red',
   d: 'red',
-  c: 'black',
+  c: 'black'
 };
 
-export const PokerCard = ({
-  value,
-  myIndex,
-}: PokerCardProps) => {
-  const rotate = useSharedValue(0); // 控制旋转角度
+export const PokerCard = ({ value, myIndex }: PokerCardProps) => {
+  // 控制旋转角度
+  const rotate = useSharedValue(0);
   const isFlippedRef = useRef(false);
   const timer = useRef<NodeJS.Timeout | null>(null);
 
@@ -106,9 +106,11 @@ export const PokerCard = ({
   const frontAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { perspective: 1000 }, // 透视效果
-        { rotateY: `${rotate.value + 180}deg` }, // 背面旋转角度
-      ],
+        // 透视效果
+        { perspective: 1000 },
+        // 背面旋转角度
+        { rotateY: `${rotate.value + 180}deg` }
+      ]
     };
   });
 
@@ -116,8 +118,9 @@ export const PokerCard = ({
     return {
       transform: [
         { perspective: 1000 },
-        { rotateY: `${rotate.value}deg` }, // Y 轴旋转
-      ],
+        // Y 轴旋转
+        { rotateY: `${rotate.value}deg` }
+      ]
     };
   });
 
@@ -131,22 +134,23 @@ export const PokerCard = ({
       isFlippedRef.current = false;
       rotate.value = withTiming(360, {
         duration: 500,
-        easing: Easing.inOut(Easing.linear),
+        easing: Easing.inOut(Easing.linear)
       });
     } else {
       isFlippedRef.current = true;
       rotate.value = withTiming(180, {
         duration: 500,
-        easing: Easing.inOut(Easing.linear),
+        easing: Easing.inOut(Easing.linear)
       });
     }
   };
 
-
   return (
     <TouchableOpacity style={styles.container}>
       {/* 正面 */}
-      <Animated.View style={[styles.card, styles.frontCard, frontAnimatedStyle]}>
+      <Animated.View
+        style={[styles.card, styles.frontCard, frontAnimatedStyle]}
+      >
         <Svg style={styles.topValue}>
           <G>
             {/* 显示数字 */}
@@ -170,7 +174,7 @@ export const PokerCard = ({
         <ImageBackground
           source={ThemeConfig.pokerBackImg}
           style={styles.card}
-          contentFit='contain'
+          contentFit="contain"
         />
       </Animated.View>
     </TouchableOpacity>
@@ -183,7 +187,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     width: '15%',
-    height: '100%',
+    height: '100%'
   },
 
   card: {
@@ -191,18 +195,21 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backfaceVisibility: 'hidden', // 隐藏背面
+    // 隐藏背面
+    backfaceVisibility: 'hidden',
     borderRadius: 6,
-    position: 'absolute', // 使正反面重叠
+    // 使正反面重叠
+    position: 'absolute'
   },
 
   frontCard: {
     backgroundColor: '#fff',
-    transform: [{ rotateY: '180deg' }], // 初始状态为背面
+    // 初始状态为背面
+    transform: [{ rotateY: '180deg' }]
   },
 
   backCard: {
-    backgroundColor: ThemeConfig.pokerBackColor,
+    backgroundColor: ThemeConfig.pokerBackColor
   },
 
   topValue: {

@@ -1,9 +1,16 @@
-import type { User } from "texas-poker-core";
+import type { User } from 'texas-poker-core';
 
-import { View, StyleSheet, Text, TextInput, TouchableOpacity, Keyboard } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Keyboard
+} from 'react-native';
 
-import { useUser } from "@/contexts/UserContext";
-import { useRef, useState } from "react";
+import { useUser } from '@/contexts/UserContext';
+import { useRef, useState } from 'react';
 
 export type IProps = {
   user?: User;
@@ -16,8 +23,9 @@ export function Login() {
   const inputRef = useRef(null);
 
   const handleLogin = async () => {
-    Keyboard.dismiss(); // 收起键盘
-    
+    // 收起键盘
+    Keyboard.dismiss();
+
     const trimmedName = name.trim();
     if (!trimmedName) {
       alert('请输入有效姓名');
@@ -33,7 +41,6 @@ export function Login() {
       setIsLoading(false);
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -67,7 +74,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 30,
-    backgroundColor: 'transparent',
+    backgroundColor: 'transparent'
   },
 
   header: {
@@ -75,7 +82,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 40,
     textAlign: 'center',
-    color: '#333',
+    color: '#333'
   },
 
   input: {
@@ -91,7 +98,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 2,
+    elevation: 2
   },
 
   button: {
@@ -104,15 +111,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 3
   },
   disabledButton: {
     opacity: 0.7,
-    backgroundColor: '#6c757d',
+    backgroundColor: '#6c757d'
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '500',
-  },
+    fontWeight: '500'
+  }
 });

@@ -2,7 +2,6 @@ import type { GameStatus } from '@/types/game';
 
 import React, { createContext, useContext, ReactNode } from 'react';
 
-
 // 定义 Context 类型
 type RoomContextType = {
   roomId: string;
@@ -27,16 +26,17 @@ export const useRoomInfo = () => {
 };
 
 export const RoomProvider = ({
-  children, 
-  roomId, 
+  children,
+  roomId,
   matchId,
-  ownerId, 
+  ownerId,
   curButtonUserId,
   gameStatus
-}: { children: ReactNode } & RoomContextType
-) => {
+}: { children: ReactNode } & RoomContextType) => {
   return (
-    <RoomContext.Provider value={{ roomId, matchId, ownerId, curButtonUserId, gameStatus }}>
+    <RoomContext.Provider
+      value={{ roomId, matchId, ownerId, curButtonUserId, gameStatus }}
+    >
       {children}
     </RoomContext.Provider>
   );

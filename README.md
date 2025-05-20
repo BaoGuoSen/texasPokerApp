@@ -54,17 +54,20 @@
 ### 安装步骤
 
 1. 克隆项目
+
    ```bash
    git clone [项目地址]
    cd texas-poker-app
    ```
 
 2. 安装依赖
+
    ```bash
    npm install
    ```
 
 3. 启动应用
+
    ```bash
    npx expo start
    ```

@@ -4,7 +4,6 @@ import type {
   GameStatus,
   GameStartRes,
   PlayerOnSeatRes,
-  PlayerOnWatchRes,
   PlayerTakeActionRes,
   GameEndRes
 } from '@/types/game';
@@ -17,11 +16,14 @@ import { useGlobalSearchParams, useNavigation } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { usePlayers } from '@/hooks/usePlayers';
-import useWebSocketReceiver, { GameWSEvents, WSEvents } from '@/hooks/useWebSocketReceiver';
+import useWebSocketReceiver, {
+  GameWSEvents,
+  WSEvents
+} from '@/hooks/useWebSocketReceiver';
 
 import { splitArray } from '@/utils';
 import { quitGame } from '@/utils/gameControl';
-import { ThemeConfig } from "@/constants/ThemeConfig";
+import { ThemeConfig } from '@/constants/ThemeConfig';
 
 import LeftSide from '@/components/game/LeftSide';
 import RightSidePlayers from '@/components/game/RightSidePlayers';
@@ -32,20 +34,15 @@ import { useUser } from '@/contexts/UserContext';
 import { RoomProvider } from '@/contexts/RoomContext';
 
 export default function Game() {
-  const {
-    roomId = '',
-    ownerId
-  } = useGlobalSearchParams() as { roomId: string; ownerId: string; };
+  const { roomId = '', ownerId } = useGlobalSearchParams() as {
+    roomId: string;
+    ownerId: string;
+  };
 
   const navigation = useNavigation();
   const { user } = useUser();
-  const {
-    playersOnSeat,
-    playersOnWatch,
-    setPlayersOnSeat,
-    setPlayersHang,
-    fetchAllUsers
-  } = usePlayers({ roomId });
+  const { playersOnSeat, playersOnWatch, setPlayersOnSeat, fetchAllUsers } =
+    usePlayers({ roomId });
 
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);
@@ -67,19 +64,23 @@ export default function Game() {
       },
 
       [GameWSEvents.SetRole]: (setRoleRes: SetRoleRes[]) => {
-        const curButtonUserId = setRoleRes.find((player) => player.role === 'button')?.userId;
+        const curButtonUserId = setRoleRes.find(
+          (player) => player.role === 'button'
+        )?.userId;
         setCurButtonUserId(curButtonUserId);
 
         if (status === 'unReady') {
           // 第一次由房主确认游戏玩家后，给在座的每个 player 添加 role
           const playersWithRole = playersOnSeat.map((player) => {
-            const role = setRoleRes.find((item) => item.userId === player.id)?.role;
+            const role = setRoleRes.find(
+              (item) => item.userId === player.id
+            )?.role;
 
             return {
               ...player,
               role
-            }
-          })
+            };
+          });
 
           setStatus('waiting');
           setPlayersOnSeat(playersWithRole);
@@ -98,18 +99,17 @@ export default function Game() {
           }
 
           return player;
-        })
+        });
 
         setStatus('running');
         setPlayersOnSeat(playerWithPokes);
         setMatchId(matchId);
       },
 
-      [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
-        const {
-          userInfo: { id: userId } = {},
-          balance
-        } = playerTakeActionRes;
+      [GameWSEvents.PlayerTakeAction]: (
+        playerTakeActionRes: PlayerTakeActionRes
+      ) => {
+        const { userInfo: { id: userId } = {}, balance } = playerTakeActionRes;
 
         const newPlayersOnSeat = playersOnSeat.map((player) => {
           if (player.id === userId) {
@@ -117,7 +117,7 @@ export default function Game() {
           }
 
           return player;
-        })
+        });
 
         setPlayersOnSeat(newPlayersOnSeat);
       },
@@ -126,7 +126,7 @@ export default function Game() {
         setPlayersOnSeat([...playersOnSeat, playerOnSeatRes]);
       },
 
-      [GameWSEvents.PlayerOnWatch]: (playerOnWatchRes: PlayerOnWatchRes) => {
+      [GameWSEvents.PlayerOnWatch]: () => {
         // TODO 暂时没有观战入口
       },
 
@@ -138,8 +138,13 @@ export default function Game() {
           const settle = settleList.find((item) => item.userId === player.id);
           const role = endRoles.find((item) => item.userId === player.id)?.role;
 
-          return { ...player, balance: settle?.balance ?? player.balance, pokes: ['', ''], role };
-        })
+          return {
+            ...player,
+            balance: settle?.balance ?? player.balance,
+            pokes: ['', ''],
+            role
+          };
+        });
 
         setPlayersOnSeat(newPlayersOnSeat);
         resetGame();
@@ -149,7 +154,7 @@ export default function Game() {
 
   const resetGame = () => {
     setStatus('waiting');
-  }
+  };
 
   useEffect(() => {
     if (playersOnSeat.length !== 0) {
@@ -158,32 +163,35 @@ export default function Game() {
       setLeftPlayers(leftPlayers);
       setRightPlayers(rightPlayers);
     }
-  }, [playersOnSeat, playersOnWatch])
+  }, [playersOnSeat, playersOnWatch]);
 
   return (
     <RoomProvider
-      roomId={roomId} 
-      matchId={matchId} 
-      ownerId={Number(ownerId)} 
+      roomId={roomId}
+      matchId={matchId}
+      ownerId={Number(ownerId)}
       curButtonUserId={curButtonUserId}
       gameStatus={status}
     >
       <ImageBackground
-        contentFit='cover'
+        contentFit="cover"
         source={ThemeConfig.gameBackImg}
         style={styles.container}
-    >
-      <TouchableOpacity onPress={() => quitGame(navigation, roomId)} style={styles.closeBtn}>
-        <Icon name="close" size={24} color="#333" />
-      </TouchableOpacity>
+      >
+        <TouchableOpacity
+          onPress={() => quitGame(navigation, roomId)}
+          style={styles.closeBtn}
+        >
+          <Icon name="close" size={24} color="#333" />
+        </TouchableOpacity>
 
-      {/* <TouchableOpacity onPress={end} style={styles.endGame}>
+        {/* <TouchableOpacity onPress={end} style={styles.endGame}>
         <Icon name="lock-closed" size={24} color="#333" />
       </TouchableOpacity> */}
 
-      <LeftSide players={leftPlayers} playersHang={playersOnWatch} />
+        <LeftSide players={leftPlayers} playersHang={playersOnWatch} />
 
-      <MiddleCommon />
+        <MiddleCommon />
 
         <RightSidePlayers players={rightPlayers} />
       </ImageBackground>
@@ -213,7 +221,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: 30,
     height: 30,
-    zIndex: 100,
+    zIndex: 100
   },
 
   endGame: {
@@ -226,6 +234,6 @@ const styles = StyleSheet.create({
     borderRadius: '50%',
     backgroundColor: 'red',
     width: 30,
-    height: 30,
-  },
+    height: 30
+  }
 });

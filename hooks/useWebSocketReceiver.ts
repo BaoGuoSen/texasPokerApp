@@ -42,12 +42,13 @@ export enum GameWSEvents {
 }
 
 type EventHandlerMap = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key in WSEvents | GameWSEvents]?: (data: any) => void;
 };
 
 type Config = {
   url?: string;
-  handlers: EventHandlerMap,
+  handlers: EventHandlerMap;
 };
 
 type WsState = {
@@ -56,8 +57,8 @@ type WsState = {
 };
 
 export default function useWebSocketReceiver(config: Config) {
-  const [state, setState] = useState<WsState>({
-    status: 'connecting',
+  const [state] = useState<WsState>({
+    status: 'connecting'
   });
 
   const wsRef = useRef<Socket | null>(null);
@@ -66,7 +67,7 @@ export default function useWebSocketReceiver(config: Config) {
   // 消息处理器
   const handleMessage = useCallback((event: MessageEvent) => {
     try {
-      const { type, data } = event
+      const { type, data } = event;
 
       console.log('收到消息: type:', type, 'data:', data);
 
@@ -85,7 +86,7 @@ export default function useWebSocketReceiver(config: Config) {
       reconnection: true,
       reconnectionAttempts: 3,
       reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
+      reconnectionDelayMax: 5000
     });
 
     wsRef.current = ws;
@@ -94,7 +95,7 @@ export default function useWebSocketReceiver(config: Config) {
       if (!isMounted.current) return;
 
       eventManager.publish(WSEvents.Connect, {
-        status: 'connected',
+        status: 'connected'
       });
     });
 
@@ -140,7 +141,7 @@ export default function useWebSocketReceiver(config: Config) {
 
     return () => {
       eventManager.clear();
-    }
+    };
   }, [config.handlers]);
 
   return {

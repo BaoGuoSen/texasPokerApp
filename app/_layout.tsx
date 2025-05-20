@@ -1,12 +1,12 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useEffect } from 'react';
-import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel
+} from 'react-native-reanimated';
 
 import { UserProvider } from '@/contexts/UserContext';
 import { ErrorProvider } from '@/contexts/ErrorContext';
@@ -14,16 +14,16 @@ import { ErrorProvider } from '@/contexts/ErrorContext';
 // This is the default configuration
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
-  strict: false, // Reanimated runs in strict mode by default
+  // Reanimated runs in strict mode by default
+  strict: false
 });
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf')
   });
 
   useEffect(() => {
@@ -33,7 +33,9 @@ export default function RootLayout() {
   }, [loaded]);
 
   useEffect(() => {
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT);
+    ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
+    );
   }, []);
 
   if (!loaded) {
@@ -46,11 +48,19 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             // 禁用所有屏幕的返回手势
-            gestureEnabled: false,
+            gestureEnabled: false
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="game" options={{ headerShown: false, headerBackButtonDisplayMode: 'minimal', headerBackVisible: true, headerBackTitle: '', }} />
+          <Stack.Screen
+            name="game"
+            options={{
+              headerShown: false,
+              headerBackButtonDisplayMode: 'minimal',
+              headerBackVisible: true,
+              headerBackTitle: ''
+            }}
+          />
         </Stack>
       </ErrorProvider>
     </UserProvider>
