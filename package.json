@@ -77,7 +77,7 @@
   "private": true,
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,md,json}": [
-      "npm run prettier"
+      "npx prettier"
     ],
     "**/*.{ts,tsx}": "npm run lint"
   }
