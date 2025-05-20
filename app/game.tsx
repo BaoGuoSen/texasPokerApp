@@ -2,40 +2,39 @@ import type { Player } from '@/types';
 import type {
   SetRoleRes,
   GameStatus,
+  GameEndRes,
   GameStartRes,
   PlayerOnSeatRes,
-  PlayerOnWatchRes,
-  PlayerTakeActionRes,
-  GameEndRes
+  PlayerTakeActionRes
 } from '@/types/game';
 
-import { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
 import { ImageBackground } from 'expo-image';
-import { useGlobalSearchParams, useNavigation } from 'expo-router';
 // @ts-ignore
 import Icon from 'react-native-vector-icons/Ionicons';
-
-import { usePlayers } from '@/hooks/usePlayers';
-import useWebSocketReceiver, { GameWSEvents, WSEvents } from '@/hooks/useWebSocketReceiver';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation, useGlobalSearchParams } from 'expo-router';
 
 import { splitArray } from '@/utils';
-import { quitGame } from '@/utils/gameControl';
-import { ThemeConfig } from "@/constants/ThemeConfig";
-
-import LeftSide from '@/components/game/LeftSide';
-import RightSidePlayers from '@/components/game/RightSidePlayers';
-import MiddleCommon from '@/components/game/MiddleCommon';
-
 import { joinRoom } from '@/service';
+import { quitGame } from '@/utils/gameControl';
+import { usePlayers } from '@/hooks/usePlayers';
 import { useUser } from '@/contexts/UserContext';
+import LeftSide from '@/components/game/LeftSide';
+import { ThemeConfig } from '@/constants/ThemeConfig';
 import { RoomProvider } from '@/contexts/RoomContext';
+import MiddleCommon from '@/components/game/MiddleCommon';
+import RightSidePlayers from '@/components/game/RightSidePlayers';
+import useWebSocketReceiver, {
+  WSEvents,
+  GameWSEvents
+} from '@/hooks/useWebSocketReceiver';
 
 export default function Game() {
-  const {
-    roomId = '',
-    ownerId
-  } = useGlobalSearchParams() as { roomId: string; ownerId: string; };
+  const { roomId = '', ownerId } = useGlobalSearchParams() as {
+    roomId: string;
+    ownerId: string;
+  };
 
   const navigation = useNavigation();
   const { user } = useUser();
@@ -77,8 +76,8 @@ export default function Game() {
             return {
               ...player,
               role
-            }
-          })
+            };
+          });
 
           setStatus('waiting');
           setPlayersOnSeat(playersWithRole);
@@ -97,7 +96,7 @@ export default function Game() {
           }
 
           return player;
-        })
+        });
 
         setStatus('running');
         setPlayersOnSeat(playerWithPokes);
@@ -116,7 +115,7 @@ export default function Game() {
           }
 
           return player;
-        })
+        });
 
         setPlayersOnSeat(newPlayersOnSeat);
       },
@@ -125,7 +124,7 @@ export default function Game() {
         setPlayersOnSeat([...playersOnSeat, playerOnSeatRes.userInfo]);
       },
 
-      [GameWSEvents.PlayerOnWatch]: (playerOnWatchRes: PlayerOnWatchRes) => {
+      [GameWSEvents.PlayerOnWatch]: () => {
         // TODO 暂时没有观战入口
       },
 
@@ -148,7 +147,7 @@ export default function Game() {
 
   const resetGame = () => {
     setStatus('waiting');
-  }
+  };
 
   useEffect(() => {
     if (playersOnSeat.length !== 0) {
@@ -157,32 +156,35 @@ export default function Game() {
       setLeftPlayers(leftPlayers);
       setRightPlayers(rightPlayers);
     }
-  }, [playersOnSeat, playersOnWatch])
+  }, [playersOnSeat, playersOnWatch]);
 
   return (
     <RoomProvider
-      roomId={roomId} 
-      matchId={matchId} 
-      ownerId={Number(ownerId)} 
+      roomId={roomId}
+      matchId={matchId}
+      ownerId={Number(ownerId)}
       curButtonUserId={curButtonUserId}
       gameStatus={status}
     >
       <ImageBackground
-        contentFit='cover'
+        contentFit="cover"
         source={ThemeConfig.gameBackImg}
         style={styles.container}
-    >
-      <TouchableOpacity onPress={() => quitGame(navigation, roomId)} style={styles.closeBtn}>
-        <Icon name="close" size={24} color="#333" />
-      </TouchableOpacity>
+      >
+        <TouchableOpacity
+          onPress={() => quitGame(navigation, roomId)}
+          style={styles.closeBtn}
+        >
+          <Icon name="close" size={24} color="#333" />
+        </TouchableOpacity>
 
-      {/* <TouchableOpacity onPress={end} style={styles.endGame}>
+        {/* <TouchableOpacity onPress={end} style={styles.endGame}>
         <Icon name="lock-closed" size={24} color="#333" />
       </TouchableOpacity> */}
 
-      <LeftSide players={leftPlayers} playersHang={playersOnWatch} />
+        <LeftSide players={leftPlayers} playersHang={playersOnWatch} />
 
-      <MiddleCommon />
+        <MiddleCommon />
 
         <RightSidePlayers players={rightPlayers} />
       </ImageBackground>
@@ -212,7 +214,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: 30,
     height: 30,
-    zIndex: 100,
+    zIndex: 100
   },
 
   endGame: {
@@ -225,6 +227,6 @@ const styles = StyleSheet.create({
     borderRadius: '50%',
     backgroundColor: 'red',
     width: 30,
-    height: 30,
-  },
+    height: 30
+  }
 });

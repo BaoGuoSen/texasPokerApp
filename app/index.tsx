@@ -1,20 +1,26 @@
-import type { Room } from "@/types";
+import type { Room } from '@/types';
 
-import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableHighlight, RefreshControl } from 'react-native';
-import { useRouter } from "expo-router";
+import { useRouter } from 'expo-router';
+import { useState, useEffect } from 'react';
 import { ImageBackground } from 'expo-image';
 import LottieView from 'lottie-react-native';
 import { useIsFocused } from '@react-navigation/native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  RefreshControl,
+  TouchableHighlight
+} from 'react-native';
 
-import { createGame, getAllRooms } from '@/service';
-import { RoomCard } from "@/components/home/RoomCard";
-import { UserCard } from "@/components/home/UserCard";
-import { Login } from "@/components/home/Login";
+import { Login } from '@/components/home/Login';
 import { useUser } from '@/contexts/UserContext';
-
-import { ThemeConfig } from "@/constants/ThemeConfig";
-import { gameEventManager } from "@/hooks/useWebSocketReceiver";
+import { createGame, getAllRooms } from '@/service';
+import { RoomCard } from '@/components/home/RoomCard';
+import { UserCard } from '@/components/home/UserCard';
+import { ThemeConfig } from '@/constants/ThemeConfig';
+import { gameEventManager } from '@/hooks/useWebSocketReceiver';
 
 export default function HomeScreen() {
   // 检查页面是否处于焦点状态，页面返回刷新列表数据
@@ -32,11 +38,11 @@ export default function HomeScreen() {
       allowPlayersToWatch: false,
       // 思考时间 单位秒
       thinkingTime: 90
-    })
-    
+    });
+
     // 创建房间后，跳转到房间页面
-    router.push({ pathname: '/game', params: { roomId, ownerId: user?.id } })
-  }
+    router.push({ pathname: '/game', params: { roomId, ownerId: user?.id } });
+  };
 
   const fetchData = async () => {
     const rooms = await getAllRooms();
@@ -59,55 +65,60 @@ export default function HomeScreen() {
       style={styles.container}
     >
       <View style={styles.infos}>
-        {
-          user ? (
-            <>
-              <UserCard />
+        {user ? (
+          <>
+            <UserCard />
 
-              <TouchableHighlight underlayColor="#999" onPress={createRoom} style={styles.cycle}>
-                <Text style={styles.startBtn}>创建房间</Text>
-              </TouchableHighlight>
-            </>
-          ) : (
-            <Login />
-          )
-        }
+            <TouchableHighlight
+              underlayColor="#999"
+              onPress={createRoom}
+              style={styles.cycle}
+            >
+              <Text style={styles.startBtn}>创建房间</Text>
+            </TouchableHighlight>
+          </>
+        ) : (
+          <Login />
+        )}
       </View>
 
-      {
-        rooms?.length === 0 ? (
-          <View style={styles.rooms}>
-            <LottieView
-              source={ThemeConfig.roomEmptyLottie}
-              autoPlay
-              loop
-              style={styles.emptyList}
-              resizeMode='cover'
-            />
-          </View>
-        ) : (
-          <FlatList
-            style={styles.rooms}
-            data={rooms}
-            renderItem={({ item, index }) => <RoomCard key={index} refresh={fetchData} room={item} />}
-            keyExtractor={item => item?.id}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={async () => {
-                  setRefreshing(true);
-                  await fetchData();
-                  setRefreshing(false);
-                }}
-                colors={['#fff', '#fff', '#fff']} // Android 刷新图标颜色
-                tintColor="#fff" // iOS 刷新指示器颜色
-                // title="下拉刷新..." // iOS 刷新提示文字
-                titleColor="#fff" // iOS 刷新提示文字颜色
-              />
-            }
+      {rooms?.length === 0 ? (
+        <View style={styles.rooms}>
+          <LottieView
+            source={ThemeConfig.roomEmptyLottie}
+            autoPlay
+            loop
+            style={styles.emptyList}
+            resizeMode="cover"
           />
-        )
-      }
+        </View>
+      ) : (
+        <FlatList
+          style={styles.rooms}
+          data={rooms}
+          renderItem={({ item, index }) => (
+            <RoomCard key={index} refresh={fetchData} room={item} />
+          )}
+          keyExtractor={(item) => item?.id}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={async () => {
+                setRefreshing(true);
+                await fetchData();
+                setRefreshing(false);
+              }}
+              // Android 刷新图标颜色
+              colors={['#fff', '#fff', '#fff']}
+              // iOS 刷新指示器颜色
+              tintColor="#fff"
+              // title="下拉刷新..." // iOS 刷新提示文字
+              // iOS 刷新提示文字颜色
+              titleColor="#fff"
+            />
+          }
+        />
+      )}
     </ImageBackground>
   );
 }
@@ -125,7 +136,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '40%',
     height: '100%',
-    zIndex: -1, // 将动画置于底层
+    // 将动画置于底层
+    zIndex: -1
   },
 
   infos: {
@@ -139,12 +151,12 @@ const styles = StyleSheet.create({
 
   rooms: {
     width: '60%',
-    height: '100%',
+    height: '100%'
   },
 
   emptyList: {
     width: '100%',
-    height: '100%',
+    height: '100%'
   },
 
   cycle: {

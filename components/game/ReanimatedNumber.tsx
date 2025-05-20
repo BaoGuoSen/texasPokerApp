@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
 import { TextStyle } from 'react-native';
 import Animated, {
-  useSharedValue,
-  withTiming,
   Easing,
+  withTiming,
   withSequence,
-  useAnimatedStyle,
+  useSharedValue,
+  useAnimatedStyle
 } from 'react-native-reanimated';
 
 const ReanimatedNumber = ({
   value,
   textStyle = {},
-  expandScale = 1.3,
+  expandScale = 1.3
 }: {
-  value: number,
-  textStyle: TextStyle,
-  expandScale?: number,
+  value: number;
+  textStyle: TextStyle;
+  expandScale?: number;
 }) => {
   const scale = useSharedValue(1);
 
@@ -23,12 +23,12 @@ const ReanimatedNumber = ({
     // 先放大再缩回
     scale.value = withSequence(
       withTiming(expandScale, { duration: 200 }),
-      withTiming(1, { duration: 300, easing: Easing.out(Easing.elastic(1)) }),
+      withTiming(1, { duration: 300, easing: Easing.out(Easing.elastic(1)) })
     );
   }, [value]);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    transform: [{ scale: scale.value }]
   }));
 
   return (

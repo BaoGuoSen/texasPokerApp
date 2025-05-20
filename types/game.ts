@@ -1,6 +1,11 @@
-import type { Stage } from "texas-poker-core/types/Controller";
-import type { Poke } from "texas-poker-core/types/Deck/constant";
-import type { ActionType, Player, Role, User } from "texas-poker-core/types/Player";
+import type {
+  Poke,
+  Role,
+  User,
+  Stage,
+  Player,
+  ActionType
+} from 'texas-poker-core';
 
 /**
  * 游戏状态
@@ -27,18 +32,18 @@ export type GameStatus = 'unReady' | 'waiting' | 'running' | 'pause' | 'end';
  * - player-on-watch 玩家观战
  */
 export type WsType =
-	'set-role' |
-	'game-start' |
-	'pre-action' |
-	'player-active' |
-	'player-take-action' |
-	'stage-change' |
-	'game-end' |
-	'player-leave' |
-	'player-offline' |
-	'player-on-seat' |
-	'player-on-watch' |
-	'player-join'
+  | 'set-role'
+  | 'game-start'
+  | 'pre-action'
+  | 'player-active'
+  | 'player-take-action'
+  | 'stage-change'
+  | 'game-end'
+  | 'player-leave'
+  | 'player-offline'
+  | 'player-on-seat'
+  | 'player-on-watch'
+  | 'player-join';
 
 export interface SetRoleRes {
 	userInfo: Pick<User, 'id'>
@@ -101,12 +106,10 @@ export interface PlayerTakeActionRes {
  * 游戏进程改变
  */
 export interface StageChangeRes {
-	// 最新游戏进程
-	stage: Stage;
-	// 公共牌
-	restCommonPokes: [
-		Poke
-	]
+  // 最新游戏进程
+  stage: Stage;
+  // 公共牌
+  restCommonPokes: [Poke];
 }
 
 /**
@@ -179,21 +182,22 @@ export interface PlayerOnWatchRes extends Player {
 }
 
 export interface WsData {
-	/**
-	 * ws 消息类型
-	 * - set-role 设置玩家角色
-	 * - game-start 游戏开始 开始发牌
-	 * - pre-action 处于行动阶段的玩家
-	 * - player-active 向其他端推送当前正在行动的玩家id
-	 * - player-take-action 行动玩家的操作
-	 * - stage-change 游戏进程改变
-	 * - game-end 游戏结束
-	 * - player-leave 玩家离开
-	 * - player-offline 玩家离线
-	 * - player-on-seat 玩家上座
-	 * - player-on-watch 玩家观战
-	 */
-	type: WsType;
-	data: any;
-	// data: GameReadyRes | GameStartRes | PreActionRes | PlayerActiveRes | PlayerTakeActionRes | StageChangeRes | GameEndRes | GameSettleRes | PlayerLeaveRes | PlayerOfflineRes | PlayerOnSeatRes | PlayerOnWatchRes;
+  /**
+   * ws 消息类型
+   * - set-role 设置玩家角色
+   * - game-start 游戏开始 开始发牌
+   * - pre-action 处于行动阶段的玩家
+   * - player-active 向其他端推送当前正在行动的玩家id
+   * - player-take-action 行动玩家的操作
+   * - stage-change 游戏进程改变
+   * - game-end 游戏结束
+   * - player-leave 玩家离开
+   * - player-offline 玩家离线
+   * - player-on-seat 玩家上座
+   * - player-on-watch 玩家观战
+   */
+  type: WsType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
+  // data: GameReadyRes | GameStartRes | PreActionRes | PlayerActiveRes | PlayerTakeActionRes | StageChangeRes | GameEndRes | GameSettleRes | PlayerLeaveRes | PlayerOfflineRes | PlayerOnSeatRes | PlayerOnWatchRes;
 }

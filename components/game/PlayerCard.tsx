@@ -1,26 +1,30 @@
-import type { Player } from '@/types'
-import type { GameEndRes, GameStartRes, PlayerActionRes, PlayerTakeActionRes } from '@/types/game';
+import type { Player } from '@/types';
+import type {
+  GameEndRes,
+  GameStartRes,
+  PlayerActionRes,
+  PlayerTakeActionRes
+} from '@/types/game';
 
-import { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, ViewStyle } from 'react-native';
+import { roleMap } from 'texas-poker-core';
+import { useState, useEffect } from 'react';
+import Svg, { Circle } from 'react-native-svg';
 import { Image, ImageBackground } from 'expo-image';
+import { View, Text, StyleSheet } from 'react-native';
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
+  Easing,
   withRepeat,
   withTiming,
-  Easing,
+  useSharedValue,
+  useAnimatedStyle
 } from 'react-native-reanimated';
-import Svg, { Circle } from 'react-native-svg';
 
-// @ts-ignore strange code error
-import { roleMap } from 'texas-poker-core/dist/Player/constant';
-
-import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
-
-import { ThemeConfig } from '@/constants/ThemeConfig';
 import { HandPokerCard } from './HandPokerCard';
 import ReanimatedNumber from './ReanimatedNumber';
+import { ThemeConfig } from '@/constants/ThemeConfig';
+import useWebSocketReceiver, {
+  GameWSEvents
+} from '@/hooks/useWebSocketReceiver';
 
 export function PlayerCard({
   balance = 0,
@@ -41,26 +45,21 @@ export function PlayerCard({
   // 定义动画样式
   const fadeOutStyle = useAnimatedStyle(() => {
     return {
-      transform: [
-        { translateY: translateY.value }
-      ],
+      transform: [{ translateY: translateY.value }]
     };
   });
 
   useEffect(() => {
     if (isFold) {
-      translateY.value = withTiming(
-        -1000,
-        {
-          duration: 500,
-          easing: Easing.out(Easing.ease),
-        }
-      );
+      translateY.value = withTiming(-1000, {
+        duration: 500,
+        easing: Easing.out(Easing.ease)
+      });
     } else {
       // 还原
       translateY.value = withTiming(0, {
         duration: 600,
-        easing: Easing.out(Easing.ease),
+        easing: Easing.out(Easing.ease)
       });
     }
   }, [isFold]);
@@ -83,7 +82,9 @@ export function PlayerCard({
         setIsActive(userInfo.id === id);
       },
 
-      [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
+      [GameWSEvents.PlayerTakeAction]: (
+        playerTakeActionRes: PlayerTakeActionRes
+      ) => {
         const {
           userInfo,
           actionType,
@@ -112,14 +113,16 @@ export function PlayerCard({
     }
   });
 
-  const progress = useSharedValue(0); // 控制动画进度
+  // 控制动画进度
+  const progress = useSharedValue(0);
 
   // 定义动画样式
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { rotate: `${progress.value * 360}deg` }, // 旋转动画
-      ],
+        // 旋转动画
+        { rotate: `${progress.value * 360}deg` }
+      ]
     };
   });
 
@@ -129,68 +132,81 @@ export function PlayerCard({
       progress.value = withRepeat(
         withTiming(1, {
           duration: 2000,
-          easing: Easing.linear,
+          easing: Easing.linear
         }),
-        -1, // 无限循环
+        // 无限循环
+        -1
         // true // 往返动画
       );
     } else {
-      progress.value = withTiming(0); // 停止动画
+      // 停止动画
+      progress.value = withTiming(0);
     }
   }, [isActive]);
 
   return (
     <Animated.View style={[styles.animated, fadeOutStyle]}>
-      <ImageBackground style={styles.container} contentFit='cover' source={backgroudUrl}>
+      <ImageBackground
+        style={styles.container}
+        contentFit="cover"
+        source={backgroudUrl}
+      >
         <View style={[styles.avatarContainer]}>
-          {
-          me && (
-            <View style={styles.meTitle} />
-          )
-        }
+          {me && <View style={styles.meTitle} />}
 
-        {
-          role && (
-            <Text style={styles.role}>{roleMap.get(role) || ''}</Text>
-          )
-        }
+          {role && <Text style={styles.role}>{roleMap.get(role) || ''}</Text>}
 
-        <Image source={avatar} contentFit='cover' style={[styles.avator, me ? styles.me : '']} />
+          <Image
+            source={avatar}
+            contentFit="cover"
+            style={[styles.avator, me ? styles.me : '']}
+          />
 
-        {/* 边框动画 */}
-        {
-          isActive && (
+          {/* 边框动画 */}
+          {isActive && (
             <Animated.View style={[styles.borderContainer, animatedStyle]}>
               <Svg width="60" height="60">
                 <Circle
                   cx="30"
                   cy="30"
-                  r="29" // 半径略小于头像
-                  stroke="red" // 边框颜色
-                  strokeWidth="4" // 边框宽度
+                  // 半径略小于头像
+                  r="29"
+                  // 边框颜色
+                  stroke="red"
+                  // 边框宽度
+                  strokeWidth="4"
                   fill="none"
-                  strokeDasharray="10 5" // 虚线样式
+                  // 虚线样式
+                  strokeDasharray="10 5"
                 />
               </Svg>
             </Animated.View>
-          )
-        }
-      </View>
+          )}
+        </View>
 
-      <View style={styles.content}>
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.myAction}>{myAction}</Text>
-        <ReanimatedNumber value={balance} textStyle={styles.price} expandScale={1.1} />
-      </View>
+        <View style={styles.content}>
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.myAction}>{myAction}</Text>
+          <ReanimatedNumber
+            value={balance}
+            textStyle={styles.price}
+            expandScale={1.1}
+          />
+        </View>
 
-      <View style={styles.handPokerContainer}>
-        {
-          pokes.map((item, index) => {
-            return <HandPokerCard key={index} value={item} me={me} isShowHandsPokes={isShowHandsPokes} />
-          })
-        }
-      </View>
-    </ImageBackground>
+        <View style={styles.handPokerContainer}>
+          {pokes.map((item, index) => {
+            return (
+              <HandPokerCard
+                key={index}
+                value={item}
+                me={me}
+                isShowHandsPokes={isShowHandsPokes}
+              />
+            );
+          })}
+        </View>
+      </ImageBackground>
     </Animated.View>
   );
 }
@@ -199,7 +215,7 @@ const styles = StyleSheet.create({
   animated: {
     width: '100%',
     height: '100%',
-    maxHeight: '18%',
+    maxHeight: '18%'
   },
 
   container: {
@@ -221,20 +237,20 @@ const styles = StyleSheet.create({
     width: '25%',
     height: '90%',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
 
   avator: {
     width: '100%',
     height: '100%',
     borderWidth: 2,
-    borderRadius: '50%',
+    borderRadius: '50%'
   },
 
   borderContainer: {
     position: 'absolute',
     width: 60,
-    height: 60,
+    height: 60
   },
 
   me: {
@@ -282,7 +298,7 @@ const styles = StyleSheet.create({
 
   myAction: {
     color: ThemeConfig.playerActionColor,
-    fontWeight: 700,
+    fontWeight: 700
   },
 
   price: {
@@ -297,5 +313,5 @@ const styles = StyleSheet.create({
     height: '90%',
     flex: 1,
     gap: 4
-  },
+  }
 });

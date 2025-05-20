@@ -1,13 +1,11 @@
-import type { Poke, Suit, Rank } from 'texas-poker-core/types/Deck/constant';
+import type { Poke, Suit, Rank } from 'texas-poker-core';
 
-import { StyleSheet, View } from 'react-native';
 import { ImageBackground } from 'expo-image';
-
-import Svg, { Text, G } from 'react-native-svg';
-
-import { ThemeConfig } from "@/constants/ThemeConfig";
+import { View, StyleSheet } from 'react-native';
+import Svg, { G, Text } from 'react-native-svg';
 
 import HandPokerSuits from './HandPokerSuits';
+import { ThemeConfig } from '@/constants/ThemeConfig';
 
 export type PokerCardProps = {
   value: Poke | string;
@@ -21,7 +19,7 @@ const suitColors = {
   s: 'black',
   h: 'red',
   d: 'red',
-  c: 'black',
+  c: 'black'
 };
 
 export function HandPokerCard({
@@ -29,12 +27,12 @@ export function HandPokerCard({
   me = false,
   isShowHandsPokes = false
 }: PokerCardProps) {
-  const [type, val] = value.split('') as [Suit, Rank]
+  const [type, val] = value.split('') as [Suit, Rank];
 
   return (
     <ImageBackground
       style={styles.container}
-      contentFit='cover'
+      contentFit="cover"
     >
       {
         ((me && val)) && (
@@ -147,6 +145,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '30%',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 });

@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 
 type ErrorModalProps = {
   visible: boolean;
@@ -41,7 +40,7 @@ const ErrorModal = ({
                 <Text style={styles.buttonText}>重试</Text>
               </TouchableOpacity>
             )}
-            
+
             <TouchableOpacity
               style={[styles.button, styles.closeButton]}
               onPress={onClose}
@@ -60,45 +59,45 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   container: {
     width: '80%',
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 20,
+    padding: 20
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#333',
+    color: '#333'
   },
   message: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 20,
+    marginBottom: 20
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 10,
+    gap: 10
   },
   button: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    borderRadius: 6,
+    borderRadius: 6
   },
   retryButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#007AFF'
   },
   closeButton: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#E0E0E0'
   },
   buttonText: {
     color: 'white',
-    fontSize: 14,
-  },
+    fontSize: 14
+  }
 });
 
 export default ErrorModal;

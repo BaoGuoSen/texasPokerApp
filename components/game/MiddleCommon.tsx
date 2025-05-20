@@ -1,19 +1,24 @@
-import type { GameStartRes, PlayerActionRes, PlayerTakeActionRes } from '@/types/game';
 import type { ActionsState } from './Actions';
+import type {
+  GameStartRes,
+  PlayerActionRes,
+  PlayerTakeActionRes
+} from '@/types/game';
 
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-
-import { useUser } from '@/contexts/UserContext';
-import { useRoomInfo } from '@/contexts/RoomContext';
-import useWebSocketReceiver, { GameWSEvents } from '@/hooks/useWebSocketReceiver';
 
 import Actions from './Actions';
 import GameSettle from './GameSettle';
 import PublicCards from './PublicCards';
 import MiddleButton from './MiddleButton';
 import PublicMessage from './PublicMessage';
+import { useUser } from '@/contexts/UserContext';
 import ReanimatedNumber from './ReanimatedNumber';
+import { useRoomInfo } from '@/contexts/RoomContext';
+import useWebSocketReceiver, {
+  GameWSEvents
+} from '@/hooks/useWebSocketReceiver';
 
 const MiddleCommon = () => {
   const [totalPool, setTotalPool] = useState<number>(0);
@@ -59,7 +64,7 @@ const MiddleCommon = () => {
           actions: allowedActions,
           minBet: restrict?.min ?? 0,
           maxBet: restrict?.max ?? 0,
-          isAction: true,
+          isAction: true
         });
       },
 
@@ -84,19 +89,15 @@ const MiddleCommon = () => {
       {/* 结算 */}
       <GameSettle />
 
-      {
-        (gameStatus === 'unReady' || gameStatus === 'waiting') && (
-          <MiddleButton />
-        )
-      }
+      {(gameStatus === 'unReady' || gameStatus === 'waiting') && (
+        <MiddleButton />
+      )}
 
-      {
-        gameStatus === 'running' && (
-          <View style={styles.priceContainer}>
-            <ReanimatedNumber value={totalPool} textStyle={styles.price} />
-          </View>
-        )
-      }
+      {gameStatus === 'running' && (
+        <View style={styles.priceContainer}>
+          <ReanimatedNumber value={totalPool} textStyle={styles.price} />
+        </View>
+      )}
 
       <Actions actionState={actionState} />
     </View>
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '50%',
     height: '100%',
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
 
   priceContainer: {
@@ -120,14 +121,14 @@ const styles = StyleSheet.create({
     marginTop: 12,
     borderRadius: '50%',
     width: '100%',
-    height: '40%',
+    height: '40%'
   },
 
   price: {
     color: '#fff',
     fontSize: 36,
     fontWeight: 800
-  },
+  }
 });
 
 export default MiddleCommon;

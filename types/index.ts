@@ -1,7 +1,6 @@
-import type { Role, User } from 'texas-poker-core/types/Player';
-import type { Poke } from 'texas-poker-core/types/Deck/constant';
-import type { Stage } from 'texas-poker-core/types/Controller';
 import type { GameStatus } from './game';
+import type { Role, User, Poke, Stage } from 'texas-poker-core';
+
 interface Player extends User {
   backgroudUrl?: string;
   pokes?: (Poke | string)[];
@@ -12,7 +11,7 @@ interface Player extends User {
 interface Room {
   id: string;
   // 房主信息
-  owner:  User;
+  owner: User;
   status: GameStatus;
   // 房间是否公开
   private: boolean;
@@ -64,4 +63,4 @@ export interface GameRes {
   stage: Stage;
 }
 
-export type { Player, Room, };
+export type { Player, Room };
