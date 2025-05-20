@@ -80,6 +80,6 @@
     "**/*.{js,jsx,ts,tsx,md,json}": [
       "npx prettier"
     ],
-    "**/*.{ts,tsx}": "npx eslint"
+    "**/*.{js,jsx,ts,tsx}": "npx eslint"
   }
 }
