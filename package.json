@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@gluestack-ui/button": "^1.0.14",
     "@gluestack-ui/icon": "^0.1.27",
     "@gluestack-ui/input": "^0.1.38",
     "@gluestack-ui/nativewind-utils": "^1.0.26",
@@ -88,7 +89,7 @@
   "private": true,
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,md,json}": [
-      "npx prettier"
+      "npx prettier --write"
     ],
     "**/*.{js,jsx,ts,tsx}": "npx eslint"
   }
