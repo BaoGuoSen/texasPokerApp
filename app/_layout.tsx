@@ -8,8 +8,10 @@ import {
   configureReanimatedLogger
 } from 'react-native-reanimated';
 
+import '@/global.css';
 import { UserProvider } from '@/contexts/UserContext';
 import { ErrorProvider } from '@/contexts/ErrorContext';
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -43,26 +45,34 @@ export default function RootLayout() {
   }
 
   return (
-    <UserProvider>
-      <ErrorProvider>
-        <Stack
-          screenOptions={{
-            // 禁用所有屏幕的返回手势
-            gestureEnabled: false
-          }}
-        >
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="game"
-            options={{
-              headerShown: false,
-              headerBackButtonDisplayMode: 'minimal',
-              headerBackVisible: true,
-              headerBackTitle: ''
+    <GluestackUIProvider mode="light">
+      <UserProvider>
+        <ErrorProvider>
+          <Stack
+            screenOptions={{
+              // 禁用所有屏幕的返回手势
+              gestureEnabled: false
             }}
-          />
-        </Stack>
-      </ErrorProvider>
-    </UserProvider>
+          >
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="game"
+              options={{
+                headerShown: false,
+                headerBackButtonDisplayMode: 'minimal',
+                headerBackVisible: true,
+                headerBackTitle: ''
+              }}
+            />
+            <Stack.Screen
+              name="login"
+              options={{
+                headerShown: false
+              }}
+            />
+          </Stack>
+        </ErrorProvider>
+      </UserProvider>
+    </GluestackUIProvider>
   );
 }
