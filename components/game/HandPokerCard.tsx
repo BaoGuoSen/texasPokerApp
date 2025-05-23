@@ -5,7 +5,7 @@ import { View, StyleSheet } from 'react-native';
 import Svg, { G, Text } from 'react-native-svg';
 
 import HandPokerSuits from './HandPokerSuits';
-import { ThemeConfig } from '@/constants/ThemeConfig';
+import { themeConfig } from '@/constants/ThemeConfig';
 
 export type PokerCardProps = {
   value: Poke | string;
@@ -61,7 +61,7 @@ export function HandPokerCard({
       }
       {
         me && !val && (
-          <ImageBackground style={styles.meEmpty} source={ThemeConfig.pokerBackImg} />
+          <ImageBackground style={styles.meEmpty} source={themeConfig.pokerBackImg} />
         )
       }
       {
@@ -90,7 +90,7 @@ export function HandPokerCard({
       }
       {
         !me && !isShowHandsPokes && (
-          <ImageBackground style={styles.meEmpty} source={ThemeConfig.pokerBackImg} />
+          <ImageBackground style={styles.meEmpty} source={themeConfig.pokerBackImg} />
         )
       }
     </ImageBackground>
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingTop: 2,
     paddingBottom: 2,
-    borderColor: ThemeConfig.pokerBackColor,
+    borderColor: themeConfig.pokerBackColor,
     borderWidth: 1
   },
 
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingTop: 2,
     paddingBottom: 2,
-    borderColor: ThemeConfig.pokerBackColor,
+    borderColor: themeConfig.pokerBackColor,
     borderWidth: 1
   },
 

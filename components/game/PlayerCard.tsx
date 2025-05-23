@@ -21,7 +21,7 @@ import Animated, {
 
 import { HandPokerCard } from './HandPokerCard';
 import ReanimatedNumber from './ReanimatedNumber';
-import { ThemeConfig } from '@/constants/ThemeConfig';
+import { themeConfig } from '@/constants/ThemeConfig';
 import useWebSocketReceiver, {
   GameWSEvents
 } from '@/hooks/useWebSocketReceiver';
@@ -30,8 +30,8 @@ export function PlayerCard({
   balance = 0,
   name = '人机',
   role,
-  avatar = ThemeConfig.defaultAvatar,
-  backgroudUrl = ThemeConfig.playerBackImg,
+  avatar = themeConfig.defaultAvatar,
+  backgroudUrl = themeConfig.playerBackImg,
   pokes = ['', ''],
   me = false,
   id
@@ -291,13 +291,13 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    color: ThemeConfig.playerNameColor,
+    color: themeConfig.playerNameColor,
     fontWeight: 700,
     fontFamily: 'SpaceMono'
   },
 
   myAction: {
-    color: ThemeConfig.playerActionColor,
+    color: themeConfig.playerActionColor,
     fontWeight: 700
   },
 

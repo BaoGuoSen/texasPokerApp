@@ -21,7 +21,7 @@ import { quitGame } from '@/utils/gameControl';
 import { usePlayers } from '@/hooks/usePlayers';
 import { useUser } from '@/contexts/UserContext';
 import LeftSide from '@/components/game/LeftSide';
-import { ThemeConfig } from '@/constants/ThemeConfig';
+import { themeConfig } from '@/constants/ThemeConfig';
 import { RoomProvider } from '@/contexts/RoomContext';
 import MiddleCommon from '@/components/game/MiddleCommon';
 import RightSidePlayers from '@/components/game/RightSidePlayers';
@@ -168,7 +168,7 @@ export default function Game() {
     >
       <ImageBackground
         contentFit="cover"
-        source={ThemeConfig.gameBackImg}
+        source={themeConfig.gameBackImg}
         style={styles.container}
       >
         <TouchableOpacity
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     width: 'auto',
     height: '100%',
     padding: 12,
-    backgroundColor: ThemeConfig.gameBackColor
+    backgroundColor: themeConfig.gameBackColor
   },
 
   closeBtn: {

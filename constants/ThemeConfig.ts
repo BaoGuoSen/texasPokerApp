@@ -45,7 +45,7 @@ export interface ThemeConfig {
   playerActionColor?: string;
 }
 
-export const ThemeConfig: ThemeConfig = {
+export const themeConfig: ThemeConfig = {
   defaultAvatar: require('@/assets/images/avator_2.png'),
   homeBackImg: require('@/assets/images/Cosmic-eidex-eidex_black.svg'),
   homeBackColor: '#222',

@@ -13,7 +13,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import PokerSuits from './PokerSuits';
-import { ThemeConfig } from '@/constants/ThemeConfig';
+import { themeConfig } from '@/constants/ThemeConfig';
 import { GameEndRes, StageChangeRes } from '@/types/game';
 import { GameWSEvents } from '@/hooks/useWebSocketReceiver';
 import useWebSocketReceiver, {
@@ -170,7 +170,7 @@ export const PokerCard = ({ value, myIndex }: PokerCardProps) => {
       {/* 背面 */}
       <Animated.View style={[styles.card, styles.backCard, backAnimatedStyle]}>
         <ImageBackground
-          source={ThemeConfig.pokerBackImg}
+          source={themeConfig.pokerBackImg}
           style={styles.card}
           contentFit="contain"
         />
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   },
 
   backCard: {
-    backgroundColor: ThemeConfig.pokerBackColor
+    backgroundColor: themeConfig.pokerBackColor
   },
 
   topValue: {

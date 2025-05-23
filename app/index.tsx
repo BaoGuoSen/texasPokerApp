@@ -1,9 +1,9 @@
 import type { Room } from '@/types';
 
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
 import { ImageBackground } from 'expo-image';
 import LottieView from 'lottie-react-native';
+import React, { useState, useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import {
   View,
@@ -19,7 +19,7 @@ import { useUser } from '@/contexts/UserContext';
 import { createGame, getAllRooms } from '@/service';
 import { RoomCard } from '@/components/home/RoomCard';
 import { UserCard } from '@/components/home/UserCard';
-import { ThemeConfig } from '@/constants/ThemeConfig';
+import { themeConfig } from '@/constants/ThemeConfig';
 import { gameEventManager } from '@/hooks/useWebSocketReceiver';
 
 export default function HomeScreen() {
@@ -61,7 +61,7 @@ export default function HomeScreen() {
   return (
     <ImageBackground
       contentFit="cover"
-      source={ThemeConfig.gameBackImg}
+      source={themeConfig.gameBackImg}
       style={styles.container}
     >
       <View style={styles.infos}>
@@ -85,7 +85,7 @@ export default function HomeScreen() {
       {rooms?.length === 0 ? (
         <View style={styles.rooms}>
           <LottieView
-            source={ThemeConfig.roomEmptyLottie}
+            source={themeConfig.roomEmptyLottie}
             autoPlay
             loop
             style={styles.emptyList}
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: ThemeConfig.homeBackColor,
+    backgroundColor: themeConfig.homeBackColor,
     width: '100%',
     height: '100%'
   },
