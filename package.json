@@ -69,6 +69,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@commitlint/config-conventional": "^19.8.1",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.16",
     "@types/react": "~19.0.10",
@@ -82,8 +83,7 @@
     "jscodeshift": "^0.15.2",
     "lint-staged": "^16.0.0",
     "npm-check-updates": "^18.0.1",
-    "prettier": "^2.8.8",
-    "prettier-plugin-classify-imports": "^0.0.2",
+    "prettier": "^3.5.3",
     "react-test-renderer": "18.3.1",
     "typescript": "~5.8.3"
   },
