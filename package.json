@@ -64,7 +64,7 @@
     "react-native-webview": "13.13.5",
     "socket.io-client": "^4.8.1",
     "tailwindcss": "^3.4.17",
-    "texas-poker-core": "^1.2.3"
+    "texas-poker-core": "^1.2.7"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
