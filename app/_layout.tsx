@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
+import { useColorScheme } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {
@@ -39,13 +40,14 @@ export default function RootLayout() {
       ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
     );
   }, []);
+  const theme = useColorScheme();
 
   if (!loaded) {
     return null;
   }
 
   return (
-    <GluestackUIProvider mode="light">
+    <GluestackUIProvider mode={theme!}>
       <UserProvider>
         <ErrorProvider>
           <Stack
