@@ -1,12 +1,11 @@
+import Slider from '@react-native-community/slider';
+import { throttle } from 'lodash';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { ActionType } from 'texas-poker-core';
 
-import { throttle } from 'lodash';
-import Slider from '@react-native-community/slider';
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import { View, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
-
-import { doAction } from '@/service';
 import { useRoomInfo } from '@/contexts/RoomContext';
+import { doAction } from '@/service';
 
 export interface ActionsState {
   actions?: ActionType[];
@@ -28,7 +27,7 @@ const Actions = (props: { actionState: ActionsState }) => {
     const betValue = value ?? minBet;
 
     if (betValue === maxBet) {
-      setActionType('allIn')
+      setActionType('allIn');
 
       return 'ALL IN';
     }
@@ -49,7 +48,7 @@ const Actions = (props: { actionState: ActionsState }) => {
     }
 
     if (betValue === minBet) {
-      setActionType('call')
+      setActionType('call');
 
       return `跟注 ${minBet}`;
     }
@@ -72,8 +71,8 @@ const Actions = (props: { actionState: ActionsState }) => {
     return () => {
       setValue(undefined);
       setIsShowSlider(true);
-    }
-  }, [props.actionState])
+    };
+  }, [props.actionState]);
 
   // useEffect(() => {
   //   return () => {
@@ -118,32 +117,29 @@ const Actions = (props: { actionState: ActionsState }) => {
 
   return (
     <>
-      {
-        props.actionState.isAction ? (
-          <View style={styles.actions}>
-            {
-              isShowSlider && (
-                <View style={styles.quickActions}>
-                  <Text style={styles.minMaxText}>{props.actionState.minBet}</Text>
-                  <View style={styles.sliderContainer}>
-                    { props.actionState.minBet && props.actionState.maxBet && (
-                      <Slider
-                        style={styles.slider}
-                        minimumValue={props.actionState.minBet}
-                        maximumValue={props.actionState.maxBet}
-                        minimumTrackTintColor="#3498db"
-                        maximumTrackTintColor="#d3d3d3"
-                        thumbTintColor="#2980b9"
-                        step={1}
-                        value={value}
-                        onValueChange={throttledUpdate}
-                      />
-                    )}
-                  </View>
-                  <Text style={styles.minMaxText}>{props.actionState.maxBet}</Text>
-                </View>
-              )
-            }
+      {props.actionState.isAction ? (
+        <View style={styles.actions}>
+          {isShowSlider && (
+            <View style={styles.quickActions}>
+              <Text style={styles.minMaxText}>{props.actionState.minBet}</Text>
+              <View style={styles.sliderContainer}>
+                {props.actionState.minBet && props.actionState.maxBet && (
+                  <Slider
+                    style={styles.slider}
+                    minimumValue={props.actionState.minBet}
+                    maximumValue={props.actionState.maxBet}
+                    minimumTrackTintColor="#3498db"
+                    maximumTrackTintColor="#d3d3d3"
+                    thumbTintColor="#2980b9"
+                    step={1}
+                    value={value}
+                    onValueChange={throttledUpdate}
+                  />
+                )}
+              </View>
+              <Text style={styles.minMaxText}>{props.actionState.maxBet}</Text>
+            </View>
+          )}
 
           <View style={styles.mainBtns}>
             <TouchableOpacity

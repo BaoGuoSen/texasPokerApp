@@ -1,7 +1,7 @@
-import type { Player } from '@/types';
+import React, { useEffect, useRef } from 'react';
+import { Animated, Easing, StyleSheet } from 'react-native';
 
-import React, { useRef, useEffect } from 'react';
-import { Easing, Animated, StyleSheet } from 'react-native';
+import type { Player } from '@/types';
 
 import { PlayerCard } from './PlayerCard';
 

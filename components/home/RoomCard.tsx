@@ -1,11 +1,10 @@
-import type { Room } from '@/types';
-
-import { useRouter } from 'expo-router';
 import { Image, ImageBackground } from 'expo-image';
-import { Text, View, StyleSheet, TouchableHighlight } from 'react-native';
+import { useRouter } from 'expo-router';
+import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 
-import { deleteRoom } from '@/service';
 import { useUser } from '@/contexts/UserContext';
+import { deleteRoom } from '@/service';
+import type { Room } from '@/types';
 
 export type IProps = {
   room: Room;

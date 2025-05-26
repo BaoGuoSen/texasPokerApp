@@ -1,5 +1,5 @@
-import { io, Socket } from 'socket.io-client';
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Socket, io } from 'socket.io-client';
 
 import { eventManager } from '@/utils/EventManager';
 

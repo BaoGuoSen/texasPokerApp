@@ -1,18 +1,18 @@
-import { useEffect } from 'react';
-import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
-import { useColorScheme } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
+import { Stack } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { useColorScheme } from 'react-native';
 import {
   ReanimatedLogLevel,
   configureReanimatedLogger
 } from 'react-native-reanimated';
 
-import '@/global.css';
-import { UserProvider } from '@/contexts/UserContext';
-import { ErrorProvider } from '@/contexts/ErrorContext';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { ErrorProvider } from '@/contexts/ErrorContext';
+import { UserProvider } from '@/contexts/UserContext';
+import '@/global.css';
 
 // This is the default configuration
 configureReanimatedLogger({

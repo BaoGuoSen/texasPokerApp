@@ -1,24 +1,24 @@
-import type { Poke, Suit, Rank } from 'texas-poker-core';
-
-import React from 'react';
-import { useRef, useMemo } from 'react';
 import { ImageBackground } from 'expo-image';
-import Svg, { G, Text } from 'react-native-svg';
+import React from 'react';
+import { useMemo, useRef } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, {
   Easing,
-  withTiming,
+  useAnimatedStyle,
   useSharedValue,
-  useAnimatedStyle
+  withTiming
 } from 'react-native-reanimated';
+import Svg, { G, Text } from 'react-native-svg';
+import type { Poke, Rank, Suit } from 'texas-poker-core';
 
-import PokerSuits from './PokerSuits';
 import { themeConfig } from '@/constants/ThemeConfig';
-import { GameEndRes, StageChangeRes } from '@/types/game';
 import { GameWSEvents } from '@/hooks/useWebSocketReceiver';
 import useWebSocketReceiver, {
   gameEventManager
 } from '@/hooks/useWebSocketReceiver';
+import { GameEndRes, StageChangeRes } from '@/types/game';
+
+import PokerSuits from './PokerSuits';
 
 export type PokerCardProps = {
   value: Poke | string;

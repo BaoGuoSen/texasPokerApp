@@ -1,14 +1,13 @@
-import type { User } from 'texas-poker-core';
-
 import { useRef, useState } from 'react';
 import {
-  View,
-  Text,
   Keyboard,
-  TextInput,
   StyleSheet,
-  TouchableOpacity
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
+import type { User } from 'texas-poker-core';
 
 import { useUser } from '@/contexts/UserContext';
 

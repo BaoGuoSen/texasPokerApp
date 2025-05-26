@@ -1,16 +1,16 @@
 import { useMemo, useState } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
-import { Text } from '@/components/ui/text';
-import { CheckIcon } from '@/components/ui/icon';
 import { Button, ButtonText } from '@/components/ui/button';
-import { Input, InputSlot, InputField } from '@/components/ui/input';
 import {
   Checkbox,
   CheckboxIcon,
-  CheckboxLabel,
-  CheckboxIndicator
+  CheckboxIndicator,
+  CheckboxLabel
 } from '@/components/ui/checkbox';
+import { CheckIcon } from '@/components/ui/icon';
+import { Input, InputField, InputSlot } from '@/components/ui/input';
+import { Text } from '@/components/ui/text';
 
 export default function Login() {
   const [phone, setPhone] = useState('');

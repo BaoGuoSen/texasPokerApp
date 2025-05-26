@@ -1,9 +1,9 @@
 'use client';
 
-import { ToastProvider } from '@gluestack-ui/toast';
-import { OverlayProvider } from '@gluestack-ui/overlay';
-import React, { useEffect, useLayoutEffect } from 'react';
 import { setFlushStyles } from '@gluestack-ui/nativewind-utils/flush';
+import { OverlayProvider } from '@gluestack-ui/overlay';
+import { ToastProvider } from '@gluestack-ui/toast';
+import React, { useEffect, useLayoutEffect } from 'react';
 
 import { config } from './config';
 import { script } from './script';

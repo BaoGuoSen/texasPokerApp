@@ -1,9 +1,8 @@
-import type { Player } from '@/types';
-
 import { useState } from 'react';
 
-import { getRoomInfo } from '@/service';
 import { useUser } from '@/contexts/UserContext';
+import { getRoomInfo } from '@/service';
+import type { Player } from '@/types';
 
 interface IProps {
   roomId: string;
@@ -21,12 +20,12 @@ export function usePlayers(props: IProps) {
     const { playersOnSeat, playersHang } = await getRoomInfo({ id: roomId });
 
     const playersOnSeatWithMe = playersOnSeat.map((item) => {
-      return { ...item.userInfo, me: user?.id === item.userInfo.id }
-    })
+      return { ...item.userInfo, me: user?.id === item.userInfo.id };
+    });
 
     const playersHangWithMe = playersHang.map((item) => {
-      return { ...item.userInfo, me: user?.id === item.userInfo.id }
-    })
+      return { ...item.userInfo, me: user?.id === item.userInfo.id };
+    });
 
     setPlayersOnSeat(playersOnSeatWithMe);
     setPlayersHang(playersHangWithMe);

@@ -1,11 +1,11 @@
-import React from 'react';
 import { ImageBackground } from 'expo-image';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { themeConfig } from '@/constants/ThemeConfig';
+import { useRoomInfo } from '@/contexts/RoomContext';
 import { useUser } from '@/contexts/UserContext';
 import { readyGame, startGame } from '@/service';
-import { useRoomInfo } from '@/contexts/RoomContext';
-import { themeConfig } from '@/constants/ThemeConfig';
 
 const MiddleButton = () => {
   const { user } = useUser();

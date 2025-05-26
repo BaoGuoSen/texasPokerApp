@@ -1,8 +1,7 @@
-import type { User, ActionType } from 'texas-poker-core';
-import type { Room, GameRes, CreateParams } from '@/types';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { ActionType, User } from 'texas-poker-core';
 
+import type { CreateParams, GameRes, Room } from '@/types';
 import http from '@/utils/http';
 
 const createGame = async (params: CreateParams) => {
@@ -18,9 +17,10 @@ const getAllRooms = async () => {
 };
 
 const getRoomInfo = async (params: Pick<Room, 'id'>) => {
-  const { data } = await http<{ playersOnSeat: { userInfo: User; }[]; playersHang: { userInfo: User; }[] }>(
-    `room/allPlayers/${params.id}`
-  )
+  const { data } = await http<{
+    playersOnSeat: { userInfo: User }[];
+    playersHang: { userInfo: User }[];
+  }>(`room/allPlayers/${params.id}`);
 
   return data;
 };

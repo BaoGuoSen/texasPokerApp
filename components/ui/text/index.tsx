@@ -1,5 +1,4 @@
 import type { VariantProps } from '@gluestack-ui/nativewind-utils';
-
 import React from 'react';
 import { Text as RNText } from 'react-native';
 
