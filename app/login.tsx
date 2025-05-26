@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
-import { ImageBackground } from 'expo-image';
 import { View, Image, StyleSheet } from 'react-native';
 
 import { Text } from '@/components/ui/text';
 import { CheckIcon } from '@/components/ui/icon';
-import { themeConfig } from '@/constants/ThemeConfig';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Input, InputSlot, InputField } from '@/components/ui/input';
 import {
@@ -23,10 +21,7 @@ export default function Login() {
   }, [phone]);
 
   return (
-    <ImageBackground source={themeConfig.gameBackImg} contentFit="cover">
-      {/* <GluestackUIProvider>
-
-      </GluestackUIProvider> */}
+    <View>
       <View style={styles.container} className="bg-yellow-100 dark:bg-black">
         {/* 左边的表单区域 */}
         <View className="pt-6 pr-7 basis-[35%]">
@@ -93,7 +88,7 @@ export default function Login() {
           />
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 }
 const styles = StyleSheet.create({
