@@ -1,6 +1,6 @@
-import type { GameStatus } from '@/types/game';
+import React, { ReactNode, createContext, useContext } from 'react';
 
-import React, { ReactNode, useContext, createContext } from 'react';
+import type { GameStatus } from '@/types/game';
 
 // 定义 Context 类型
 type RoomContextType = {

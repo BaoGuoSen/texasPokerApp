@@ -1,11 +1,11 @@
-import React from 'react';
 import { ImageBackground } from 'expo-image';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { themeConfig } from '@/constants/ThemeConfig';
+import { useRoomInfo } from '@/contexts/RoomContext';
 import { useUser } from '@/contexts/UserContext';
 import { readyGame, startGame } from '@/service';
-import { useRoomInfo } from '@/contexts/RoomContext';
-import { ThemeConfig } from '@/constants/ThemeConfig';
 
 const MiddleButton = () => {
   const { user } = useUser();
@@ -26,7 +26,7 @@ const MiddleButton = () => {
           <TouchableOpacity onPress={handleReady} style={styles.begin}>
             <ImageBackground
               style={styles.imageBack}
-              source={ThemeConfig.gameBackImg}
+              source={themeConfig.gameBackImg}
             >
               <Text style={styles.startBtn}>开始游戏</Text>
             </ImageBackground>
@@ -39,7 +39,7 @@ const MiddleButton = () => {
           <TouchableOpacity onPress={handleDeal} style={styles.begin}>
             <ImageBackground
               style={styles.imageBack}
-              source={ThemeConfig.gameBackImg}
+              source={themeConfig.gameBackImg}
             >
               <Text style={styles.startBtn}>庄家发牌</Text>
             </ImageBackground>

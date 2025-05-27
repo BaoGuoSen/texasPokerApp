@@ -105,7 +105,7 @@ rl.question(
     if (userInput === 'y' || userInput === 'n') {
       moveDirectories(userInput).finally(() => rl.close());
     } else {
-      console.log('❌ Invalid input. Please enter \'Y\' or \'N\'.');
+      console.log("❌ Invalid input. Please enter 'Y' or 'N'.");
       rl.close();
     }
   }

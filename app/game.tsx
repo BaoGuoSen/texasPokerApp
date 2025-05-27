@@ -1,34 +1,33 @@
-import type { Player } from '@/types';
-import type {
-  SetRoleRes,
-  GameStatus,
-  GameEndRes,
-  GameStartRes,
-  PlayerOnSeatRes,
-  PlayerTakeActionRes
-} from '@/types/game';
-
-import { useState, useEffect } from 'react';
 import { ImageBackground } from 'expo-image';
+import { useGlobalSearchParams, useNavigation } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 // @ts-ignore
 import Icon from 'react-native-vector-icons/Ionicons';
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation, useGlobalSearchParams } from 'expo-router';
 
-import { splitArray } from '@/utils';
-import { joinRoom } from '@/service';
-import { quitGame } from '@/utils/gameControl';
-import { usePlayers } from '@/hooks/usePlayers';
-import { useUser } from '@/contexts/UserContext';
 import LeftSide from '@/components/game/LeftSide';
-import { ThemeConfig } from '@/constants/ThemeConfig';
-import { RoomProvider } from '@/contexts/RoomContext';
 import MiddleCommon from '@/components/game/MiddleCommon';
 import RightSidePlayers from '@/components/game/RightSidePlayers';
+import { themeConfig } from '@/constants/ThemeConfig';
+import { RoomProvider } from '@/contexts/RoomContext';
+import { useUser } from '@/contexts/UserContext';
+import { usePlayers } from '@/hooks/usePlayers';
 import useWebSocketReceiver, {
-  WSEvents,
-  GameWSEvents
+  GameWSEvents,
+  WSEvents
 } from '@/hooks/useWebSocketReceiver';
+import { joinRoom } from '@/service';
+import type { Player } from '@/types';
+import type {
+  GameEndRes,
+  GameStartRes,
+  GameStatus,
+  PlayerOnSeatRes,
+  PlayerTakeActionRes,
+  SetRoleRes
+} from '@/types/game';
+import { splitArray } from '@/utils';
+import { quitGame } from '@/utils/gameControl';
 
 export default function Game() {
   const { roomId = '', ownerId } = useGlobalSearchParams() as {
@@ -38,12 +37,8 @@ export default function Game() {
 
   const navigation = useNavigation();
   const { user } = useUser();
-  const {
-    playersOnSeat,
-    playersOnWatch,
-    setPlayersOnSeat,
-    fetchAllUsers
-  } = usePlayers({ roomId });
+  const { playersOnSeat, playersOnWatch, setPlayersOnSeat, fetchAllUsers } =
+    usePlayers({ roomId });
 
   const [leftPlayers, setLeftPlayers] = useState<Player[]>([]);
   const [rightPlayers, setRightPlayers] = useState<Player[]>([]);
@@ -65,13 +60,17 @@ export default function Game() {
       },
 
       [GameWSEvents.SetRole]: (setRoleRes: SetRoleRes[]) => {
-        const curButtonUserId = setRoleRes.find((player) => player.role === 'button')?.userInfo.id;
+        const curButtonUserId = setRoleRes.find(
+          (player) => player.role === 'button'
+        )?.userInfo.id;
         setCurButtonUserId(curButtonUserId);
 
         if (status === 'unReady') {
           // 第一次由房主确认游戏玩家后，给在座的每个 player 添加 role
           const playersWithRole = playersOnSeat.map((player) => {
-            const role = setRoleRes.find((item) => item.userInfo.id === player.id)?.role;
+            const role = setRoleRes.find(
+              (item) => item.userInfo.id === player.id
+            )?.role;
 
             return {
               ...player,
@@ -103,11 +102,10 @@ export default function Game() {
         setMatchId(matchId);
       },
 
-      [GameWSEvents.PlayerTakeAction]: (playerTakeActionRes: PlayerTakeActionRes) => {
-        const {
-          userInfo: { id } = {},
-          balance
-        } = playerTakeActionRes;
+      [GameWSEvents.PlayerTakeAction]: (
+        playerTakeActionRes: PlayerTakeActionRes
+      ) => {
+        const { userInfo: { id } = {}, balance } = playerTakeActionRes;
 
         const newPlayersOnSeat = playersOnSeat.map((player) => {
           if (player.id === id) {
@@ -133,11 +131,20 @@ export default function Game() {
         const { settleList = [] } = gameEndRes;
 
         const newPlayersOnSeat = playersOnSeat.map((player) => {
-          const settle = settleList.find((item) => item.userInfo.id === player.id);
-          const role = endRoles.find((item) => item.userInfo.id === player.id)?.role;
+          const settle = settleList.find(
+            (item) => item.userInfo.id === player.id
+          );
+          const role = endRoles.find(
+            (item) => item.userInfo.id === player.id
+          )?.role;
 
-          return { ...player, balance: settle?.amount ?? player.balance, pokes: ['', ''], role };
-        })
+          return {
+            ...player,
+            balance: settle?.amount ?? player.balance,
+            pokes: ['', ''],
+            role
+          };
+        });
 
         setPlayersOnSeat(newPlayersOnSeat);
         resetGame();
@@ -168,7 +175,7 @@ export default function Game() {
     >
       <ImageBackground
         contentFit="cover"
-        source={ThemeConfig.gameBackImg}
+        source={themeConfig.gameBackImg}
         style={styles.container}
       >
         <TouchableOpacity
@@ -200,7 +207,7 @@ const styles = StyleSheet.create({
     width: 'auto',
     height: '100%',
     padding: 12,
-    backgroundColor: ThemeConfig.gameBackColor
+    backgroundColor: themeConfig.gameBackColor
   },
 
   closeBtn: {

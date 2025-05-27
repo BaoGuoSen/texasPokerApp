@@ -1,26 +1,25 @@
-import type { Room } from '@/types';
-
-import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
-import { ImageBackground } from 'expo-image';
-import LottieView from 'lottie-react-native';
 import { useIsFocused } from '@react-navigation/native';
+import { ImageBackground } from 'expo-image';
+import { useRouter } from 'expo-router';
+import LottieView from 'lottie-react-native';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
   FlatList,
-  StyleSheet,
   RefreshControl,
-  TouchableHighlight
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View
 } from 'react-native';
 
 import { Login } from '@/components/home/Login';
-import { useUser } from '@/contexts/UserContext';
-import { createGame, getAllRooms } from '@/service';
 import { RoomCard } from '@/components/home/RoomCard';
 import { UserCard } from '@/components/home/UserCard';
-import { ThemeConfig } from '@/constants/ThemeConfig';
+import { themeConfig } from '@/constants/ThemeConfig';
+import { useUser } from '@/contexts/UserContext';
 import { gameEventManager } from '@/hooks/useWebSocketReceiver';
+import { createGame, getAllRooms } from '@/service';
+import type { Room } from '@/types';
 
 export default function HomeScreen() {
   // 检查页面是否处于焦点状态，页面返回刷新列表数据
@@ -61,7 +60,7 @@ export default function HomeScreen() {
   return (
     <ImageBackground
       contentFit="cover"
-      source={ThemeConfig.gameBackImg}
+      source={themeConfig.gameBackImg}
       style={styles.container}
     >
       <View style={styles.infos}>
@@ -85,7 +84,7 @@ export default function HomeScreen() {
       {rooms?.length === 0 ? (
         <View style={styles.rooms}>
           <LottieView
-            source={ThemeConfig.roomEmptyLottie}
+            source={themeConfig.roomEmptyLottie}
             autoPlay
             loop
             style={styles.emptyList}
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: ThemeConfig.homeBackColor,
+    backgroundColor: themeConfig.homeBackColor,
     width: '100%',
     height: '100%'
   },

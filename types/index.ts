@@ -1,5 +1,6 @@
+import type { Poke, Role, Stage, User } from 'texas-poker-core';
+
 import type { GameStatus } from './game';
-import type { Role, User, Poke, Stage } from 'texas-poker-core';
 
 interface Player extends User {
   backgroudUrl?: string;

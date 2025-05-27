@@ -1,3 +1,20 @@
+import { Image, ImageBackground } from 'expo-image';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming
+} from 'react-native-reanimated';
+import Svg, { Circle } from 'react-native-svg';
+import { roleMap } from 'texas-poker-core';
+
+import { themeConfig } from '@/constants/ThemeConfig';
+import useWebSocketReceiver, {
+  GameWSEvents
+} from '@/hooks/useWebSocketReceiver';
 import type { Player } from '@/types';
 import type {
   GameEndRes,
@@ -6,32 +23,15 @@ import type {
   PlayerTakeActionRes
 } from '@/types/game';
 
-import { roleMap } from 'texas-poker-core';
-import { useState, useEffect } from 'react';
-import Svg, { Circle } from 'react-native-svg';
-import { Image, ImageBackground } from 'expo-image';
-import { View, Text, StyleSheet } from 'react-native';
-import Animated, {
-  Easing,
-  withRepeat,
-  withTiming,
-  useSharedValue,
-  useAnimatedStyle
-} from 'react-native-reanimated';
-
 import { HandPokerCard } from './HandPokerCard';
 import ReanimatedNumber from './ReanimatedNumber';
-import { ThemeConfig } from '@/constants/ThemeConfig';
-import useWebSocketReceiver, {
-  GameWSEvents
-} from '@/hooks/useWebSocketReceiver';
 
 export function PlayerCard({
   balance = 0,
   name = '人机',
   role,
-  avatar = ThemeConfig.defaultAvatar,
-  backgroudUrl = ThemeConfig.playerBackImg,
+  avatar = themeConfig.defaultAvatar,
+  backgroudUrl = themeConfig.playerBackImg,
   pokes = ['', ''],
   me = false,
   id
@@ -85,11 +85,7 @@ export function PlayerCard({
       [GameWSEvents.PlayerTakeAction]: (
         playerTakeActionRes: PlayerTakeActionRes
       ) => {
-        const {
-          userInfo,
-          actionType,
-          amount
-        } = playerTakeActionRes;
+        const { userInfo, actionType, amount } = playerTakeActionRes;
 
         if (actionType === 'fold' && userInfo.id === id) {
           setIsFold(true);
@@ -291,13 +287,13 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    color: ThemeConfig.playerNameColor,
+    color: themeConfig.playerNameColor,
     fontWeight: 700,
     fontFamily: 'SpaceMono'
   },
 
   myAction: {
-    color: ThemeConfig.playerActionColor,
+    color: themeConfig.playerActionColor,
     fontWeight: 700
   },
 

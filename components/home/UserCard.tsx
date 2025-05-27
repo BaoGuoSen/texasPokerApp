@@ -1,8 +1,8 @@
 import { Image } from 'expo-image';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { themeConfig } from '@/constants/ThemeConfig';
 import { useUser } from '@/contexts/UserContext';
-import { ThemeConfig } from '@/constants/ThemeConfig';
 
 export function UserCard() {
   const { user, logout } = useUser();
@@ -11,7 +11,7 @@ export function UserCard() {
     <View style={styles.container}>
       <Image
         style={styles.avatar}
-        source={user?.avatar || ThemeConfig.defaultAvatar}
+        source={user?.avatar || themeConfig.defaultAvatar}
       />
       <Text style={styles.name}>{user?.name}</Text>
 

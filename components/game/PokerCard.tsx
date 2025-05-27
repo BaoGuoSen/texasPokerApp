@@ -1,24 +1,24 @@
-import type { Poke, Suit, Rank } from 'texas-poker-core';
-
-import React from 'react';
-import { useRef, useMemo } from 'react';
 import { ImageBackground } from 'expo-image';
-import Svg, { G, Text } from 'react-native-svg';
+import React from 'react';
+import { useMemo, useRef } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, {
   Easing,
-  withTiming,
+  useAnimatedStyle,
   useSharedValue,
-  useAnimatedStyle
+  withTiming
 } from 'react-native-reanimated';
+import Svg, { G, Text } from 'react-native-svg';
+import type { Poke, Rank, Suit } from 'texas-poker-core';
 
-import PokerSuits from './PokerSuits';
-import { ThemeConfig } from '@/constants/ThemeConfig';
-import { GameEndRes, StageChangeRes } from '@/types/game';
+import { themeConfig } from '@/constants/ThemeConfig';
 import { GameWSEvents } from '@/hooks/useWebSocketReceiver';
 import useWebSocketReceiver, {
   gameEventManager
 } from '@/hooks/useWebSocketReceiver';
+import { GameEndRes, StageChangeRes } from '@/types/game';
+
+import PokerSuits from './PokerSuits';
 
 export type PokerCardProps = {
   value: Poke | string;
@@ -170,7 +170,7 @@ export const PokerCard = ({ value, myIndex }: PokerCardProps) => {
       {/* 背面 */}
       <Animated.View style={[styles.card, styles.backCard, backAnimatedStyle]}>
         <ImageBackground
-          source={ThemeConfig.pokerBackImg}
+          source={themeConfig.pokerBackImg}
           style={styles.card}
           contentFit="contain"
         />
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   },
 
   backCard: {
-    backgroundColor: ThemeConfig.pokerBackColor
+    backgroundColor: themeConfig.pokerBackColor
   },
 
   topValue: {

@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { TextStyle } from 'react-native';
 import Animated, {
   Easing,
-  withTiming,
-  withSequence,
+  useAnimatedStyle,
   useSharedValue,
-  useAnimatedStyle
+  withSequence,
+  withTiming
 } from 'react-native-reanimated';
 
 const ReanimatedNumber = ({

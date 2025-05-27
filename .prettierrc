@@ -3,6 +3,8 @@
   "semi": true,
   "trailingComma": "none",
   "tabWidth": 2,
-  "plugins": ["prettier-plugin-classify-imports"],
-  "importOrder": ["^[./]|(@/)"]
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": ["^@/", "^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

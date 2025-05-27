@@ -1,11 +1,10 @@
-import type { PlayerTakeActionRes } from '@/types/game';
-
-import React, { useRef, useState, useEffect } from 'react';
-import { Easing, Animated, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Easing, StyleSheet } from 'react-native';
 
 import useWebSocketReceiver, {
   GameWSEvents
 } from '@/hooks/useWebSocketReceiver';
+import type { PlayerTakeActionRes } from '@/types/game';
 
 /**
  * 公屏公告组件

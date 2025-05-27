@@ -1,15 +1,18 @@
-import { useEffect } from 'react';
-import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
+import { Stack } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { useColorScheme } from 'react-native';
 import {
   ReanimatedLogLevel,
   configureReanimatedLogger
 } from 'react-native-reanimated';
 
-import { UserProvider } from '@/contexts/UserContext';
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { ErrorProvider } from '@/contexts/ErrorContext';
+import { UserProvider } from '@/contexts/UserContext';
+import '@/global.css';
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -37,32 +40,41 @@ export default function RootLayout() {
       ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
     );
   }, []);
+  const theme = useColorScheme();
 
   if (!loaded) {
     return null;
   }
 
   return (
-    <UserProvider>
-      <ErrorProvider>
-        <Stack
-          screenOptions={{
-            // 禁用所有屏幕的返回手势
-            gestureEnabled: false
-          }}
-        >
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="game"
-            options={{
-              headerShown: false,
-              headerBackButtonDisplayMode: 'minimal',
-              headerBackVisible: true,
-              headerBackTitle: ''
+    <GluestackUIProvider mode={theme!}>
+      <UserProvider>
+        <ErrorProvider>
+          <Stack
+            screenOptions={{
+              // 禁用所有屏幕的返回手势
+              gestureEnabled: false
             }}
-          />
-        </Stack>
-      </ErrorProvider>
-    </UserProvider>
+          >
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="game"
+              options={{
+                headerShown: false,
+                headerBackButtonDisplayMode: 'minimal',
+                headerBackVisible: true,
+                headerBackTitle: ''
+              }}
+            />
+            <Stack.Screen
+              name="login"
+              options={{
+                headerShown: false
+              }}
+            />
+          </Stack>
+        </ErrorProvider>
+      </UserProvider>
+    </GluestackUIProvider>
   );
 }
