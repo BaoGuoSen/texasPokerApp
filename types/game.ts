@@ -88,7 +88,7 @@ export interface PlayerActiveRes {
  * 行动玩家的操作
  */
 export interface PlayerTakeActionRes {
-  userInfo: Pick<User, 'id' | 'name'>;
+  userInfo: Pick<User, 'id' | 'name' | 'balance'>;
   actionType: ActionType;
   amount: number;
   pool: number;

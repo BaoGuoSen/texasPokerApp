@@ -56,6 +56,5 @@ export const useError = () => {
     throw new Error('useError must be used within ErrorProvider');
   }
 
-  console.log('111', context);
   return context;
 };

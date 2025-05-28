@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { useRoomInfo } from '@/contexts/RoomContext';
 import { useUser } from '@/contexts/UserContext';
-import useWebSocketReceiver, {
-  GameWSEvents
-} from '@/hooks/useWebSocketReceiver';
+import { GameWSEvents, gameEventManager } from '@/hooks/useWebSocketReceiver';
 import type {
   GameStartRes,
   PlayerActionRes,
@@ -31,8 +29,8 @@ const MiddleCommon = () => {
   const { gameStatus } = useRoomInfo();
   const { user } = useUser();
 
-  useWebSocketReceiver({
-    handlers: {
+  useEffect(() => {
+    gameEventManager.subscribe('MiddleCommon', {
       [GameWSEvents.GameStart]: ({ pool }: GameStartRes) => {
         setTotalPool(pool);
       },
@@ -75,8 +73,12 @@ const MiddleCommon = () => {
           maxBet: 0
         });
       }
-    }
-  });
+    });
+
+    return () => {
+      gameEventManager.clearAllFromKey('MiddleCommon');
+    };
+  }, [user?.id]);
 
   return (
     <View style={styles.middle}>

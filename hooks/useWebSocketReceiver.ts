@@ -41,14 +41,14 @@ export enum GameWSEvents {
   ClientGameEnd = 'client-game-end'
 }
 
-type EventHandlerMap = {
+export type EventHandlerMap = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key in WSEvents | GameWSEvents]?: (data: any) => void;
 };
 
 type Config = {
   url?: string;
-  handlers: EventHandlerMap;
+  // handlers: EventHandlerMap;
 };
 
 type WsState = {
@@ -69,7 +69,7 @@ export default function useWebSocketReceiver(config: Config) {
     try {
       const { type, data } = event;
 
-      console.log('收到消息: type:', type, 'data:', data);
+      console.log('收到消息: type:', type, '    ', data);
 
       eventManager.publish(type, data);
     } catch (error) {
@@ -134,15 +134,15 @@ export default function useWebSocketReceiver(config: Config) {
   }, []);
 
   // 订阅事件
-  useEffect(() => {
-    Object.entries(config.handlers).forEach(([event, handler]) => {
-      eventManager.subscribe(event, handler);
-    });
+  // useEffect(() => {
+  //   Object.entries(config.handlers).forEach(([event, handler]) => {
+  //     eventManager.subscribe(event, handler);
+  //   });
 
-    return () => {
-      eventManager.clear();
-    };
-  }, [config.handlers]);
+  //   return () => {
+  //     eventManager.clear();
+  //   };
+  // }, [config.handlers]);
 
   return {
     ...state

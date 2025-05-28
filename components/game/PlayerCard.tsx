@@ -12,9 +12,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { roleMap } from 'texas-poker-core';
 
 import { themeConfig } from '@/constants/ThemeConfig';
-import useWebSocketReceiver, {
-  GameWSEvents
-} from '@/hooks/useWebSocketReceiver';
+import { GameWSEvents, gameEventManager } from '@/hooks/useWebSocketReceiver';
 import type { Player } from '@/types';
 import type {
   GameEndRes,
@@ -62,10 +60,10 @@ export function PlayerCard({
         easing: Easing.out(Easing.ease)
       });
     }
-  }, [isFold]);
+  }, [isFold, translateY]);
 
-  useWebSocketReceiver({
-    handlers: {
+  useEffect(() => {
+    gameEventManager.subscribe('PlayerCard', {
       [GameWSEvents.GameStart]: (gameStartRes: GameStartRes) => {
         const { defaultBets } = gameStartRes;
 
@@ -106,8 +104,12 @@ export function PlayerCard({
         setIsShowHandsPokes(false);
         setIsFold(false);
       }
-    }
-  });
+    });
+
+    return () => {
+      gameEventManager.clearAllFromKey('PlayerCard');
+    };
+  }, [id]);
 
   // 控制动画进度
   const progress = useSharedValue(0);
@@ -138,7 +140,7 @@ export function PlayerCard({
       // 停止动画
       progress.value = withTiming(0);
     }
-  }, [isActive]);
+  }, [isActive, progress]);
 
   return (
     <Animated.View style={[styles.animated, fadeOutStyle]}>
@@ -181,7 +183,9 @@ export function PlayerCard({
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.name} numberOfLines={1}>
+            {name}
+          </Text>
           <Text style={styles.myAction}>{myAction}</Text>
           <ReanimatedNumber
             value={balance}

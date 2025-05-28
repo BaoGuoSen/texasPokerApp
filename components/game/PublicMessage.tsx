@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, StyleSheet } from 'react-native';
 
-import useWebSocketReceiver, {
-  GameWSEvents
-} from '@/hooks/useWebSocketReceiver';
+import { GameWSEvents, gameEventManager } from '@/hooks/useWebSocketReceiver';
 import type { PlayerTakeActionRes } from '@/types/game';
 
 /**
@@ -13,8 +11,8 @@ const PublicMessage = () => {
   const [text, setText] = useState<string>();
   const translateY = useRef(new Animated.Value(-30)).current;
 
-  useWebSocketReceiver({
-    handlers: {
+  useEffect(() => {
+    gameEventManager.subscribe('PublicMessage', {
       [GameWSEvents.PlayerTakeAction]: (
         playerTakeActionRes: PlayerTakeActionRes
       ) => {
@@ -31,8 +29,12 @@ const PublicMessage = () => {
         // 将位置让出来，给游戏结算
         setText('');
       }
-    }
-  });
+    });
+
+    return () => {
+      gameEventManager.clearAllFromKey('PublicMessage');
+    };
+  }, []);
 
   useEffect(() => {
     if (text) {

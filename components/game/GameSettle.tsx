@@ -2,10 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, StyleSheet } from 'react-native';
 
 import { GameConfig } from '@/constants/gameConfig';
-import useWebSocketReceiver, {
-  GameWSEvents,
-  gameEventManager
-} from '@/hooks/useWebSocketReceiver';
+import { GameWSEvents, gameEventManager } from '@/hooks/useWebSocketReceiver';
 import type { GameEndRes } from '@/types/game';
 
 /**
@@ -14,10 +11,10 @@ import type { GameEndRes } from '@/types/game';
 const GameSettle = () => {
   const [texts, setTexts] = useState<string[]>([]);
   const translateX = useRef(new Animated.Value(300)).current;
-  const timer = useRef<NodeJS.Timeout | null>(null);
+  const timer = useRef<number | null>(null);
 
-  useWebSocketReceiver({
-    handlers: {
+  useEffect(() => {
+    gameEventManager.subscribe('GameSettle', {
       [GameWSEvents.GameStart]: () => {
         setTexts([]);
 
@@ -39,8 +36,12 @@ const GameSettle = () => {
           setTexts([]);
         }, GameConfig.settleDuration);
       }
-    }
-  });
+    });
+
+    return () => {
+      gameEventManager.clearAllFromKey('GameSettle');
+    };
+  }, []);
 
   useEffect(() => {
     if (texts.length > 0) {

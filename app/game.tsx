@@ -14,7 +14,8 @@ import { useUser } from '@/contexts/UserContext';
 import { usePlayers } from '@/hooks/usePlayers';
 import useWebSocketReceiver, {
   GameWSEvents,
-  WSEvents
+  WSEvents,
+  gameEventManager
 } from '@/hooks/useWebSocketReceiver';
 import { joinRoom } from '@/service';
 import type { Player } from '@/types';
@@ -48,8 +49,11 @@ export default function Game() {
   const [endRoles, setEndRoles] = useState<SetRoleRes[]>([]);
 
   useWebSocketReceiver({
-    url: `wss://texas.wishufree.com?userId=${user?.id}&roomId=${roomId}`,
-    handlers: {
+    url: `wss://texas.wishufree.com?userId=${user?.id}&roomId=${roomId}`
+  });
+
+  useEffect(() => {
+    gameEventManager.subscribe('game', {
       [WSEvents.Connect]: async () => {
         // 如果当前用户不是房主，则加入房间
         if (user?.id !== Number(ownerId)) {
@@ -105,7 +109,7 @@ export default function Game() {
       [GameWSEvents.PlayerTakeAction]: (
         playerTakeActionRes: PlayerTakeActionRes
       ) => {
-        const { userInfo: { id } = {}, balance } = playerTakeActionRes;
+        const { userInfo: { id, balance = 0 } = {} } = playerTakeActionRes;
 
         const newPlayersOnSeat = playersOnSeat.map((player) => {
           if (player.id === id) {
@@ -140,7 +144,7 @@ export default function Game() {
 
           return {
             ...player,
-            balance: settle?.amount ?? player.balance,
+            balance: settle?.userInfo.balance ?? player.balance,
             pokes: ['', ''],
             role
           };
@@ -149,8 +153,23 @@ export default function Game() {
         setPlayersOnSeat(newPlayersOnSeat);
         resetGame();
       }
-    }
-  });
+    });
+
+    return () => {
+      gameEventManager.clearAllFromKey('game');
+    };
+  }, [
+    leftPlayers,
+    rightPlayers,
+    endRoles,
+    fetchAllUsers,
+    ownerId,
+    playersOnSeat,
+    roomId,
+    setPlayersOnSeat,
+    status,
+    user?.id
+  ]);
 
   const resetGame = () => {
     setStatus('waiting');

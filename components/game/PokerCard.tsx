@@ -1,5 +1,5 @@
 import { ImageBackground } from 'expo-image';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useMemo, useRef } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, {
@@ -12,10 +12,7 @@ import Svg, { G, Text } from 'react-native-svg';
 import type { Poke, Rank, Suit } from 'texas-poker-core';
 
 import { themeConfig } from '@/constants/ThemeConfig';
-import { GameWSEvents } from '@/hooks/useWebSocketReceiver';
-import useWebSocketReceiver, {
-  gameEventManager
-} from '@/hooks/useWebSocketReceiver';
+import { GameWSEvents, gameEventManager } from '@/hooks/useWebSocketReceiver';
 import { GameEndRes, StageChangeRes } from '@/types/game';
 
 import PokerSuits from './PokerSuits';
@@ -38,10 +35,30 @@ export const PokerCard = ({ value, myIndex }: PokerCardProps) => {
   // 控制旋转角度
   const rotate = useSharedValue(0);
   const isFlippedRef = useRef(false);
-  const timer = useRef<NodeJS.Timeout | null>(null);
+  const timer = useRef<number | null>(null);
 
-  useWebSocketReceiver({
-    handlers: {
+  // 处理点击事件
+  const handleFlip = useCallback(
+    (type: 'open' | 'close') => {
+      if (type === 'close') {
+        isFlippedRef.current = false;
+        rotate.value = withTiming(360, {
+          duration: 500,
+          easing: Easing.inOut(Easing.linear)
+        });
+      } else {
+        isFlippedRef.current = true;
+        rotate.value = withTiming(180, {
+          duration: 500,
+          easing: Easing.inOut(Easing.linear)
+        });
+      }
+    },
+    [rotate]
+  );
+
+  useEffect(() => {
+    gameEventManager.subscribe(`PokerCard_${myIndex}`, {
       [GameWSEvents.StageChange]: ({ stage }: StageChangeRes) => {
         // 翻前三张牌
         if (stage === 'flop') {
@@ -97,8 +114,12 @@ export const PokerCard = ({ value, myIndex }: PokerCardProps) => {
         // TODO 触发洗牌动画, 清空计时器
         timer.current && clearTimeout(timer.current);
       }
-    }
-  });
+    });
+
+    return () => {
+      gameEventManager.clearAllFromKey(`PokerCard_${myIndex}`);
+    };
+  }, [handleFlip, myIndex, value]);
 
   // 定义动画样式
   const frontAnimatedStyle = useAnimatedStyle(() => {
@@ -125,23 +146,6 @@ export const PokerCard = ({ value, myIndex }: PokerCardProps) => {
   const [type, val] = useMemo(() => {
     return value.split('') as [Suit, Rank];
   }, [value]);
-
-  // 处理点击事件
-  const handleFlip = (type: 'open' | 'close') => {
-    if (type === 'close') {
-      isFlippedRef.current = false;
-      rotate.value = withTiming(360, {
-        duration: 500,
-        easing: Easing.inOut(Easing.linear)
-      });
-    } else {
-      isFlippedRef.current = true;
-      rotate.value = withTiming(180, {
-        duration: 500,
-        easing: Easing.inOut(Easing.linear)
-      });
-    }
-  };
 
   return (
     <TouchableOpacity style={styles.container}>

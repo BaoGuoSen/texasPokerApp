@@ -1,10 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Poke } from 'texas-poker-core';
 
-import useWebSocketReceiver, {
-  GameWSEvents
-} from '@/hooks/useWebSocketReceiver';
+import { GameWSEvents, gameEventManager } from '@/hooks/useWebSocketReceiver';
 import type { GameEndRes, StageChangeRes } from '@/types/game';
 
 import { PokerCard } from './PokerCard';
@@ -18,10 +16,8 @@ export default function PublicCards() {
     ''
   ]);
 
-  useWebSocketReceiver({
-    handlers: {
-      [GameWSEvents.GameStart]: () => {},
-
+  useEffect(() => {
+    gameEventManager.subscribe('PublicCards', {
       [GameWSEvents.StageChange]: ({ restCommonPokes }: StageChangeRes) => {
         let index = -1;
 
@@ -52,8 +48,12 @@ export default function PublicCards() {
 
         setPublicCards(newPublicCards);
       }
-    }
-  });
+    });
+
+    return () => {
+      gameEventManager.clearAllFromKey('PublicCards');
+    };
+  }, [publicCards]);
 
   return (
     <View style={styles.publicCards}>
