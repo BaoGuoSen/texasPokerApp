@@ -63,7 +63,7 @@ export function PlayerCard({
   }, [isFold, translateY]);
 
   useEffect(() => {
-    gameEventManager.subscribe('PlayerCard', {
+    gameEventManager.subscribe(`PlayerCard${id}`, {
       [GameWSEvents.GameStart]: (gameStartRes: GameStartRes) => {
         const { defaultBets } = gameStartRes;
 
@@ -107,7 +107,7 @@ export function PlayerCard({
     });
 
     return () => {
-      gameEventManager.clearAllFromKey('PlayerCard');
+      gameEventManager.clearAllFromKey(`PlayerCard${id}`);
     };
   }, [id]);
 

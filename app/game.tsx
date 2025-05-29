@@ -130,6 +130,26 @@ export default function Game() {
         // TODO 暂时没有观战入口
       },
 
+      [GameWSEvents.GameEnd]: (gameEndRes: GameEndRes) => {
+        const { handPokes } = gameEndRes;
+
+        setPlayersOnSeat((prePlayerOnSeat) => {
+          const newPlayersOnSeat = prePlayerOnSeat.map((player) => {
+            const targetPokes = handPokes.find(
+              (item) => item.userInfo.id === player.id
+            );
+
+            if (targetPokes) {
+              return { ...player, pokes: targetPokes.hand };
+            }
+
+            return player;
+          });
+
+          return newPlayersOnSeat;
+        });
+      },
+
       [GameWSEvents.ClientGameEnd]: (gameEndRes: GameEndRes) => {
         // 设置新一轮的角色
         const { settleList = [] } = gameEndRes;
